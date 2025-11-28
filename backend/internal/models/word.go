@@ -8,8 +8,8 @@ import (
 
 type Word struct {
 	ID        int            `json:"id" db:"id"`
-	Russian   string         `json:"russian" db:"russian"`
-	Japanese  string         `json:"japanese" db:"japanese"`
+	Ru   	  string         `json:"ru" db:"ru"`
+	Jp 		  string         `json:"jp" db:"jp"`
 	On        pq.StringArray `json:"on,omitempty" db:"on"`       // онъёми
 	Kun       pq.StringArray `json:"kun,omitempty" db:"kun"`     // кунъёми
 	ExJP      pq.StringArray `json:"ex_jp,omitempty" db:"ex_jp"` // примеры на японском
@@ -20,8 +20,8 @@ type Word struct {
 }
 
 type WordRequest struct {
-	Russian  string   `json:"russian" validate:"required"`
-	Japanese string   `json:"japanese" validate:"required"`
+	Ru 		 string   `json:"ru" validate:"required"`
+	Jp 		 string   `json:"jp" validate:"required"`
 	On       []string `json:"on,omitempty"`
 	Kun      []string `json:"kun,omitempty"`
 	ExJP     []string `json:"ex_jp,omitempty"`
