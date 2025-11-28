@@ -11,12 +11,12 @@ import (
 type Word struct {
 	ID        int            `json:"id" db:"id"`
 	Jp        pq.StringArray `json:"jp" db:"jp"`                 // Написания на японском
-	Ru        pq.StringArray `json:"ru" db:"ru"`                 // Перевод(ы) на русский
-	On        pq.StringArray `json:"on,omitempty" db:"on"`       // Онъёми чтения
+	Ru        pq.StringArray `json:"ru" db:"ru"`                 // Переводы на русский
+	On        pq.StringArray `json:"on,omitempty" db:"on"`       // Онъёми тения
 	Kun       pq.StringArray `json:"kun,omitempty" db:"kun"`     // Кунъёми чтения
-	ExJP      pq.StringArray `json:"ex_jp,omitempty" db:"ex_jp"` // Пример(ы) на японском
-	ExRU      pq.StringArray `json:"ex_ru,omitempty" db:"ex_ru"` // Перевод(ы) примеров
-	Tags      pq.StringArray `json:"tags,omitempty" db:"tags"`   // Тег(и) для категоризации
+	ExJP      pq.StringArray `json:"ex_jp,omitempty" db:"ex_jp"` // Примеры на японском
+	ExRU      pq.StringArray `json:"ex_ru,omitempty" db:"ex_ru"` // Переводы примеров
+	Tags      pq.StringArray `json:"tags,omitempty" db:"tags"`   // Теги для категоризации
 	CreatedAt time.Time      `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at" db:"updated_at"`
 }
