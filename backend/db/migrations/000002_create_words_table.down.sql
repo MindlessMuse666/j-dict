@@ -1,0 +1,11 @@
+DROP TRIGGER IF EXISTS update_words_updated_at ON words;
+DROP INDEX IF EXISTS idx_words_jp_trgm;
+DROP INDEX IF EXISTS idx_words_ru_trgm;
+DROP INDEX IF EXISTS idx_words_onyomi;
+DROP INDEX IF EXISTS idx_words_kunyomi;
+DROP INDEX IF EXISTS idx_words_created_at;
+DROP INDEX IF EXISTS idx_words_tags;
+DROP INDEX IF EXISTS idx_words_ru;
+DROP INDEX IF EXISTS idx_words_jp;
+DROP INDEX IF EXISTS idx_words_user_id;
+DROP TABLE IF EXISTS words;
