@@ -1,0 +1,1265 @@
+{
+    "info": {
+        "_postman_id": "jp-ru-dict-api",
+        "name": "JP-RU Dictionary API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": "Полная коллекция для тестирования API личного русско-японского словаря"
+    },
+    "item": [
+        {
+            "name": "Системные запросы",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health"
+                            ]
+                        },
+                        "description": "Проверка работоспособности сервиса"
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Аутентификация",
+            "item": [
+                {
+                    "name": "Регистрация пользователя",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Тестовый Пользователь\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Регистрация нового пользователя. Сохраняет токен в переменную."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Сохраняем токен в переменную окружения",
+                                    "if (pm.response.code === 201) {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.environment.set('auth_token', responseData.data.token);",
+                                    "    pm.environment.set('user_id', responseData.data.user.id);",
+                                    "    console.log('Токен сохранен: ' + responseData.data.token);",
+                                    "}",
+                                    "",
+                                    "// Проверяем структуру ответа",
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has correct structure\", function () {",
+                                    "    pm.response.to.have.jsonBody('data.token');",
+                                    "    pm.response.to.have.jsonBody('data.user.id');",
+                                    "    pm.response.to.have.jsonBody('data.user.email');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Вход пользователя",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Вход существующего пользователя. Сохраняет токен в переменную."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Сохраняем токен в переменную окружения",
+                                    "if (pm.response.code === 200) {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.environment.set('auth_token', responseData.data.token);",
+                                    "    pm.environment.set('user_id', responseData.data.user.id);",
+                                    "    console.log('Токен сохранен: ' + responseData.data.token);",
+                                    "}",
+                                    "",
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has correct structure\", function () {",
+                                    "    pm.response.to.have.jsonBody('data.token');",
+                                    "    pm.response.to.have.jsonBody('data.user.id');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Получить информацию о себе",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "me"
+                            ]
+                        },
+                        "description": "Получение информации о текущем пользователе. Требует аутентификации."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response contains user data\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData.data).to.have.property('id');",
+                                    "    pm.expect(responseData.data).to.have.property('email');",
+                                    "    pm.expect(responseData.data).to.have.property('name');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Выход из системы",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Выход из системы. На клиенте токен должен быть удален."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// Очищаем токен после выхода",
+                                    "pm.environment.unset('auth_token');",
+                                    "console.log('Токен удален из переменных окружения');"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Слова (CRUD операции)",
+            "item": [
+                {
+                    "name": "Создать слово (полный набор полей)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"jp\": [\"机\", \"つくえ\"],\n    \"ru\": [\"стол\", \"парта\"],\n    \"on\": [\"き\"],\n    \"kun\": [\"つくえ\"],\n    \"ex_jp\": [\"机の上に本がある。\", \"新しい机を買った。\"],\n    \"ex_ru\": [\"На столе лежит книга.\", \"Купил новый стол.\"],\n    \"tags\": [\"мебель\", \"обучение\", \"дом\"]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/words",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words"
+                            ]
+                        },
+                        "description": "Создание нового слова с полным набором полей. Сохраняет ID созданного слова."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has word data\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData.data).to.have.property('id');",
+                                    "    pm.expect(responseData.data.jp).to.eql([\"机\", \"つくえ\"]);",
+                                    "    pm.expect(responseData.data.tags).to.eql([\"мебель\", \"обучение\", \"дом\"]);",
+                                    "    \n    // Сохраняем ID созданного слова",
+                                    "    pm.environment.set('word_id_1', responseData.data.id);",
+                                    "    console.log('Создано слово с ID: ' + responseData.data.id);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Создать слово (минимальный набор)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"jp\": [\"水\"],\n    \"ru\": [\"вода\"]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/words",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words"
+                            ]
+                        },
+                        "description": "Создание слова с минимальным набором полей (только японский и русский)."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has minimal word data\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData.data.jp).to.eql([\"水\"]);",
+                                    "    pm.expect(responseData.data.ru).to.eql([\"вода\"]);",
+                                    "    pm.expect(responseData.data.on).to.be.undefined;",
+                                    "    pm.expect(responseData.data.kun).to.be.undefined;",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Получить список слов (базовая пагинация)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words?limit=5&cursor=0",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "5"
+                                },
+                                {
+                                    "key": "cursor",
+                                    "value": "0"
+                                }
+                            ]
+                        },
+                        "description": "Получение списка слов с курсорной пагинацией. Лимит 5 слов, начиная с курсора 0."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has pagination structure\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData.data).to.have.property('words');",
+                                    "    pm.expect(responseData.data).to.have.property('has_more');",
+                                    "    pm.expect(responseData.data).to.have.property('next_cursor');",
+                                    "    \n    // Если есть слова, сохраняем ID первого для тестов",
+                                    "    if (responseData.data.words.length > 0) {",
+                                    "        pm.environment.set('first_word_id', responseData.data.words[0].id);",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Получить слово по ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/{{word_id_1}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "{{word_id_1}}"
+                            ]
+                        },
+                        "description": "Получение конкретного слова по его ID."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has word with correct ID\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData.data.id).to.equal(pm.environment.get('word_id_1'));",
+                                    "    pm.expect(responseData.data.jp).to.include('机');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Частичное обновление слова",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"ru\": [\"стол\", \"парта\", \"рабочий стол\"],\n    \"tags\": [\"мебель\", \"офис\", \"обучение\"]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/words/{{word_id_1}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "{{word_id_1}}"
+                            ]
+                        },
+                        "description": "Частичное обновление слова. Меняем только русские переводы и теги."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Word was updated correctly\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData.data.ru).to.eql([\"стол\", \"парта\", \"рабочий стол\"]);",
+                                    "    pm.expect(responseData.data.tags).to.eql([\"мебель\", \"офис\", \"обучение\"]);",
+                                    "    // Проверяем, что японские поля не изменились",
+                                    "    pm.expect(responseData.data.jp).to.include('机');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Удалить слово",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/{{word_id_1}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "{{word_id_1}}"
+                            ]
+                        },
+                        "description": "Удаление слова по ID."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 204\", function () {",
+                                    "    pm.response.to.have.status(204);",
+                                    "});",
+                                    "",
+                                    "// Очищаем переменную",
+                                    "pm.environment.unset('word_id_1');"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Попытка получить несуществующее слово",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/999999",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "999999"
+                            ]
+                        },
+                        "description": "Попытка получить слово с несуществующим ID."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 404\", function () {",
+                                    "    pm.response.to.have.status(404);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Response has error message\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData).to.have.property('error');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Поиск слов",
+            "item": [
+                {
+                    "name": "Поиск по подстроке (японский)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/search?q=机&limit=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "q",
+                                    "value": "机"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Поиск слов по подстроке в японских написаниях."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Search results structure is correct\", function () {",
+                                    "    const responseData = pm.response.json();",
+                                    "    pm.expect(responseData.data).to.have.property('words');",
+                                    "    pm.expect(responseData.data.words).to.be.an('array');",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Поиск по подстроке (русский)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/search?q=стол&limit=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "q",
+                                    "value": "стол"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Поиск слов по подстроке в русских переводах."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Поиск по тегам (точное совпадение)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/search?tags=мебель&tags=обучение&limit=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "tags",
+                                    "value": "мебель"
+                                },
+                                {
+                                    "key": "tags",
+                                    "value": "обучение"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Поиск слов, которые имеют все указанные теги."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Поиск по онъёми",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/search?on=き&limit=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "on",
+                                    "value": "き"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Поиск слов по онъёми чтению."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Комбинированный поиск",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/words/search?q=本&tags=обучение&on=き&limit=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "q",
+                                    "value": "本"
+                                },
+                                {
+                                    "key": "tags",
+                                    "value": "обучение"
+                                },
+                                {
+                                    "key": "on",
+                                    "value": "き"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Комбинированный поиск по нескольким параметрам."
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Тестирование ошибок и валидации",
+            "item": [
+                {
+                    "name": "Неверный токен аутентификации",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer invalid_token_here"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "me"
+                            ]
+                        },
+                        "description": "Попытка доступа с неверным токеном."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Отсутствие токена аутентификации",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "me"
+                            ]
+                        },
+                        "description": "Попытка доступа без токена."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 401\", function () {",
+                                    "    pm.response.to.have.status(401);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Регистрация с существующим email",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"anotherpassword\",\n    \"name\": \"Другой Пользователь\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Попытка регистрации с уже существующим email."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Создание слова без обязательных полей",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"jp\": [],\n    \"ru\": []\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/words",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words"
+                            ]
+                        },
+                        "description": "Попытка создания слова с пустыми обязательными полями."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                },
+                {
+                    "name": "Создание слова с превышением лимита элементов",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"jp\": [\"テスト\"],\n    \"ru\": [\"тест\"],\n    \"ex_jp\": [\"例1\", \"例2\", \"例3\", \"例4\"],\n    \"tags\": [\"1\", \"2\", \"3\", \"4\", \"5\", \"6\"]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/words",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "words"
+                            ]
+                        },
+                        "description": "Попытка создания слова с превышением максимального количества примеров (max 3) и тегов (max 5)."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 400\", function () {",
+                                    "    pm.response.to.have.status(400);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Скрипт полного тестирования",
+            "item": [
+                {
+                    "name": "Полное тестирование (последовательность)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "health"
+                            ]
+                        },
+                        "description": "Автоматическое последовательное тестирование всех функций API."
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "console.log('=== НАЧАЛО ПОЛНОГО ТЕСТИРОВАНИЯ API ===');",
+                                    "",
+                                    "// 1. Проверка health endpoint",
+                                    "pm.test('Health check passed', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    pm.response.to.have.jsonBody('status', 'ok');",
+                                    "});",
+                                    "",
+                                    "// Создаем массив для хранения тестовых данных",
+                                    "const testData = {",
+                                    "    authToken: null,",
+                                    "    wordId: null",
+                                    "};",
+                                    "",
+                                    "// 2. Регистрация нового пользователя",
+                                    "pm.sendRequest({",
+                                    "    url: pm.environment.get('base_url') + '/api/auth/register',",
+                                    "    method: 'POST',",
+                                    "    header: {",
+                                    "        'Content-Type': 'application/json'",
+                                    "    },",
+                                    "    body: {",
+                                    "        mode: 'raw',",
+                                    "        raw: JSON.stringify({",
+                                    "            email: 'test_' + Date.now() + '@example.com',",
+                                    "            password: 'password123',",
+                                    "            name: 'Test User ' + Date.now()",
+                                    "        })",
+                                    "    }",
+                                    "}, function (err, response) {",
+                                    "    if (err) {",
+                                    "        console.error('Registration error:', err);",
+                                    "        return;",
+                                    "    }",
+                                    "    ",
+                                    "    if (response.code === 201) {",
+                                    "        testData.authToken = response.json().data.token;",
+                                    "        console.log('Registration successful, token:', testData.authToken.substring(0, 20) + '...');",
+                                    "        ",
+                                    "        // 3. Получение информации о себе",
+                                    "        pm.sendRequest({",
+                                    "            url: pm.environment.get('base_url') + '/api/auth/me',",
+                                    "            method: 'GET',",
+                                    "            header: {",
+                                    "                'Authorization': 'Bearer ' + testData.authToken",
+                                    "            }",
+                                    "        }, function (err, response) {",
+                                    "            if (response.code === 200) {",
+                                    "                console.log('Get me successful');",
+                                    "                ",
+                                    "                // 4. Создание слова",
+                                    "                pm.sendRequest({",
+                                    "                    url: pm.environment.get('base_url') + '/api/words',",
+                                    "                    method: 'POST',",
+                                    "                    header: {",
+                                    "                        'Content-Type': 'application/json',",
+                                    "                        'Authorization': 'Bearer ' + testData.authToken",
+                                    "                    },",
+                                    "                    body: {",
+                                    "                        mode: 'raw',",
+                                    "                        raw: JSON.stringify({",
+                                    "                            jp: ['犬', 'いぬ'],",
+                                    "                            ru: ['собака'],",
+                                    "                            on: ['けん'],",
+                                    "                            kun: ['いぬ'],",
+                                    "                            tags: ['животные', 'дом']",
+                                    "                        })",
+                                    "                    }",
+                                    "                }, function (err, response) {",
+                                    "                    if (response.code === 201) {",
+                                    "                        testData.wordId = response.json().data.id;",
+                                    "                        console.log('Word created, ID:', testData.wordId);",
+                                    "                        ",
+                                    "                        // 5. Получение списка слов",
+                                    "                        pm.sendRequest({",
+                                    "                            url: pm.environment.get('base_url') + '/api/words?limit=5',",
+                                    "                            method: 'GET',",
+                                    "                            header: {",
+                                    "                                'Authorization': 'Bearer ' + testData.authToken",
+                                    "                            }",
+                                    "                        }, function (err, response) {",
+                                    "                            if (response.code === 200) {",
+                                    "                                const data = response.json().data;",
+                                    "                                console.log('Got words list, count:', data.words.length);",
+                                    "                                ",
+                                    "                                // 6. Поиск слов",
+                                    "                                pm.sendRequest({",
+                                    "                                    url: pm.environment.get('base_url') + '/api/words/search?q=犬',",
+                                    "                                    method: 'GET',",
+                                    "                                    header: {",
+                                    "                                        'Authorization': 'Bearer ' + testData.authToken",
+                                    "                                    }",
+                                    "                                }, function (err, response) {",
+                                    "                                    if (response.code === 200) {",
+                                    "                                        console.log('Search successful');",
+                                    "                                        ",
+                                    "                                        // 7. Удаление слова",
+                                    "                                        pm.sendRequest({",
+                                    "                                            url: pm.environment.get('base_url') + '/api/words/' + testData.wordId,",
+                                    "                                            method: 'DELETE',",
+                                    "                                            header: {",
+                                    "                                                'Authorization': 'Bearer ' + testData.authToken",
+                                    "                                            }",
+                                    "                                        }, function (err, response) {",
+                                    "                                            if (response.code === 204) {",
+                                    "                                                console.log('Word deleted successfully');",
+                                    "                                                console.log('=== ТЕСТИРОВАНИЕ ЗАВЕРШЕНО УСПЕШНО ===');",
+                                    "                                            }",
+                                    "                                        });",
+                                    "                                    }",
+                                    "                                });",
+                                    "                            }",
+                                    "                        });",
+                                    "                    }",
+                                    "                });",
+                                    "            }",
+                                    "        });",
+                                    "    } else {",
+                                    "        console.error('Registration failed:', response.json());",
+                                    "    }",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "exec": [
+                    "console.log('Запрос к: ' + pm.request.url);"
+                ],
+                "type": "text/javascript"
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "exec": [
+                    "// Общие проверки для всех ответов",
+                    "pm.test(\"Response time is acceptable\", function () {",
+                    "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+                    "});"
+                ],
+                "type": "text/javascript"
+            }
+        }
+    ],
+    "variable": [
+        {
+            "id": "base_url",
+            "key": "base_url",
+            "value": "http://localhost:8080",
+            "type": "string"
+        },
+        {
+            "id": "auth_token",
+            "key": "auth_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "id": "user_id",
+            "key": "user_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "id": "word_id_1",
+            "key": "word_id_1",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "id": "first_word_id",
+            "key": "first_word_id",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "auth": null
+}
