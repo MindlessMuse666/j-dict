@@ -4,6 +4,7 @@ import (
 	"errors"
 	"jp-ru-dict/backend/internal/model"
 	"jp-ru-dict/backend/internal/repository"
+	"jp-ru-dict/backend/internal/utils"
 )
 
 // WordsService определяет интерфейс сервиса работы со словами
@@ -109,5 +110,12 @@ func (s *wordsService) DeleteWord(userID, wordID int) error {
 
 // SearchWords выполняет поиск слов по различным критериям
 func (s *wordsService) SearchWords(userID int, query string, tags, on, kun []string, limit, cursor int) ([]*model.Word, error) {
-	return s.repo.SearchWords(userID, query, tags, on, kun, limit, cursor)
+	// Нормализуем онъёми: собираем все варианты (катакана + хирагана)
+	var normalizedOn []string
+	for _, reading := range on {
+		variants := utils.NormalizeOnReading(reading)
+		normalizedOn = append(normalizedOn, variants...)
+	}
+
+	return s.repo.SearchWords(userID, query, tags, normalizedOn, kun, limit, cursor)
 }
