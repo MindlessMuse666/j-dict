@@ -67,6 +67,7 @@ func NewServer(database *sql.DB, cfg *config.Config) *Server {
 	// Инициализация обработчиков
 	authHandler := handler.NewAuthHandler(authService)
 	wordsHandler := handler.NewWordsHandler(wordsService)
+	importHandler := handler.NewImportHandler(wordsService)
 	healthHandler := handler.NewHealthHandler()
 
 	// Настройка Gin
@@ -102,6 +103,7 @@ func NewServer(database *sql.DB, cfg *config.Config) *Server {
 		authorized.GET("/words/search", wordsHandler.SearchWords)
 		authorized.GET("/words/:id", wordsHandler.GetWord)
 		authorized.POST("/words", wordsHandler.CreateWord)
+		authorized.POST("/words/import", importHandler.ImportCSV)
 		authorized.PATCH("/words/:id", wordsHandler.UpdateWord)
 		authorized.DELETE("/words/:id", wordsHandler.DeleteWord)
 	}
