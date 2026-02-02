@@ -25,9 +25,9 @@ func NewImportHandler(wordsService service.WordsService) *ImportHandler {
 // @Produce json
 // @Security BearerAuth
 // @Param request body model.CSVImportRequest true "CSV данные для импорта"
-// @Success 200 {object} model.CSVImportResponse "Результат импорта"
-// @Failure 400 {object} map[string]string "Неверный формат CSV"
-// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Success 200 {object} model.CSVImportResponseWrapper "Результат импорта"
+// @Failure 400 {object} model.ErrorResponse "Неверный формат CSV"
+// @Failure 500 {object} model.ErrorResponse "Внутренняя ошибка сервера"
 // @Router /api/words/import [post]
 func (h *ImportHandler) ImportCSV(c *gin.Context) {
 	userID := c.GetInt("user_id")

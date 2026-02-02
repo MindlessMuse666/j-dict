@@ -24,9 +24,9 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 // @Accept json
 // @Produce json
 // @Param request body model.UserRegisterRequest true "Данные для регистрации"
-// @Success 201 {object} map[string]interface{} "Успешная регистрация"
-// @Failure 400 {object} map[string]string "Неверные данные"
-// @Failure 409 {object} map[string]string "Пользователь уже существует"
+// @Success 201 {object} model.AuthResponseWrapper "Успешная регистрация"
+// @Failure 400 {object} model.ErrorResponse "Неверные данные"
+// @Failure 409 {object} model.ErrorResponse "Пользователь уже существует"
 // @Router /api/auth/register [post]
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req model.UserRegisterRequest
@@ -51,9 +51,9 @@ func (h *AuthHandler) Register(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param request body model.UserLoginRequest true "Данные для входа"
-// @Success 200 {object} map[string]interface{} "Успешный вход"
-// @Failure 400 {object} map[string]string "Неверные данные"
-// @Failure 401 {object} map[string]string "Неверные учетные данные"
+// @Success 200 {object} model.AuthResponseWrapper "Успешный вход"
+// @Failure 400 {object} model.ErrorResponse "Неверные данные"
+// @Failure 401 {object} model.ErrorResponse "Неверные учетные данные"
 // @Router /api/auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req model.UserLoginRequest
@@ -77,8 +77,8 @@ func (h *AuthHandler) Login(c *gin.Context) {
 // @Tags auth
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {object} map[string]interface{} "Информация о пользователе"
-// @Failure 401 {object} map[string]string "Неавторизован"
+// @Success 200 {object} model.UserResponseWrapper "Информация о пользователе"
+// @Failure 401 {object} model.ErrorResponse "Неавторизован"
 // @Router /api/auth/me [get]
 func (h *AuthHandler) Me(c *gin.Context) {
 	user, exists := c.Get("user")

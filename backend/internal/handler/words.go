@@ -26,9 +26,9 @@ func NewWordsHandler(wordsService service.WordsService) *WordsHandler {
 // @Produce json
 // @Security BearerAuth
 // @Param request body model.WordCreateRequest true "Данные слова"
-// @Success 201 {object} map[string]interface{} "Слово создано"
-// @Failure 400 {object} map[string]string "Неверные данные"
-// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Success 201 {object} model.WordResponseWrapper "Слово создано"
+// @Failure 400 {object} model.ErrorResponse "Неверные данные"
+// @Failure 500 {object} model.ErrorResponse "Внутренняя ошибка сервера"
 // @Router /api/words [post]
 func (h *WordsHandler) CreateWord(c *gin.Context) {
 	userID := c.GetInt("user_id")
@@ -56,8 +56,8 @@ func (h *WordsHandler) CreateWord(c *gin.Context) {
 // @Security BearerAuth
 // @Param limit query int false "Лимит слов (макс. 100)" default(20) minimum(1) maximum(100)
 // @Param cursor query int false "Курсор для пагинации" default(0) minimum(0)
-// @Success 200 {object} model.WordsListResponse "Список слов"
-// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Success 200 {object} model.WordsListResponseWrapper "Список слов"
+// @Failure 500 {object} model.ErrorResponse "Внутренняя ошибка сервера"
 // @Router /api/words [get]
 func (h *WordsHandler) GetWords(c *gin.Context) {
 	userID := c.GetInt("user_id")
@@ -98,9 +98,9 @@ func (h *WordsHandler) GetWords(c *gin.Context) {
 // @Produce json
 // @Security BearerAuth
 // @Param id path int true "ID слова"
-// @Success 200 {object} map[string]interface{} "Слово"
-// @Failure 404 {object} map[string]string "Слово не найдено"
-// @Failure 400 {object} map[string]string "Неверный ID слова"
+// @Success 200 {object} model.WordResponseWrapper "Слово"
+// @Failure 404 {object} model.ErrorResponse "Слово не найдено"
+// @Failure 400 {object} model.ErrorResponse "Неверный ID слова"
 // @Router /api/words/{id} [get]
 func (h *WordsHandler) GetWord(c *gin.Context) {
 	userID := c.GetInt("user_id")
@@ -135,9 +135,9 @@ func (h *WordsHandler) GetWord(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "ID слова"
 // @Param request body model.WordUpdateRequest true "Обновленные данные (все поля опциональны)"
-// @Success 200 {object} map[string]interface{} "Слово обновлено"
-// @Failure 400 {object} map[string]string "Неверные данные или пустой запрос"
-// @Failure 404 {object} map[string]string "Слово не найдено"
+// @Success 200 {object} model.WordResponseWrapper "Слово обновлено"
+// @Failure 400 {object} model.ErrorResponse "Неверные данные или пустой запрос"
+// @Failure 404 {object} model.ErrorResponse "Слово не найдено"
 // @Router /api/words/{id} [patch]
 func (h *WordsHandler) UpdateWord(c *gin.Context) {
 	userID := c.GetInt("user_id")
@@ -177,8 +177,8 @@ func (h *WordsHandler) UpdateWord(c *gin.Context) {
 // @Security BearerAuth
 // @Param id path int true "ID слова"
 // @Success 204 "Слово удалено"
-// @Failure 404 {object} map[string]string "Слово не найдено"
-// @Failure 400 {object} map[string]string "Неверный ID слова"
+// @Failure 404 {object} model.ErrorResponse "Слово не найдено"
+// @Failure 400 {object} model.ErrorResponse "Неверный ID слова"
 // @Router /api/words/{id} [delete]
 func (h *WordsHandler) DeleteWord(c *gin.Context) {
 	userID := c.GetInt("user_id")
@@ -208,8 +208,8 @@ func (h *WordsHandler) DeleteWord(c *gin.Context) {
 // @Param kun query []string false "Кунъёми (точное совпадение)"
 // @Param limit query int false "Лимит слов" default(20)
 // @Param cursor query int false "Курсор для пагинации" default(0)
-// @Success 200 {object} model.WordsListResponse "Результаты поиска"
-// @Failure 500 {object} map[string]string "Внутренняя ошибка сервера"
+// @Success 200 {object} model.WordsListResponseWrapper "Результаты поиска"
+// @Failure 500 {object} model.ErrorResponse "Внутренняя ошибка сервера"
 // @Router /api/words/search [get]
 func (h *WordsHandler) SearchWords(c *gin.Context) {
 	userID := c.GetInt("user_id")

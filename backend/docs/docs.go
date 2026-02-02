@@ -44,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserLoginRequest"
+                            "$ref": "#/definitions/model.UserLoginRequest"
                         }
                     }
                 ],
@@ -52,26 +52,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешный вход",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/model.AuthResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Неверные учетные данные",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -124,17 +117,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Информация о пользователе",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/model.UserResponseWrapper"
                         }
                     },
                     "401": {
                         "description": "Неавторизован",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -160,7 +149,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserRegisterRequest"
+                            "$ref": "#/definitions/model.UserRegisterRequest"
                         }
                     }
                 ],
@@ -168,26 +157,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Успешная регистрация",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/model.AuthResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "409": {
                         "description": "Пользователь уже существует",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -254,16 +236,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Список слов",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponse"
+                            "$ref": "#/definitions/model.WordsListResponseWrapper"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -292,7 +271,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordCreateRequest"
+                            "$ref": "#/definitions/model.WordCreateRequest"
                         }
                     }
                 ],
@@ -300,26 +279,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Слово создано",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -350,7 +322,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportRequest"
+                            "$ref": "#/definitions/model.CSVImportRequest"
                         }
                     }
                 ],
@@ -358,25 +330,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Результат импорта",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportResponse"
+                            "$ref": "#/definitions/model.CSVImportResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверный формат CSV",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -453,16 +419,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Результаты поиска",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponse"
+                            "$ref": "#/definitions/model.WordsListResponseWrapper"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -496,26 +459,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Слово",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверный ID слова",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -550,19 +506,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Неверный ID слова",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -598,7 +548,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordUpdateRequest"
+                            "$ref": "#/definitions/model.WordUpdateRequest"
                         }
                     }
                 ],
@@ -606,26 +556,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Слово обновлено",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные или пустой запрос",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -633,7 +576,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "jp-ru-dict_backend_internal_model.CSVImportRequest": {
+        "model.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/model.User"
+                }
+            }
+        },
+        "model.AuthResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.AuthResponse"
+                }
+            }
+        },
+        "model.CSVImportRequest": {
             "type": "object",
             "required": [
                 "content"
@@ -644,7 +606,7 @@ const docTemplate = `{
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.CSVImportResponse": {
+        "model.CSVImportResponse": {
             "type": "object",
             "properties": {
                 "errors": {
@@ -661,7 +623,43 @@ const docTemplate = `{
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.UserLoginRequest": {
+        "model.CSVImportResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.CSVImportResponse"
+                }
+            }
+        },
+        "model.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserLoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -676,7 +674,7 @@ const docTemplate = `{
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.UserRegisterRequest": {
+        "model.UserRegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -696,7 +694,15 @@ const docTemplate = `{
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.Word": {
+        "model.UserResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.User"
+                }
+            }
+        },
+        "model.Word": {
             "type": "object",
             "required": [
                 "jp",
@@ -764,7 +770,7 @@ const docTemplate = `{
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordCreateRequest": {
+        "model.WordCreateRequest": {
             "type": "object",
             "required": [
                 "jp",
@@ -820,7 +826,15 @@ const docTemplate = `{
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordUpdateRequest": {
+        "model.WordResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Word"
+                }
+            }
+        },
+        "model.WordUpdateRequest": {
             "type": "object",
             "properties": {
                 "ex_jp": {
@@ -872,7 +886,7 @@ const docTemplate = `{
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordsListResponse": {
+        "model.WordsListResponse": {
             "type": "object",
             "properties": {
                 "has_more": {
@@ -884,8 +898,16 @@ const docTemplate = `{
                 "words": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/jp-ru-dict_backend_internal_model.Word"
+                        "$ref": "#/definitions/model.Word"
                     }
+                }
+            }
+        },
+        "model.WordsListResponseWrapper": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.WordsListResponse"
                 }
             }
         }
