@@ -112,19 +112,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    command: >
-      sh -c "
-        echo 'Ожидание PostgreSQL...' &&
-        while ! nc -z postgres 5432; do sleep 0.1; done &&
-        echo 'PostgreSQL доступен' &&
-        echo 'Ожидание Kafka...' &&
-        while ! nc -z kafka 9092; do sleep 0.1; done &&
-        echo 'Kafka доступен' &&
-        echo 'Выполнение миграций...' &&
-        ./main --migrate &&
-        echo 'Запуск сервера...' &&
-        ./main
-      "
     restart: unless-stopped
 
   frontend:
