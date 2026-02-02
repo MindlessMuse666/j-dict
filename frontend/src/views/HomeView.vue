@@ -1,51 +1,57 @@
 <template>
-  <div class="max-w-6xl mx-auto">
+  <div class="max-w-5xl mx-auto">
     <!-- Панель управления -->
-    <div class="mb-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+    <div class="mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 class="text-2xl font-bold text-gray-800">Мой словарь</h2>
+          <h2 class="text-3xl font-bold text-text-main font-jp">Мой словарь</h2>
           <!-- Плавное изменение счетчика слов -->
           <Transition name="fade-slide" mode="out-in">
-            <p v-if="wordsStore.words.length" key="count" class="text-sm text-gray-600 mt-1">
+            <p v-if="wordsStore.words.length" key="count" class="text-sm text-text-muted mt-1 font-medium">
               Всего слов: {{ wordsStore.words.length }}
             </p>
             <div v-else key="empty" class="h-5"></div>
           </Transition>
         </div>
 
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-3">
           <!-- Переключатель компактного вида -->
-          <div class="hidden sm:flex items-center">
-            <span class="text-sm text-gray-700 mr-2">Компактный вид:</span>
-            <button @click="isCompactView = !isCompactView" :class="[
-              'relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200',
-              isCompactView ? 'bg-primary' : 'bg-gray-200'
-            ]">
-              <span :class="[
-                'inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200',
-                isCompactView ? 'translate-x-6' : 'translate-x-1'
-              ]" />
+          <div class="hidden sm:flex items-center bg-surface rounded-lg p-1 shadow-sm border border-gray-100 mr-2">
+            <button @click="isCompactView = false" :class="[
+              'p-2 rounded-md transition-all duration-200',
+              !isCompactView ? 'bg-primary/10 text-primary' : 'text-gray-400 hover:text-gray-600'
+            ]" title="Полный вид">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <button @click="isCompactView = true" :class="[
+              'p-2 rounded-md transition-all duration-200',
+              isCompactView ? 'bg-primary/10 text-primary' : 'text-gray-400 hover:text-gray-600'
+            ]" title="Компактный вид">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
             </button>
           </div>
 
           <!-- Кнопка импорта -->
           <button @click="showImportModal = true"
-            class="px-4 py-2 bg-secondary hover:bg-secondary/90 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-md flex items-center">
+            class="px-4 py-2 bg-secondary hover:bg-secondary/90 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg shadow-md flex items-center transform hover:-translate-y-0.5">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
             </svg>
-            Импорт CSV
+            Импорт
           </button>
 
           <!-- Кнопка добавления -->
           <button @click="showAddModal = true"
-            class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-md flex items-center">
+            class="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg shadow-md flex items-center transform hover:-translate-y-0.5">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
-            Добавить слово
+            Добавить
           </button>
         </div>
       </div>
@@ -56,14 +62,14 @@
 
     <!-- Сообщение об ошибке -->
     <Transition name="fade">
-      <div v-if="wordsStore.error" class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+      <div v-if="wordsStore.error" class="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl shadow-sm">
         <div class="flex items-center">
-          <svg class="w-5 h-5 text-red-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+          <svg class="w-5 h-5 text-danger mr-3" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd"
               d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
               clip-rule="evenodd" />
           </svg>
-          <span class="text-red-800">{{ wordsStore.error }}</span>
+          <span class="text-danger font-medium">{{ wordsStore.error }}</span>
         </div>
       </div>
     </Transition>

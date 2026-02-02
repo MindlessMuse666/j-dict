@@ -1,7 +1,7 @@
 <template>
-    <div class="min-h-screen bg-background">
+    <div class="min-h-screen bg-background bg-washi-pattern font-sans text-text-main">
         <AppHeader />
-        <main class="container mx-auto px-4 py-6">
+        <main class="container mx-auto px-4 py-8 relative z-10">
             <RouterView />
         </main>
         <ToastContainer />

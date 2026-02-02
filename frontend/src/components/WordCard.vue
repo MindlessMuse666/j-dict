@@ -1,6 +1,6 @@
 <template>
     <div :class="[
-        'bg-white rounded-lg border transition-all duration-300 hover:shadow-md interactive',
+        'bg-surface rounded-xl border-none shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1',
         isCompactView ? 'p-4' : 'p-6',
         wordState
     ]" :data-word-id="word.id">
@@ -8,21 +8,21 @@
         <div v-if="isCompactView" class="flex items-center justify-between">
             <!-- Японский текст -->
             <div class="flex-1 mr-4">
-                <div class="flex flex-wrap items-center gap-2 mb-1">
+                <div class="flex flex-wrap items-center gap-3 mb-1">
                     <span v-for="(item, index) in word.jp" :key="'jp-' + index"
-                        class="jp-text text-lg font-semibold text-gray-900">
+                        class="font-jp text-xl font-medium text-text-main tracking-wide">
                         {{ item }}
                     </span>
                 </div>
 
                 <!-- Чтения -->
-                <div v-if="word.on || word.kun" class="flex flex-wrap gap-2 mt-1">
+                <div v-if="word.on || word.kun" class="flex flex-wrap gap-2 mt-2">
                     <span v-for="(reading, index) in word.on" :key="'on-' + index"
-                        class="onyomi text-xs px-2 py-1 bg-onyomi/20 rounded">
+                        class="font-jp text-xs px-2 py-1 bg-onyomi text-amber-900 rounded-md shadow-sm">
                         {{ reading }}
                     </span>
                     <span v-for="(reading, index) in word.kun" :key="'kun-' + index"
-                        class="kunyomi text-xs px-2 py-1 bg-kunyomi/20 rounded">
+                        class="font-jp text-xs px-2 py-1 bg-kunyomi text-sky-900 rounded-md shadow-sm">
                         {{ reading }}
                     </span>
                 </div>
@@ -30,36 +30,36 @@
 
             <!-- Русский перевод -->
             <div class="flex-1 text-right">
-                <div class="flex flex-wrap justify-end gap-2 mb-1">
-                    <span v-for="(item, index) in word.ru" :key="'ru-' + index" class="text-gray-700">
+                <div class="flex flex-wrap justify-end gap-2 mb-2">
+                    <span v-for="(item, index) in word.ru" :key="'ru-' + index" class="text-text-main font-medium">
                         {{ item }}
                     </span>
                 </div>
 
                 <!-- Теги -->
-                <div v-if="word.tags && word.tags.length > 0" class="flex flex-wrap justify-end gap-1 mt-1">
+                <div v-if="word.tags && word.tags.length > 0" class="flex flex-wrap justify-end gap-1.5 mt-1">
                     <span v-for="(tag, index) in word.tags" :key="'tag-' + index"
-                        class="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded">
-                        {{ tag }}
+                        class="text-xs px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full border border-gray-200">
+                        #{{ tag }}
                     </span>
                 </div>
             </div>
 
             <!-- Кнопки действий -->
-            <div class="ml-4 flex items-center space-x-2">
+            <div class="ml-5 pl-4 border-l border-gray-100 flex items-center space-x-1">
                 <button @click="handleEdit"
-                    class="p-2 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-full transition-colors"
+                    class="p-2 text-gray-400 hover:text-primary hover:bg-red-50 rounded-full transition-colors"
                     title="Редактировать">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                 </button>
                 <button @click="handleDelete"
-                    class="p-2 text-gray-500 hover:text-danger hover:bg-red-50 rounded-full transition-colors"
+                    class="p-2 text-gray-400 hover:text-danger hover:bg-red-50 rounded-full transition-colors"
                     title="Удалить">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                 </button>
@@ -69,27 +69,27 @@
         <!-- Полный вид -->
         <div v-else>
             <!-- Заголовок с японскими написаниями -->
-            <div class="mb-4">
-                <div class="flex flex-wrap items-center gap-3 mb-3">
+            <div class="mb-5 pb-4 border-b border-gray-100 border-dashed">
+                <div class="flex flex-wrap items-center gap-4 mb-3">
                     <h3 v-for="(item, index) in word.jp" :key="'jp-full-' + index"
-                        class="jp-text text-2xl font-bold text-gray-900">
+                        class="font-jp text-3xl font-medium text-text-main tracking-wide">
                         {{ item }}
                     </h3>
                 </div>
 
                 <!-- Чтения -->
-                <div v-if="word.on || word.kun" class="flex flex-wrap gap-3 mb-3">
-                    <div v-if="word.on && word.on.length > 0">
-                        <span class="text-sm font-medium text-gray-600 mr-2">Онъёми:</span>
+                <div v-if="word.on || word.kun" class="flex flex-wrap gap-3">
+                    <div v-if="word.on && word.on.length > 0" class="flex items-center">
+                        <span class="text-xs font-bold text-amber-700 uppercase tracking-wider mr-2">On</span>
                         <span v-for="(reading, index) in word.on" :key="'on-full-' + index"
-                            class="onyomi inline-block text-sm px-3 py-1 bg-onyomi/20 rounded-full mr-2 mb-1">
+                            class="font-jp inline-block text-sm px-3 py-1 bg-onyomi text-amber-900 rounded-md mr-2 shadow-sm">
                             {{ reading }}
                         </span>
                     </div>
-                    <div v-if="word.kun && word.kun.length > 0">
-                        <span class="text-sm font-medium text-gray-600 mr-2">Кунъёми:</span>
+                    <div v-if="word.kun && word.kun.length > 0" class="flex items-center ml-2">
+                        <span class="text-xs font-bold text-sky-700 uppercase tracking-wider mr-2">Kun</span>
                         <span v-for="(reading, index) in word.kun" :key="'kun-full-' + index"
-                            class="kunyomi inline-block text-sm px-3 py-1 bg-kunyomi/20 rounded-full mr-2 mb-1">
+                            class="font-jp inline-block text-sm px-3 py-1 bg-kunyomi text-sky-900 rounded-md mr-2 shadow-sm">
                             {{ reading }}
                         </span>
                     </div>

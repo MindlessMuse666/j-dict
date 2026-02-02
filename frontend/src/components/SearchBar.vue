@@ -1,25 +1,25 @@
 <template>
-    <div class="mb-6">
+    <div class="mb-8">
         <!-- Основной поиск -->
-        <div class="relative mb-4">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="relative mb-4 group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <input v-model="searchQuery" type="text" placeholder="Введите слово или фразу на японском или русском..."
-                class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors search-focus"
+            <input v-model="searchQuery" type="text" placeholder="Поиск слова (русский или японский)..."
+                class="w-full pl-11 pr-10 py-3.5 bg-surface border-none shadow-sm rounded-xl focus:ring-2 focus:ring-primary/50 focus:shadow-lg transition-all duration-300 placeholder-gray-400 text-text-main"
                 @input="handleSearchInput" />
 
             <!-- Индикатор загрузки -->
-            <div v-if="loading" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+            <div v-if="loading" class="absolute inset-y-0 right-0 pr-4 flex items-center">
                 <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
             </div>
 
             <!-- Кнопка очистки -->
             <button v-if="searchQuery" @click="clearSearch"
-                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary transition-colors"
                 type="button">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -28,10 +28,10 @@
         </div>
 
         <!-- Кнопка расширенного поиска -->
-        <div class="mb-4">
+        <div class="mb-4 flex justify-end">
             <button @click="showAdvanced = !showAdvanced"
-                class="text-sm text-primary hover:text-primary/80 flex items-center transition-colors" type="button">
-                <span>{{ showAdvanced ? 'Скрыть' : 'Показать' }} расширенный поиск</span>
+                class="text-sm font-medium text-text-muted hover:text-primary flex items-center transition-colors px-3 py-1 rounded-md hover:bg-gray-100/50" type="button">
+                <span>{{ showAdvanced ? 'Скрыть фильтры' : 'Расширенный поиск' }}</span>
                 <svg class="w-4 h-4 ml-1 transition-transform duration-200" :class="{ 'rotate-180': showAdvanced }"
                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -44,57 +44,54 @@
             enter-from-class="transform opacity-0 -translate-y-4" enter-to-class="transform opacity-100 translate-y-0"
             leave-active-class="transition-all duration-200 ease-in"
             leave-from-class="transform opacity-100 translate-y-0" leave-to-class="transform opacity-0 -translate-y-4">
-            <div v-if="showAdvanced" class="pt-4 border-t">
+            <div v-if="showAdvanced" class="p-6 bg-surface rounded-xl shadow-sm mb-6 border border-gray-100">
                 <!-- Поля для расширенного поиска -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
                     <!-- Теги -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <label class="block text-sm font-medium text-text-main mb-2">
                             Теги
-                            <span class="text-xs text-gray-500">(через запятую)</span>
                         </label>
                         <input v-model="advancedFilters.tags" type="text"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                            placeholder="Например: n5, база" />
+                            class="w-full px-4 py-2 bg-background border-none rounded-lg focus:ring-2 focus:ring-primary/50 transition-colors placeholder-gray-400"
+                            placeholder="Например: n5, verbs" />
                     </div>
 
                     <!-- Онъёми -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Онъёми
-                            <span class="text-xs text-gray-500">(через запятую)</span>
+                        <label class="block text-sm font-medium text-text-main mb-2">
+                            Онъёми (катакана)
                         </label>
                         <input v-model="advancedFilters.on" type="text"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+                            class="w-full px-4 py-2 bg-background border-none rounded-lg focus:ring-2 focus:ring-primary/50 transition-colors placeholder-gray-400"
                             placeholder="Например: キ, シ" />
                     </div>
 
                     <!-- Кунъёми -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Кунъёми
-                            <span class="text-xs text-gray-500">(через запятую)</span>
+                        <label class="block text-sm font-medium text-text-main mb-2">
+                            Кунъёми (хирагана)
                         </label>
                         <input v-model="advancedFilters.kun" type="text"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                            placeholder="Например: つくえ, ほん" />
+                            class="w-full px-4 py-2 bg-background border-none rounded-lg focus:ring-2 focus:ring-primary/50 transition-colors placeholder-gray-400"
+                            placeholder="Например: つくえ" />
                     </div>
                 </div>
 
                 <!-- Активные фильтры -->
-                <div v-if="hasActiveFilters" class="mb-4 flex flex-wrap gap-2">
+                <div v-if="hasActiveFilters" class="pt-4 border-t border-gray-100 flex flex-wrap gap-2">
                     <span v-if="activeTags.length > 0"
-                        class="inline-flex items-center px-3 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                        class="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full">
                         Теги: {{ activeTags.join(', ') }}
                         <button @click="clearTagFilter('tags')"
-                            class="ml-2 text-blue-600 hover:text-blue-800 text-sm">×</button>
+                            class="ml-2 text-gray-500 hover:text-red-500 transition-colors text-sm">×</button>
                     </span>
 
                     <span v-if="activeOn.length > 0"
-                        class="inline-flex items-center px-3 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
-                        Онъёми: {{ activeOn.join(', ') }}
+                        class="inline-flex items-center px-3 py-1 text-xs font-medium bg-onyomi text-amber-900 rounded-full">
+                        On: {{ activeOn.join(', ') }}
                         <button @click="clearTagFilter('on')"
-                            class="ml-2 text-purple-600 hover:text-purple-800 text-sm">×</button>
+                            class="ml-2 text-amber-700 hover:text-red-600 transition-colors text-sm">×</button>
                     </span>
 
                     <span v-if="activeKun.length > 0"
