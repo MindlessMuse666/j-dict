@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"jp-ru-dict/backend/internal/kafka"
 	"jp-ru-dict/backend/internal/model"
 	"jp-ru-dict/backend/internal/repository"
 	"jp-ru-dict/backend/internal/utils"
@@ -23,12 +24,16 @@ type WordsService interface {
 }
 
 type wordsService struct {
-	repo repository.WordsRepository
+	repo     repository.WordsRepository
+	producer kafka.Producer
 }
 
 // NewWordsService создает новый экземпляр сервиса слов
-func NewWordsService(repo repository.WordsRepository) WordsService {
-	return &wordsService{repo: repo}
+func NewWordsService(repo repository.WordsRepository, producer kafka.Producer) WordsService {
+	return &wordsService{
+		repo:     repo,
+		producer: producer,
+	}
 }
 
 // CreateWord создает новое слово в словаре пользователя
@@ -104,6 +109,8 @@ func (s *wordsService) UpdateWord(userID, wordID int, req *model.WordUpdateReque
 	if err := s.repo.UpdateWord(word); err != nil {
 		return nil, err
 	}
+
+	_ = s.producer.SendEvent(kafka.EventWordUpdated, userID, word)
 
 	return word, nil
 }

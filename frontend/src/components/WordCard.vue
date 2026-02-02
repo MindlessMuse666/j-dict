@@ -1,8 +1,9 @@
 <template>
     <div :class="[
-        'bg-white rounded-lg border transition-all duration-200 hover:shadow-md',
-        isCompactView ? 'p-4' : 'p-6'
-    ]">
+        'bg-white rounded-lg border transition-all duration-300 hover:shadow-md interactive',
+        isCompactView ? 'p-4' : 'p-6',
+        wordState
+    ]" :data-word-id="word.id">
         <!-- Компактный вид -->
         <div v-if="isCompactView" class="flex items-center justify-between">
             <!-- Японский текст -->
@@ -159,6 +160,7 @@
 </template>
 
 <script setup>
+import { ref, watch, onMounted } from 'vue'
 import { useToast } from '@/composables/useToast'
 import { useWordsStore } from '@/stores/words'
 import { format } from 'date-fns'
@@ -178,6 +180,11 @@ const emit = defineEmits(['edit', 'delete'])
 
 const { showSuccess, showError } = useToast()
 const wordsStore = useWordsStore()
+const wordState = ref('')
+
+onMounted(() => {
+    wordState.value = 'word-card-enter'
+})
 
 const handleEdit = () => {
     emit('edit', props.word)
@@ -187,15 +194,24 @@ const handleDelete = async () => {
     if (!confirm('Вы уверены, что хотите удалить это слово?')) return
 
     try {
-        const result = await wordsStore.deleteWord(props.word.id)
+        // Анимация удаления
+        wordState.value = 'word-removing'
 
-        if (result.success) {
-            showSuccess('Слово успешно удалено')
-        } else {
-            showError(result.error)
-        }
+        // Ждем завершения анимации перед удалением
+        setTimeout(async () => {
+            const result = await wordsStore.deleteWord(props.word.id)
+
+            if (result.success) {
+                showSuccess('Слово успешно удалено')
+                emit('delete', props.word.id)
+            } else {
+                showError(result.error)
+                wordState.value = ''
+            }
+        }, 250)
     } catch (error) {
         showError('Ошибка при удалении слова')
+        wordState.value = ''
     }
 }
 
@@ -207,4 +223,14 @@ const formatDate = (dateString) => {
         return dateString
     }
 }
+
+// Анимация обновления при изменении пропсов
+watch(() => props.word, (newWord, oldWord) => {
+    if (newWord.updated_at !== oldWord?.updated_at) {
+        wordState.value = 'word-updated'
+        setTimeout(() => {
+            wordState.value = ''
+        }, 1000)
+    }
+}, { deep: true })
 </script>

@@ -8,8 +8,8 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </div>
-            <input v-model="searchQuery" type="text" placeholder="Поиск по японскому или русскому..."
-                class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
+            <input v-model="searchQuery" type="text" placeholder="Введите слово или фразу на японском или русском..."
+                class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors search-focus"
                 @input="handleSearchInput" />
 
             <!-- Индикатор загрузки -->
@@ -55,7 +55,7 @@
                         </label>
                         <input v-model="advancedFilters.tags" type="text"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                            placeholder="n5, мебель" />
+                            placeholder="Например: n5, база" />
                     </div>
 
                     <!-- Онъёми -->
@@ -66,7 +66,7 @@
                         </label>
                         <input v-model="advancedFilters.on" type="text"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                            placeholder="き, シ" />
+                            placeholder="Например: キ, シ" />
                     </div>
 
                     <!-- Кунъёми -->
@@ -77,7 +77,7 @@
                         </label>
                         <input v-model="advancedFilters.kun" type="text"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                            placeholder="つくえ" />
+                            placeholder="Например: つくえ, ほん" />
                     </div>
                 </div>
 
@@ -113,7 +113,7 @@
                     </button>
                     <button @click="applyAdvancedSearch" type="button"
                         class="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-md transition-colors">
-                        Применить фильтры
+                        Применить
                     </button>
                 </div>
             </div>

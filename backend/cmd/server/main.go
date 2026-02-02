@@ -136,6 +136,9 @@ func (s *Server) Run() {
 }
 
 func (s *Server) Shutdown(ctx context.Context) error {
+	if s.producer != nil {
+		_ = s.producer.Close()
+	}
 	return s.server.Shutdown(ctx)
 }
 

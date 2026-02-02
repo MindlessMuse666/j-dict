@@ -1,13 +1,19 @@
-import { ref } from 'vue'
+import { ref, provide, inject } from 'vue'
 
-export function useToast() {
+// Создаем глобальный ключ для инъекции
+const ToastSymbol = Symbol('toast')
+
+// Создаем глобальное хранилище тостов
+const globalToasts = ref([])
+
+export function createToast() {
     const toasts = ref([])
 
     const showToast = (message, type = 'info', duration = 3000) => {
-        const id = Date.now()
+        const id = Date.now() + Math.random()
         const toast = { id, message, type }
 
-        toasts.value.push(toast)
+        globalToasts.value.push(toast)
 
         // Автоматическое скрытие
         setTimeout(() => {
@@ -29,19 +35,42 @@ export function useToast() {
         return showToast(message, 'warning', duration)
     }
 
+    const showInfo = (message, duration = 3000) => {
+        return showToast(message, 'info', duration)
+    }
+
     const removeToast = (id) => {
-        const index = toasts.value.findIndex(toast => toast.id === id)
+        const index = globalToasts.value.findIndex(toast => toast.id === id)
         if (index !== -1) {
-            toasts.value.splice(index, 1)
+            globalToasts.value.splice(index, 1)
         }
     }
 
     return {
-        toasts,
+        toasts: globalToasts,
         showToast,
         showSuccess,
         showError,
         showWarning,
+        showInfo,
         removeToast
     }
+}
+
+// Composition function для использования в компонентах
+export function useToast() {
+    const toast = inject(ToastSymbol)
+
+    if (!toast) {
+        throw new Error('Toast not provided. Make sure to call provideToast() in root component.')
+    }
+
+    return toast
+}
+
+// Функция для предоставления тостов в корневом компоненте
+export function provideToast(app) {
+    const toast = createToast()
+    app.provide(ToastSymbol, toast)
+    return toast
 }

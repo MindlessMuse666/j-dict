@@ -1,0 +1,114 @@
+/* Мобильные устройства (до 640px) */
+@media (max-width: 640px) {
+
+    /* Общие стили */
+    .container {
+        @apply px-3;
+    }
+
+    /* Заголовки */
+    h1 {
+        @apply text-xl;
+    }
+
+    h2 {
+        @apply text-lg;
+    }
+
+    /* Карточки слов */
+    .word-card {
+        @apply p-3;
+    }
+
+    /* Формы */
+    .form-input,
+    .form-textarea {
+        @apply text-sm;
+    }
+
+    /* Кнопки */
+    .btn {
+        @apply px-3 py-2 text-sm;
+    }
+
+    .btn-lg {
+        @apply px-4 py-3 text-base;
+    }
+
+    /* Навигация */
+    .nav-item {
+        @apply px-2 py-1 text-sm;
+    }
+
+    /* Модальные окна */
+    .modal-content {
+        @apply mx-2 max-h-[85vh];
+    }
+
+    /* Поисковая строка */
+    .search-input {
+        @apply text-sm;
+    }
+
+    /* Переключение компактного вида */
+    .compact-toggle {
+        @apply mt-2 w-full justify-between;
+    }
+}
+
+/* Планшеты (641px - 768px) */
+@media (min-width: 641px) and (max-width: 768px) {
+    .container {
+        @apply px-4;
+    }
+
+    .modal-content {
+        @apply mx-4;
+    }
+
+    .search-input {
+        @apply text-base;
+    }
+}
+
+/* Desktop (769px и выше) */
+@media (min-width: 769px) {
+
+    /* Специфичные стили для десктопа */
+    .hover-effects {
+        @apply transition-all duration-200;
+    }
+
+    .hover-effects:hover {
+        @apply transform -translate-y-0.5 shadow-lg;
+    }
+}
+
+/* Большие экраны (1024px и выше) */
+@media (min-width: 1024px) {
+    .container {
+        @apply max-w-7xl;
+    }
+}
+
+/* Ориентация телефона */
+@media (max-height: 600px) and (orientation: landscape) {
+    .modal-content {
+        @apply max-h-[75vh];
+    }
+
+    .word-card {
+        @apply py-2;
+    }
+}
+
+/* Темная тема поддержка (опционально) */
+@media (prefers-color-scheme: dark) {
+    .dark\:bg-gray-900 {
+        background-color: #111827;
+    }
+
+    .dark\:text-gray-100 {
+        color: #f3f4f6;
+    }
+}

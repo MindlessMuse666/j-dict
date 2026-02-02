@@ -58,7 +58,7 @@
                                     <input v-model="form.jp[index]" type="text" :class="[
                                         'flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors',
                                         errors.jp ? 'border-red-300' : 'border-gray-300'
-                                    ]" placeholder="机" />
+                                    ]" placeholder="Введите слово/фразу на японском" />
                                     <button v-if="form.jp.length > 1" type="button"
                                         @click="removeArrayItem('jp', index)"
                                         class="p-2 text-gray-400 hover:text-danger transition-colors">
@@ -92,7 +92,7 @@
                                     <input v-model="form.ru[index]" type="text" :class="[
                                         'flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors',
                                         errors.ru ? 'border-red-300' : 'border-gray-300'
-                                    ]" placeholder="стол" />
+                                    ]" placeholder="Введите перевод на русский" />
                                     <button v-if="form.ru.length > 1" type="button"
                                         @click="removeArrayItem('ru', index)"
                                         class="p-2 text-gray-400 hover:text-danger transition-colors">
@@ -145,7 +145,7 @@
                                             class="flex items-center space-x-3">
                                             <input v-model="form.on[index]" type="text"
                                                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                                                placeholder="き" />
+                                                placeholder="Введите онъёми" />
                                             <button v-if="form.on.length > 1" type="button"
                                                 @click="removeArrayItem('on', index)"
                                                 class="p-2 text-gray-400 hover:text-danger transition-colors">
@@ -178,7 +178,7 @@
                                             class="flex items-center space-x-3">
                                             <input v-model="form.kun[index]" type="text"
                                                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                                                placeholder="つくえ" />
+                                                placeholder="Введите кунъёми" />
                                             <button v-if="form.kun.length > 1" type="button"
                                                 @click="removeArrayItem('kun', index)"
                                                 class="p-2 text-gray-400 hover:text-danger transition-colors">
@@ -211,7 +211,7 @@
                                             class="flex items-center space-x-3">
                                             <textarea v-model="form.ex_jp[index]" rows="2"
                                                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
-                                                placeholder="机の上に本があります" />
+                                                placeholder="Введите пример использования на японском" />
                                             <button v-if="form.ex_jp.length > 1" type="button"
                                                 @click="removeArrayItem('ex_jp', index)"
                                                 class="p-2 text-gray-400 hover:text-danger transition-colors self-start">
@@ -244,7 +244,7 @@
                                             class="flex items-center space-x-3">
                                             <textarea v-model="form.ex_ru[index]" rows="2"
                                                 class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors resize-none"
-                                                placeholder="На столе лежит книга" />
+                                                placeholder="Введите перевод примера на русский" />
                                             <button v-if="form.ex_ru.length > 1" type="button"
                                                 @click="removeArrayItem('ex_ru', index)"
                                                 class="p-2 text-gray-400 hover:text-danger transition-colors self-start">
@@ -275,7 +275,7 @@
                                     <input v-model="tagsInput" type="text" @input="updateTagsFromInput"
                                         @blur="updateTagsFromInput"
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors"
-                                        placeholder="n5, мебель, дом" />
+                                        placeholder="Введите теги через запятую (например: n5, база, дом)" />
 
                                     <!-- Список тегов -->
                                     <div v-if="form.tags.length > 0" class="mt-3 flex flex-wrap gap-2">
