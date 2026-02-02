@@ -36,6 +36,7 @@ import (
 	"jp-ru-dict/backend/internal/config"
 	"jp-ru-dict/backend/internal/db"
 	"jp-ru-dict/backend/internal/handler"
+	"jp-ru-dict/backend/internal/kafka"
 	"jp-ru-dict/backend/internal/middleware"
 	"jp-ru-dict/backend/internal/repository"
 	"jp-ru-dict/backend/internal/service"
@@ -51,8 +52,9 @@ import (
 )
 
 type Server struct {
-	router *gin.Engine
-	server *http.Server
+	router   *gin.Engine
+	server   *http.Server
+	producer kafka.Producer
 }
 
 func NewServer(database *sql.DB, cfg *config.Config) *Server {
@@ -60,9 +62,16 @@ func NewServer(database *sql.DB, cfg *config.Config) *Server {
 	authRepo := repository.NewAuthRepository(database)
 	wordsRepo := repository.NewWordsRepository(database)
 
+	// Инициализация Kafka
+	producer, err := kafka.NewProducer(cfg.Kafka)
+	if err != nil {
+		logger.Log.Error().Err(err).Msg("Инициализация Kafka не удалась, используется NoOp продюсер")
+		producer = kafka.NewNoOpProducer()
+	}
+
 	// Инициализация сервисов
 	authService := service.NewAuthService(authRepo, cfg.JWT.Secret, cfg.JWT.Expiry)
-	wordsService := service.NewWordsService(wordsRepo)
+	wordsService := service.NewWordsService(wordsRepo, producer)
 
 	// Инициализация обработчиков
 	authHandler := handler.NewAuthHandler(authService)

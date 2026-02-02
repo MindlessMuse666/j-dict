@@ -10,6 +10,7 @@ import (
 	"github.com/IBM/sarama"
 )
 
+// EventType тип события
 type EventType string
 
 const (
@@ -18,6 +19,7 @@ const (
 	EventWordDeleted EventType = "WORD_DELETED"
 )
 
+// Event структура события для Kafka
 type Event struct {
 	Type      EventType   `json:"type"`
 	Payload   interface{} `json:"payload"`
@@ -25,16 +27,19 @@ type Event struct {
 	UserID    int         `json:"user_id"`
 }
 
+// Producer интерфейс для отправки событий
 type Producer interface {
 	SendEvent(eventType EventType, userID int, payload interface{}) error
 	Close() error
 }
 
+// SaramaProducer реализация Producer на основе sarama
 type SaramaProducer struct {
 	producer sarama.SyncProducer
 	topic    string
 }
 
+// NewProducer создает новый Kafka producer
 func NewProducer(cfg config.KafkaConfig) (Producer, error) {
 	config := sarama.NewConfig()
 	config.Producer.Return.Successes = true
@@ -73,8 +78,8 @@ func (p *SaramaProducer) SendEvent(eventType EventType, userID int, payload inte
 
 	_, _, err = p.producer.SendMessage(msg)
 	if err != nil {
-		// NFR-010: Log to console if Kafka is unavailable
-		logger.Error(fmt.Sprintf("Failed to send event to Kafka: %v. Event: %s", err, string(bytes)))
+		// NFR-010: Логируем в консоль, если Kafka недоступна
+		logger.Log.Error().Err(err).Str("event", string(bytes)).Msg("Не удалось отправить событие в Kafka")
 		return err
 	}
 
@@ -85,16 +90,20 @@ func (p *SaramaProducer) Close() error {
 	return p.producer.Close()
 }
 
+// NoOpProducer заглушка для продюсера (используется если Kafka недоступна)
 type NoOpProducer struct{}
 
+// NewNoOpProducer создает новый NoOp продюсер
 func NewNoOpProducer() Producer {
 	return &NoOpProducer{}
 }
 
+// SendEvent ничего не делает
 func (p *NoOpProducer) SendEvent(eventType EventType, userID int, payload interface{}) error {
 	return nil
 }
 
+// Close ничего не делает
 func (p *NoOpProducer) Close() error {
 	return nil
 }
