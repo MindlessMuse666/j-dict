@@ -128,7 +128,33 @@ func (s *wordsService) UpdateWord(userID, wordID int, req *model.WordUpdateReque
 
 // DeleteWord удаляет слово
 func (s *wordsService) DeleteWord(userID, wordID int) error {
-	return s.repo.DeleteWord(wordID, userID)
+	// Получаем слово для истории и события
+	word, err := s.repo.GetWordByIDAndUserID(wordID, userID)
+	if err != nil {
+		return err
+	}
+	if word == nil {
+		return errors.New("слово не найдено")
+	}
+
+	if err := s.repo.DeleteWord(wordID, userID); err != nil {
+		return err
+	}
+
+	// Сохраняем историю
+	go func() {
+		history := &model.WordHistory{
+			WordID:   word.ID,
+			UserID:   userID,
+			Action:   model.ActionDelete,
+			Snapshot: *word,
+		}
+		_ = s.repo.CreateHistory(history)
+	}()
+
+	_ = s.producer.SendEvent(kafka.EventWordDeleted, userID, word)
+
+	return nil
 }
 
 // SearchWords выполняет поиск слов по различным критериям
@@ -217,38 +243,36 @@ func (s *wordsService) ImportCSV(userID int, csvContent string) (*model.CSVImpor
 			}
 		}
 
-		// Преобразуем в WordCreateRequest
+		// Создаем запрос на создание слова
 		wordReq := row.ParseCSVRow()
 
-		// Валидация
+		// Валидация (дополнительно к CreateWord)
+		// Проверка обязательных полей
 		if len(wordReq.Jp) == 0 {
 			response.FailedCount++
-			response.Errors = append(response.Errors, "Поле 'jp' не может быть пустым")
+			response.Errors = append(response.Errors, "Отсутствует японское написание")
 			continue
 		}
-
 		if len(wordReq.Ru) == 0 {
 			response.FailedCount++
-			response.Errors = append(response.Errors, "Поле 'ru' не может быть пустым")
+			response.Errors = append(response.Errors, "Отсутствует перевод")
 			continue
 		}
 
-		// Валидация длины массивов
+		// Валидация длины массивов (BR-006 / Requirement Specification)
 		if len(wordReq.ExJp) > 3 {
 			response.FailedCount++
-			response.Errors = append(response.Errors, fmt.Sprintf("Превышено максимальное количество примеров (JP): %d > 3", len(wordReq.ExJp)))
+			response.Errors = append(response.Errors, fmt.Sprintf("Превышен лимит примеров (яп): %d > 3", len(wordReq.ExJp)))
 			continue
 		}
-
 		if len(wordReq.ExRu) > 3 {
 			response.FailedCount++
-			response.Errors = append(response.Errors, fmt.Sprintf("Превышено максимальное количество примеров (RU): %d > 3", len(wordReq.ExRu)))
+			response.Errors = append(response.Errors, fmt.Sprintf("Превышен лимит примеров (рус): %d > 3", len(wordReq.ExRu)))
 			continue
 		}
-
 		if len(wordReq.Tags) > 5 {
 			response.FailedCount++
-			response.Errors = append(response.Errors, fmt.Sprintf("Превышено максимальное количество тегов: %d > 5", len(wordReq.Tags)))
+			response.Errors = append(response.Errors, fmt.Sprintf("Превышен лимит тегов: %d > 5", len(wordReq.Tags)))
 			continue
 		}
 
@@ -257,10 +281,9 @@ func (s *wordsService) ImportCSV(userID int, csvContent string) (*model.CSVImpor
 		if err != nil {
 			response.FailedCount++
 			response.Errors = append(response.Errors, fmt.Sprintf("Ошибка создания слова: %v", err))
-			continue
+		} else {
+			response.ImportedCount++
 		}
-
-		response.ImportedCount++
 	}
 
 	return response, nil

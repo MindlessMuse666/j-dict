@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"jp-ru-dict/backend/internal/model"
 	"strings"
@@ -17,6 +18,7 @@ type WordsRepository interface {
 	UpdateWord(word *model.Word) error
 	DeleteWord(wordID, userID int) error
 	SearchWords(userID int, query string, tags, on, kun []string, limit, cursor int) ([]*model.Word, error)
+	CreateHistory(history *model.WordHistory) error
 }
 
 type wordsRepository struct {
@@ -225,4 +227,19 @@ func (r *wordsRepository) SearchWords(userID int, query string, tags, on, kun []
 	}
 
 	return words, nil
+}
+
+// CreateHistory сохраняет запись в истории изменений
+func (r *wordsRepository) CreateHistory(history *model.WordHistory) error {
+	query := `INSERT INTO word_history (word_id, user_id, action, snapshot)
+			  VALUES ($1, $2, $3, $4)`
+
+	// Сериализуем snapshot в JSON
+	snapshotJSON, err := json.Marshal(history.Snapshot)
+	if err != nil {
+		return fmt.Errorf("ошибка маршалинга snapshot: %v", err)
+	}
+
+	_, err = r.db.Exec(query, history.WordID, history.UserID, history.Action, snapshotJSON)
+	return err
 }

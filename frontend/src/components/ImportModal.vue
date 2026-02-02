@@ -280,8 +280,8 @@ const handleImport = async () => {
             const result = await importStore.importCSV(content)
 
             if (result.success) {
-                if (result.data && result.data.added_count > 0) {
-                    showSuccess(`Успешно импортировано ${result.data.added_count} слов`)
+                if (result.data && result.data.imported_count > 0) {
+                    showSuccess(`Успешно импортировано ${result.data.imported_count} слов`)
                     emit('imported', result.data)
 
                     // Закрываем модальное окно через 2 секунды
