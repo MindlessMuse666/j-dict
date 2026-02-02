@@ -222,6 +222,25 @@ func (s *wordsService) ImportCSV(userID int, csvContent string) (*model.CSVImpor
 			continue
 		}
 
+		// Валидация длины массивов
+		if len(wordReq.ExJp) > 3 {
+			response.FailedCount++
+			response.Errors = append(response.Errors, fmt.Sprintf("Превышено максимальное количество примеров (JP): %d > 3", len(wordReq.ExJp)))
+			continue
+		}
+
+		if len(wordReq.ExRu) > 3 {
+			response.FailedCount++
+			response.Errors = append(response.Errors, fmt.Sprintf("Превышено максимальное количество примеров (RU): %d > 3", len(wordReq.ExRu)))
+			continue
+		}
+
+		if len(wordReq.Tags) > 5 {
+			response.FailedCount++
+			response.Errors = append(response.Errors, fmt.Sprintf("Превышено максимальное количество тегов: %d > 5", len(wordReq.Tags)))
+			continue
+		}
+
 		// Создаем слово
 		_, err = s.CreateWord(userID, wordReq)
 		if err != nil {
