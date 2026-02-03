@@ -7,10 +7,10 @@
             <!-- Модальное окно -->
             <div class="relative z-50 bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden">
                 <!-- Заголовок -->
-                <div class="px-6 py-4 border-b bg-gray-50">
+                <div class="px-6 py-4 border-b border-stone-100 bg-stone-50">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-lg font-semibold text-gray-800">Импорт CSV</h3>
-                        <button @click="close" class="text-gray-400 hover:text-gray-600 transition-colors p-1">
+                        <h3 class="text-lg font-semibold text-text-main font-jp">Импорт CSV</h3>
+                        <button @click="close" class="text-stone-400 hover:text-stone-600 transition-colors p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
@@ -22,12 +22,12 @@
                 <!-- Контент -->
                 <div class="overflow-y-auto max-h-[calc(90vh-8rem)] p-6">
                     <!-- Инструкция -->
-                    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <h4 class="font-medium text-blue-800 mb-2">Формат CSV файла:</h4>
-                        <pre class="text-sm text-blue-700 whitespace-pre-wrap">jp,ru,on,kun,ex_jp,ex_ru,tags
+                    <div class="mb-6 p-4 bg-stone-50 border border-stone-200 rounded-lg">
+                        <h4 class="font-medium text-text-main mb-2 font-jp">Формат CSV файла:</h4>
+                        <pre class="text-sm text-text-muted whitespace-pre-wrap font-mono bg-white p-2 rounded border border-stone-100">jp,ru,on,kun,ex_jp,ex_ru,tags
 机,стол,キ,つくえ,机の上に本があります,На столе лежит книга,n5,мебель
 本,книга,ホン,ほん,本を読みます,Читаю книгу,n5</pre>
-                        <p class="text-sm text-blue-600 mt-2">
+                        <p class="text-sm text-text-muted mt-2">
                             • Разделитель: запятая<br>
                             • Первая строка - заголовки<br>
                             • Поля с массивами (теги) разделяйте точкой с запятой<br>
@@ -37,29 +37,29 @@
 
                     <!-- Загрузка файла -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                        <label class="block text-sm font-medium text-text-main mb-3">
                             Выберите CSV файл
                         </label>
                         <div @dragover="handleDragOver" @drop="handleDrop" @dragleave="isDragging = false" :class="[
                             'border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 cursor-pointer',
                             isDragging ? 'border-primary bg-primary/5 scale-[1.02]' :
-                                selectedFile ? 'border-green-500 bg-green-50' :
-                                    'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
+                                selectedFile ? 'border-primary/50 bg-primary/5' :
+                                    'border-stone-300 hover:border-primary/50 hover:bg-stone-50'
                         ]" @click="$refs.fileInput.click()">
 
                             <svg :class="[
                                 'w-12 h-12 mx-auto mb-4 transition-colors',
-                                selectedFile ? 'text-green-500' :
-                                    isDragging ? 'text-primary' : 'text-gray-400'
+                                selectedFile ? 'text-primary' :
+                                    isDragging ? 'text-primary' : 'text-stone-400'
                             ]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                             </svg>
 
-                            <p class="text-gray-600 mb-2">
+                            <p class="text-text-main mb-2">
                                 <span :class="[
                                     'font-medium',
-                                    selectedFile ? 'text-green-600' :
+                                    selectedFile ? 'text-primary' :
                                         isDragging ? 'text-primary' : 'text-primary'
                                 ]">
                                     {{ selectedFile ? 'Файл выбран' : 'Нажмите для загрузки' }}
@@ -67,7 +67,7 @@
                                 {{ selectedFile ? '' : 'или перетащите файл' }}
                             </p>
 
-                            <p class="text-sm text-gray-500">
+                            <p class="text-sm text-text-muted">
                                 {{ selectedFile ?
                                     `${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)` :
                                 'Поддерживаются файлы CSV до 10MB'
@@ -79,21 +79,21 @@
                         </div>
 
                         <!-- Выбранный файл -->
-                        <div v-if="selectedFile" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                        <div v-if="selectedFile" class="mt-4 p-4 bg-stone-50 rounded-lg border border-stone-100">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
-                                    <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor"
+                                    <svg class="w-5 h-5 text-stone-400 mr-3" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                     </svg>
                                     <div>
-                                        <p class="font-medium text-gray-800">{{ selectedFile.name }}</p>
-                                        <p class="text-sm text-gray-500">{{ (selectedFile.size / 1024).toFixed(2) }} KB
+                                        <p class="font-medium text-text-main">{{ selectedFile.name }}</p>
+                                        <p class="text-sm text-text-muted">{{ (selectedFile.size / 1024).toFixed(2) }} KB
                                         </p>
                                     </div>
                                 </div>
-                                <button @click="selectedFile = null" class="text-gray-400 hover:text-gray-600">
+                                <button @click="selectedFile = null" class="text-stone-400 hover:text-stone-600">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12" />
@@ -115,9 +115,19 @@
                             <div>
                                 <h4 class="font-medium text-green-800 mb-1">Импорт успешно завершен</h4>
                                 <p class="text-sm text-green-700">
-                                    Добавлено слов: {{ importStore.importResult.added_count || 0 }}<br>
-                                    Пропущено дубликатов: {{ importStore.importResult.skipped_count || 0 }}
+                                    Добавлено слов: {{ importStore.importResult.imported_count || 0 }}<br>
+                                    <span v-if="importStore.importResult.failed_count > 0" class="text-red-600">
+                                        Ошибок: {{ importStore.importResult.failed_count }}
+                                    </span>
                                 </p>
+                                <div v-if="importStore.importResult.errors && importStore.importResult.errors.length > 0" 
+                                     class="mt-2 text-xs text-red-600 max-h-32 overflow-y-auto bg-red-50 p-2 rounded border border-red-100">
+                                    <ul class="list-disc list-inside">
+                                        <li v-for="(err, idx) in importStore.importResult.errors" :key="idx">
+                                            {{ err }}
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -139,10 +149,10 @@
                 </div>
 
                 <!-- Футер -->
-                <div class="px-6 py-4 border-t bg-gray-50">
+                <div class="px-6 py-4 border-t border-stone-100 bg-stone-50">
                     <div class="flex justify-end space-x-3">
                         <button @click="close" type="button"
-                            class="px-5 py-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors font-medium">
+                            class="px-5 py-2.5 text-text-muted hover:text-text-main hover:bg-stone-100 rounded-lg transition-colors font-medium">
                             Отмена
                         </button>
                         <button @click="handleImport" :disabled="!selectedFile || importStore.isImporting" :class="[

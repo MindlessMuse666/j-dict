@@ -76,28 +76,32 @@
 
     <!-- Индикатор загрузки при первоначальной загрузке -->
     <div v-if="wordsStore.loading && wordsStore.words.length === 0" class="space-y-4">
-      <WordSkeleton v-for="n in 5" :key="'skeleton-' + n" />
+      <WordSkeleton v-for="n in 5" :key="'skeleton-' + n" :is-compact="isCompactView" />
     </div>
 
     <!-- Сообщение о пустом списке -->
     <Transition name="fade">
-      <div v-if="!wordsStore.loading && (!wordsStore.words || wordsStore.words.length === 0)"
-        class="text-center py-12">
-        <div class="text-gray-400 mb-4">
-          <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
-        </div>
-        <h3 class="text-lg font-medium text-gray-700 mb-2">
-          {{ emptyMessage }}
-        </h3>
-        <p class="text-gray-500 mb-4" v-if="!isSearchActive">
-          Добавьте первое слово, нажав кнопку "Добавить слово"
-        </p>
-        <p class="text-gray-500 mb-4" v-else>
-          Попробуйте изменить параметры поиска
-        </p>
+      <div v-if="!wordsStore.loading && (!wordsStore.words || wordsStore.words.length === 0)">
+        <EmptyState
+          :title="isSearchActive ? 'Ничего не найдено' : 'Словарь пуст'"
+          :description="emptyMessage"
+        >
+          <template #action v-if="!isSearchActive">
+            <button @click="showAddModal = true"
+              class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg shadow-md flex items-center mx-auto transform hover:-translate-y-0.5">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Добавить первое слово
+            </button>
+          </template>
+          <template #action v-else>
+            <button @click="handleClearSearch"
+              class="px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all duration-200">
+              Сбросить поиск
+            </button>
+          </template>
+        </EmptyState>
       </div>
     </Transition>
 
@@ -153,10 +157,12 @@ import WordFormModal from '@/components/WordFormModal.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import WordSkeleton from '@/components/WordSkeleton.vue'
 import ImportModal from '@/components/ImportModal.vue'
+import EmptyState from '@/components/EmptyState.vue'
 
 const wordsStore = useWordsStore()
 const { showSuccess, showError } = useToast()
 
+const searchBarRef = ref(null)
 const isCompactView = ref(true)
 const showAddModal = ref(false)
 const showImportModal = ref(false)
@@ -171,10 +177,10 @@ const emptyMessage = computed(() => {
   if (wordsStore.loading) return 'Загрузка...'
   if (isSearchActive.value) {
     return currentSearchQuery.value
-      ? `По запросу "${currentSearchQuery.value}" ничего не найдено`
-      : 'Ничего не найдено'
+      ? `По запросу "${currentSearchQuery.value}" ничего не найдено. Попробуйте изменить запрос или проверить написание.`
+      : 'Ничего не найдено по заданным критериям. Попробуйте смягчить фильтры.'
   }
-  return 'Словарь пуст'
+  return 'Ваш словарь пока пуст. Добавьте первые слова, чтобы начать изучение.'
 })
 
 // Бесконечная пагинация при скролле
@@ -192,7 +198,7 @@ const handleScroll = () => {
 }
 
 const handleImported = (importResult) => {
-  showSuccess(`Успешно импортировано ${importResult.added_count || 0} слов`)
+  showSuccess(`Успешно импортировано ${importResult.imported_count || 0} слов`)
   // Обновляем список слов
   wordsStore.fetchWords(20, true)
 }
@@ -222,7 +228,24 @@ const handleAdvancedSearch = async (params) => {
   isSearchActive.value = hasParams
   currentSearchQuery.value = ''
 
-  await wordsStore.searchWords(params)
+  if (hasParams) {
+    await wordsStore.searchWords(params)
+  } else {
+    wordsStore.fetchWords(20, true)
+  }
+}
+
+const handleClearSearch = () => {
+  if (searchBarRef.value) {
+    searchBarRef.value.clearSearch()
+    searchBarRef.value.clearAdvancedFilters()
+  }
+  // Fallback if ref is not available for some reason
+  currentSearchQuery.value = ''
+  isSearchActive.value = false
+  if (!searchBarRef.value) {
+    wordsStore.fetchWords(20, true)
+  }
 }
 
 const handleEditWord = (word) => {

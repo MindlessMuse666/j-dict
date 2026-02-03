@@ -39,16 +39,16 @@
                 <!-- Теги -->
                 <div v-if="word.tags && word.tags.length > 0" class="flex flex-wrap justify-end gap-1.5 mt-1">
                     <span v-for="(tag, index) in word.tags" :key="'tag-' + index"
-                        class="text-xs px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full border border-gray-200">
+                        class="text-xs px-2 py-0.5 bg-stone-100 text-stone-500 rounded-full border border-stone-200">
                         #{{ tag }}
                     </span>
                 </div>
             </div>
 
             <!-- Кнопки действий -->
-            <div class="ml-5 pl-4 border-l border-gray-100 flex items-center space-x-1">
+            <div class="ml-5 pl-4 border-l border-stone-100 flex items-center space-x-1">
                 <button @click="handleEdit"
-                    class="p-2 text-gray-400 hover:text-primary hover:bg-red-50 rounded-full transition-colors"
+                    class="p-2 text-stone-400 hover:text-primary hover:bg-rose-50 rounded-full transition-colors"
                     title="Редактировать">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -56,7 +56,7 @@
                     </svg>
                 </button>
                 <button @click="handleDelete"
-                    class="p-2 text-gray-400 hover:text-danger hover:bg-red-50 rounded-full transition-colors"
+                    class="p-2 text-stone-400 hover:text-danger hover:bg-red-50 rounded-full transition-colors"
                     title="Удалить">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -69,7 +69,7 @@
         <!-- Полный вид -->
         <div v-else>
             <!-- Заголовок с японскими написаниями -->
-            <div class="mb-5 pb-4 border-b border-gray-100 border-dashed">
+            <div class="mb-5 pb-4 border-b border-stone-100 border-dashed">
                 <div class="flex flex-wrap items-center gap-4 mb-3">
                     <h3 v-for="(item, index) in word.jp" :key="'jp-full-' + index"
                         class="font-jp text-3xl font-medium text-text-main tracking-wide">
@@ -98,9 +98,9 @@
 
             <!-- Русские переводы -->
             <div class="mb-6">
-                <h4 class="text-sm font-medium text-gray-600 mb-2">Переводы:</h4>
+                <h4 class="text-sm font-medium text-text-muted mb-2">Переводы:</h4>
                 <ul class="space-y-1">
-                    <li v-for="(item, index) in word.ru" :key="'ru-full-' + index" class="text-gray-800">
+                    <li v-for="(item, index) in word.ru" :key="'ru-full-' + index" class="text-text-main">
                         {{ item }}
                     </li>
                 </ul>
@@ -108,38 +108,38 @@
 
             <!-- Примеры -->
             <div v-if="word.ex_jp && word.ex_jp.length > 0" class="mb-6">
-                <h4 class="text-sm font-medium text-gray-600 mb-2">Примеры на японском:</h4>
+                <h4 class="text-sm font-medium text-text-muted mb-2">Примеры на японском:</h4>
                 <ul class="space-y-2">
-                    <li v-for="(example, index) in word.ex_jp" :key="'ex-jp-' + index" class="jp-text text-gray-800">
+                    <li v-for="(example, index) in word.ex_jp" :key="'ex-jp-' + index" class="jp-text text-text-main">
                         {{ example }}
                     </li>
                 </ul>
             </div>
 
             <div v-if="word.ex_ru && word.ex_ru.length > 0" class="mb-6">
-                <h4 class="text-sm font-medium text-gray-600 mb-2">Переводы примеров:</h4>
+                <h4 class="text-sm font-medium text-text-muted mb-2">Переводы примеров:</h4>
                 <ul class="space-y-2">
-                    <li v-for="(example, index) in word.ex_ru" :key="'ex-ru-' + index" class="text-gray-800">
+                    <li v-for="(example, index) in word.ex_ru" :key="'ex-ru-' + index" class="text-text-main">
                         {{ example }}
                     </li>
                 </ul>
             </div>
 
             <!-- Теги и метаданные -->
-            <div class="flex items-center justify-between pt-4 border-t">
+            <div class="flex items-center justify-between pt-4 border-t border-stone-100">
                 <div>
                     <div v-if="word.tags && word.tags.length > 0" class="flex flex-wrap gap-2">
                         <span v-for="(tag, index) in word.tags" :key="'tag-full-' + index"
-                            class="text-xs px-3 py-1 bg-gray-100 text-gray-600 rounded-full">
+                            class="text-xs px-3 py-1 bg-stone-100 text-text-muted rounded-full">
                             {{ tag }}
                         </span>
                     </div>
-                    <div v-else class="text-xs text-gray-400">
+                    <div v-else class="text-xs text-stone-400">
                         Теги не указаны
                     </div>
                 </div>
 
-                <div class="text-xs text-gray-500">
+                <div class="text-xs text-stone-400">
                     {{ formatDate(word.updated_at) }}
                 </div>
             </div>

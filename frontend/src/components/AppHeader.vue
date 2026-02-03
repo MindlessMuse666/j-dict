@@ -1,5 +1,5 @@
 <template>
-    <header class="bg-surface shadow-sm border-b border-gray-100/50 backdrop-blur-sm bg-surface/90 sticky top-0 z-50">
+    <header class="bg-surface shadow-sm border-b border-stone-200/50 backdrop-blur-sm bg-surface/90 sticky top-0 z-50 transition-colors duration-300">
         <div class="container mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <!-- Логотип и название -->
@@ -21,17 +21,17 @@
                 <div class="flex items-center space-x-4">
                     <template v-if="authStore.isAuthenticated">
                         <button @click="handleLogout"
-                            class="px-4 py-2 text-sm font-medium text-text-muted hover:text-primary hover:bg-red-50 rounded-lg transition-all duration-200">
+                            class="px-4 py-2 text-sm font-medium text-text-muted hover:text-primary hover:bg-stone-100 rounded-lg transition-all duration-200">
                             Выйти
                         </button>
                     </template>
                     <template v-else>
                         <RouterLink :to="{ name: 'Login' }"
-                            class="px-4 py-2 text-sm font-medium text-text-muted hover:text-primary hover:bg-red-50 rounded-lg transition-all duration-200">
+                            class="px-4 py-2 text-sm font-medium text-text-muted hover:text-primary hover:bg-stone-100 rounded-lg transition-all duration-200">
                             Вход
                         </RouterLink>
                         <RouterLink :to="{ name: 'Register' }"
-                            class="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg rounded-lg transition-all duration-200 transform hover:-translate-y-0.5">
+                            class="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 shadow-md hover:shadow-lg rounded-lg transition-all duration-200 transform hover:-translate-y-0.5 active:scale-95">
                             Регистрация
                         </RouterLink>
                     </template>

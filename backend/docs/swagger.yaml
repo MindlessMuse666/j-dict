@@ -1,4 +1,3 @@
-basePath: /api
 definitions:
   model.AuthResponse:
     properties:
@@ -225,19 +224,8 @@ definitions:
       data:
         $ref: '#/definitions/model.WordsListResponse'
     type: object
-host: localhost:8080
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
-  description: API для личного русско-японского словаря
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: JP-RU Dictionary API
-  version: "1.0"
+  contact: {}
 paths:
   /api/auth/login:
     post:
@@ -597,12 +585,4 @@ paths:
       summary: Поиск слов
       tags:
       - words
-schemes:
-- http
-securityDefinitions:
-  BearerAuth:
-    description: Type "Bearer" followed by a space and JWT token.
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"
