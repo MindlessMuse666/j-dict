@@ -4,12 +4,10 @@
             <div class="flex items-center justify-between">
                 <!-- Логотип и название -->
                 <RouterLink :to="{ name: 'Home' }" class="flex items-center space-x-3 group">
-                    <div class="text-3xl font-bold text-primary font-jp transform group-hover:scale-105 transition-transform duration-200">
-                        辞書
-                    </div>
+                    <img src="/logo.png" alt="Logo" class="w-10 h-10 object-contain transform group-hover:scale-110 transition-transform duration-200 drop-shadow-sm" />
                     <div>
-                        <h1 class="text-lg font-medium text-text-main tracking-tight">
-                            JP-RU Dictionary
+                        <h1 class="text-xl font-bold text-text-main tracking-tight font-jp">
+                            ~j~ru~dict!^^
                         </h1>
                         <p v-if="authStore.user" class="text-xs text-text-muted font-jp">
                             {{ authStore.user.name }}
@@ -21,7 +19,7 @@
                 <div class="flex items-center space-x-4">
                     <template v-if="authStore.isAuthenticated">
                         <button @click="handleLogout"
-                            class="px-4 py-2 text-sm font-medium text-text-muted hover:text-primary hover:bg-stone-100 rounded-lg transition-all duration-200">
+                            class="px-5 py-2 text-sm font-medium text-text-muted hover:text-primary hover:bg-stone-100 border border-stone-200 hover:border-primary/20 rounded-full transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 active:translate-y-0">
                             Выйти
                         </button>
                     </template>
