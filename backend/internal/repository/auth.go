@@ -26,10 +26,10 @@ func NewAuthRepository(db *sql.DB) AuthRepository {
 func (r *authRepository) CreateUser(user *model.User) error {
 	query := `INSERT INTO users (email, password_hash, name, avatar_url) 
 			  VALUES ($1, $2, $3, $4) 
-			  RETURNING id, created_at, updated_at`
+			  RETURNING id, role, created_at, updated_at`
 
 	err := r.db.QueryRow(query, user.Email, user.PasswordHash, user.Name, user.AvatarURL).
-		Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
+		Scan(&user.ID, &user.Role, &user.CreatedAt, &user.UpdatedAt)
 
 	return err
 }
@@ -37,12 +37,12 @@ func (r *authRepository) CreateUser(user *model.User) error {
 // GetUserByEmail получает пользователя по email
 func (r *authRepository) GetUserByEmail(email string) (*model.User, error) {
 	user := &model.User{}
-	query := `SELECT id, email, password_hash, name, avatar_url, created_at, updated_at 
+	query := `SELECT id, email, password_hash, name, role, avatar_url, created_at, updated_at 
 			  FROM users 
 			  WHERE email = $1`
 
 	err := r.db.QueryRow(query, email).
-		Scan(&user.ID, &user.Email, &user.PasswordHash, &user.Name, &user.AvatarURL,
+		Scan(&user.ID, &user.Email, &user.PasswordHash, &user.Name, &user.Role, &user.AvatarURL,
 			&user.CreatedAt, &user.UpdatedAt)
 
 	if err == sql.ErrNoRows {
@@ -55,12 +55,12 @@ func (r *authRepository) GetUserByEmail(email string) (*model.User, error) {
 // GetUserByID получает пользователя по ID
 func (r *authRepository) GetUserByID(id int) (*model.User, error) {
 	user := &model.User{}
-	query := `SELECT id, email, name, avatar_url, created_at, updated_at 
+	query := `SELECT id, email, name, role, avatar_url, created_at, updated_at 
 			  FROM users 
 			  WHERE id = $1`
 
 	err := r.db.QueryRow(query, id).
-		Scan(&user.ID, &user.Email, &user.Name, &user.AvatarURL,
+		Scan(&user.ID, &user.Email, &user.Name, &user.Role, &user.AvatarURL,
 			&user.CreatedAt, &user.UpdatedAt)
 
 	if err == sql.ErrNoRows {

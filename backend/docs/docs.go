@@ -9,7 +9,16 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -35,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserLoginRequest"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserLoginRequest"
                         }
                     }
                 ],
@@ -43,19 +52,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешный вход",
                         "schema": {
-                            "$ref": "#/definitions/model.AuthResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.AuthResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Неверные учетные данные",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -108,13 +117,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Информация о пользователе",
                         "schema": {
-                            "$ref": "#/definitions/model.UserResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserResponseWrapper"
                         }
                     },
                     "401": {
                         "description": "Неавторизован",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -140,7 +149,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.UserRegisterRequest"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserRegisterRequest"
                         }
                     }
                 ],
@@ -148,19 +157,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Успешная регистрация",
                         "schema": {
-                            "$ref": "#/definitions/model.AuthResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.AuthResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     },
                     "409": {
                         "description": "Пользователь уже существует",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -179,6 +188,46 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "Сервис работает",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/avatar": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Загружает аватар пользователя и обновляет профиль",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Загрузка аватара",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Avatar file",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Avatar URL",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -227,13 +276,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Список слов",
                         "schema": {
-                            "$ref": "#/definitions/model.WordsListResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponseWrapper"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -262,7 +311,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.WordCreateRequest"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordCreateRequest"
                         }
                     }
                 ],
@@ -270,19 +319,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Слово создано",
                         "schema": {
-                            "$ref": "#/definitions/model.WordResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -313,7 +362,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.CSVImportRequest"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportRequest"
                         }
                     }
                 ],
@@ -321,19 +370,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Результат импорта",
                         "schema": {
-                            "$ref": "#/definitions/model.CSVImportResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверный формат CSV",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -410,13 +459,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Результаты поиска",
                         "schema": {
-                            "$ref": "#/definitions/model.WordsListResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponseWrapper"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -450,19 +499,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Слово",
                         "schema": {
-                            "$ref": "#/definitions/model.WordResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверный ID слова",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -497,13 +546,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Неверный ID слова",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -539,7 +588,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.WordUpdateRequest"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordUpdateRequest"
                         }
                     }
                 ],
@@ -547,19 +596,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Слово обновлено",
                         "schema": {
-                            "$ref": "#/definitions/model.WordResponseWrapper"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные или пустой запрос",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "$ref": "#/definitions/model.ErrorResponse"
+                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
                         }
                     }
                 }
@@ -567,26 +616,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "model.AuthResponse": {
+        "jp-ru-dict_backend_internal_model.AuthResponse": {
             "type": "object",
             "properties": {
                 "token": {
                     "type": "string"
                 },
                 "user": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.User"
                 }
             }
         },
-        "model.AuthResponseWrapper": {
+        "jp-ru-dict_backend_internal_model.AuthResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/model.AuthResponse"
+                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.AuthResponse"
                 }
             }
         },
-        "model.CSVImportRequest": {
+        "jp-ru-dict_backend_internal_model.CSVImportRequest": {
             "type": "object",
             "required": [
                 "content"
@@ -597,7 +646,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CSVImportResponse": {
+        "jp-ru-dict_backend_internal_model.CSVImportResponse": {
             "type": "object",
             "properties": {
                 "errors": {
@@ -614,15 +663,15 @@ const docTemplate = `{
                 }
             }
         },
-        "model.CSVImportResponseWrapper": {
+        "jp-ru-dict_backend_internal_model.CSVImportResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/model.CSVImportResponse"
+                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportResponse"
                 }
             }
         },
-        "model.ErrorResponse": {
+        "jp-ru-dict_backend_internal_model.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
@@ -630,9 +679,12 @@ const docTemplate = `{
                 }
             }
         },
-        "model.User": {
+        "jp-ru-dict_backend_internal_model.User": {
             "type": "object",
             "properties": {
+                "avatar_url": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -645,12 +697,15 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "role": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 }
             }
         },
-        "model.UserLoginRequest": {
+        "jp-ru-dict_backend_internal_model.UserLoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -665,7 +720,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.UserRegisterRequest": {
+        "jp-ru-dict_backend_internal_model.UserRegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -685,15 +740,15 @@ const docTemplate = `{
                 }
             }
         },
-        "model.UserResponseWrapper": {
+        "jp-ru-dict_backend_internal_model.UserResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/model.User"
+                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.User"
                 }
             }
         },
-        "model.Word": {
+        "jp-ru-dict_backend_internal_model.Word": {
             "type": "object",
             "required": [
                 "jp",
@@ -761,7 +816,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.WordCreateRequest": {
+        "jp-ru-dict_backend_internal_model.WordCreateRequest": {
             "type": "object",
             "required": [
                 "jp",
@@ -817,15 +872,15 @@ const docTemplate = `{
                 }
             }
         },
-        "model.WordResponseWrapper": {
+        "jp-ru-dict_backend_internal_model.WordResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/model.Word"
+                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.Word"
                 }
             }
         },
-        "model.WordUpdateRequest": {
+        "jp-ru-dict_backend_internal_model.WordUpdateRequest": {
             "type": "object",
             "properties": {
                 "ex_jp": {
@@ -877,7 +932,7 @@ const docTemplate = `{
                 }
             }
         },
-        "model.WordsListResponse": {
+        "jp-ru-dict_backend_internal_model.WordsListResponse": {
             "type": "object",
             "properties": {
                 "has_more": {
@@ -886,33 +941,44 @@ const docTemplate = `{
                 "next_cursor": {
                     "type": "integer"
                 },
+                "total_count": {
+                    "type": "integer"
+                },
                 "words": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Word"
+                        "$ref": "#/definitions/jp-ru-dict_backend_internal_model.Word"
                     }
                 }
             }
         },
-        "model.WordsListResponseWrapper": {
+        "jp-ru-dict_backend_internal_model.WordsListResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/model.WordsListResponse"
+                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponse"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0",
+	Host:             "localhost:8080",
+	BasePath:         "/api",
+	Schemes:          []string{"http"},
+	Title:            "JP-RU Dictionary API",
+	Description:      "API для личного русско-японского словаря",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

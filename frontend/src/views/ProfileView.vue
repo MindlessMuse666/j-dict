@@ -7,7 +7,7 @@
         <!-- Avatar Section -->
         <div class="relative group flex-shrink-0 mx-auto md:mx-0">
           <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-md bg-background relative z-0">
-            <img :src="avatarUrl" alt="Avatar" class="w-full h-full object-cover" />
+            <img :src="avatarUrl" @error="handleImageError" alt="Avatar" class="w-full h-full object-cover" />
           </div>
           
           <!-- Hover Overlay -->
@@ -47,23 +47,27 @@
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 <span>{{ user?.email }}</span>
               </div>
+              <div class="flex items-center text-text-secondary mt-1">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                <span>{{ userRole }}</span>
+              </div>
             </div>
             
-            <button @click="handleLogout" class="w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:translate-y-0 flex items-center justify-center gap-2">
+            <button @click="confirmLogout" class="w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:translate-y-0 flex items-center justify-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
               Выйти
             </button>
           </div>
           
-          <div class="h-px bg-border/50 my-6"></div>
+          <div class="h-px bg-border/50 my-4"></div>
           
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-             <div class="bg-background p-5 rounded-2xl border border-border hover:border-primary/50 transition-colors group">
-                <div class="text-text-secondary text-sm font-medium mb-1 flex items-center gap-2">
+             <div class="bg-background px-4 py-3 rounded-xl border border-border">
+                <div class="flex items-center gap-2">
                   <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                  Изучено слов
+                  <span class="text-text-secondary text-sm font-medium">Изучено слов</span>
+                  <span class="text-xl font-bold text-primary ml-1">{{ wordsCount }}</span>
                 </div>
-                <div class="text-3xl font-bold text-primary group-hover:scale-105 transition-transform origin-left">{{ wordsCount }}</div>
              </div>
           </div>
         </div>
@@ -179,6 +183,17 @@
       </div>
     </div>
 
+    <!-- Logout Confirmation Modal -->
+    <div v-if="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <div class="bg-surface rounded-2xl shadow-xl max-w-md w-full p-6">
+        <h3 class="text-xl font-bold mb-4 text-text-primary">Вы точно хотите выйти?</h3>
+        <div class="flex justify-end gap-3 mt-6">
+          <button @click="showLogoutModal = false" class="px-6 py-2 bg-transparent hover:bg-stone-100 text-text-secondary font-medium rounded-xl transition-all">Нет</button>
+          <button @click="handleLogout" class="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg active:translate-y-0">Да</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast -->
     <Transition
       enter-active-class="transform ease-out duration-300 transition"
@@ -208,10 +223,20 @@ const router = useRouter()
 
 const user = computed(() => authStore.user)
 const wordsCount = computed(() => wordsStore.totalCount)
+const userRole = computed(() => {
+  const role = user.value?.role || 'user'
+  return role === 'admin' ? 'Администратор' : 'Пользователь'
+})
+
+const confirmLogout = () => {
+  showLogoutModal.value = true
+}
 
 const handleLogout = async () => {
+  showLogoutModal.value = false
   await authStore.logout()
   router.push({ name: 'Login' })
+  showToast('Вы успешно вышли из системы')
 }
 
 const avatarUrl = computed(() => {
@@ -219,14 +244,20 @@ const avatarUrl = computed(() => {
     // If url starts with http/https, use it. 
     // If it starts with /uploads, it's backend served.
     // If it starts with /assets, it's static asset.
-    return user.value.avatar_url
+    // Add timestamp to bust cache
+    return `${user.value.avatar_url}?t=${Date.now()}`
   }
   return '/assets/default_avatars/~catishe~cat~.jpg'
 })
 
+const handleImageError = (e) => {
+  e.target.src = '/assets/default_avatars/~catishe~cat~.jpg'
+}
+
 const showAvatarMenu = ref(false)
 const showUploadModal = ref(false)
 const showPresetModal = ref(false)
+const showLogoutModal = ref(false)
 const selectedFile = ref(null)
 const selectedFileResult = ref(null)
 const cropperContainer = ref(null)
