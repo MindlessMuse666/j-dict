@@ -22,9 +22,9 @@
                              <div class="w-10 h-10 rounded-full overflow-hidden border border-stone-200 shadow-sm bg-background">
                                 <img :src="avatarUrl" class="w-full h-full object-cover">
                              </div>
-                             <RouterLink :to="{ name: 'Profile' }"
+                             <RouterLink :to="{ name: isProfilePage ? 'Home' : 'Profile' }"
                                 class="px-5 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:translate-y-0">
-                                Профиль
+                                {{ isProfilePage ? 'Назад к словарю' : 'Профиль' }}
                              </RouterLink>
                         </div>
                     </template>
@@ -47,8 +47,12 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth'
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 const authStore = useAuthStore()
+const route = useRoute()
+
+const isProfilePage = computed(() => route.name === 'Profile')
 
 const avatarUrl = computed(() => {
   if (authStore.user?.avatar_url) {

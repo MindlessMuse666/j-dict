@@ -3,15 +3,15 @@
     <div class="max-w-4xl mx-auto">
       <h1 class="text-3xl font-bold mb-8 text-primary">Личный кабинет</h1>
 
-      <div class="bg-surface rounded-2xl shadow-lg p-8 flex flex-col md:flex-row items-start gap-8">
+      <div class="bg-surface rounded-2xl shadow-lg p-8 flex flex-col md:flex-row gap-8 items-start">
         <!-- Avatar Section -->
-        <div class="relative group">
-          <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-md bg-background">
+        <div class="relative group flex-shrink-0 mx-auto md:mx-0">
+          <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-md bg-background relative z-0">
             <img :src="avatarUrl" alt="Avatar" class="w-full h-full object-cover" />
           </div>
           
           <!-- Hover Overlay -->
-          <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+          <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
                @click.stop="showAvatarMenu = !showAvatarMenu">
             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -19,16 +19,17 @@
           </div>
 
           <!-- Avatar Menu Dropdown -->
+          <div v-if="showAvatarMenu" class="fixed inset-0 z-20" @click="showAvatarMenu = false"></div>
+          
           <div v-if="showAvatarMenu" 
-               class="absolute top-full left-0 mt-2 w-48 bg-surface rounded-xl shadow-xl border border-border z-10 overflow-hidden"
-               v-click-outside="() => showAvatarMenu = false">
+               class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-surface rounded-xl shadow-xl border border-border z-30 overflow-hidden">
             <button @click="openUploadModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
               Загрузить фото
             </button>
             <button @click="openPresetModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-              Выбрать из списка
+              Выбрать готовую
             </button>
             <button @click="deleteAvatar" class="w-full text-left px-4 py-2 hover:bg-red-500/10 text-red-500 transition-colors flex items-center">
               <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -38,21 +39,31 @@
         </div>
 
         <!-- User Info -->
-        <div class="flex-1">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="text-2xl font-bold mb-2 text-text-primary">{{ user?.name || 'Пользователь' }}</h2>
-              <p class="text-text-secondary mb-4">{{ user?.email }}</p>
+        <div class="flex-1 w-full">
+          <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+            <div class="space-y-1">
+              <h2 class="text-3xl font-bold text-text-primary tracking-tight">{{ user?.name || 'Пользователь' }}</h2>
+              <div class="flex items-center text-text-secondary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                <span>{{ user?.email }}</span>
+              </div>
             </div>
-            <button @click="handleLogout" class="px-5 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:translate-y-0">
+            
+            <button @click="handleLogout" class="w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:translate-y-0 flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
               Выйти
             </button>
           </div>
           
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-             <div class="bg-background p-4 rounded-xl border border-border">
-                <div class="text-text-secondary text-sm mb-1">Всего слов</div>
-                <div class="text-2xl font-bold text-primary">{{ wordsCount }}</div>
+          <div class="h-px bg-border/50 my-6"></div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+             <div class="bg-background p-5 rounded-2xl border border-border hover:border-primary/50 transition-colors group">
+                <div class="text-text-secondary text-sm font-medium mb-1 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                  Изучено слов
+                </div>
+                <div class="text-3xl font-bold text-primary group-hover:scale-105 transition-transform origin-left">{{ wordsCount }}</div>
              </div>
           </div>
         </div>
@@ -61,30 +72,92 @@
 
     <!-- Upload/Crop Modal -->
     <div v-if="showUploadModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div class="bg-surface rounded-2xl shadow-xl max-w-2xl w-full p-6">
+      <div class="bg-surface rounded-2xl shadow-xl max-w-2xl w-full p-6 relative">
+        <button v-if="!selectedFileResult" @click="closeUploadModal" class="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
         <h3 class="text-xl font-bold mb-4 text-text-primary">Загрузка аватара</h3>
         
-        <div v-if="!selectedFile" class="border-2 border-dashed border-border rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors bg-background"
-             @dragover.prevent @drop.prevent="handleDrop" @click="$refs.fileInput.click()">
+        <div v-if="!selectedFile" 
+             class="border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200"
+             :class="[
+               isDragging ? 'border-primary bg-primary/5 scale-[1.02]' : 'border-border hover:border-primary bg-background'
+             ]"
+             @dragover.prevent 
+             @dragenter.prevent="isDragging = true"
+             @dragleave.prevent="isDragging = false"
+             @drop.prevent="handleDrop" 
+             @click="$refs.fileInput.click()">
           <input type="file" ref="fileInput" class="hidden" accept="image/jpeg,image/png" @change="handleFileSelect" />
-          <svg class="w-12 h-12 text-text-secondary mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-12 h-12 mx-auto mb-2 transition-colors duration-200" 
+               :class="isDragging ? 'text-primary' : 'text-text-secondary'"
+               fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
-          <p class="text-text-secondary">Нажмите или перетащите изображение сюда</p>
+          <p class="transition-colors duration-200" :class="isDragging ? 'text-primary font-medium' : 'text-text-secondary'">
+            {{ isDragging ? 'Отпустите файл для загрузки' : 'Нажмите или перетащите изображение сюда' }}
+          </p>
         </div>
 
-        <div v-else class="h-96 bg-black rounded-xl overflow-hidden mb-4 relative">
-          <cropper
-            ref="cropper"
-            class="h-full"
-            :src="selectedFileResult"
-            :stencil-props="{ aspectRatio: 1 }"
-          />
-        </div>
+        <div v-else class="flex flex-col items-center">
+          <div 
+            ref="cropperContainer"
+            class="relative w-full h-80 bg-stone-900 rounded-xl overflow-hidden cursor-move touch-none select-none"
+            @mousedown="startDrag"
+            @touchstart.prevent="startDrag"
+            @mousemove="onDrag"
+            @touchmove.prevent="onDrag"
+            @mouseup="stopDrag"
+            @touchend="stopDrag"
+            @mouseleave="stopDrag"
+            @wheel.prevent="onWheel"
+          >
+            <img 
+              ref="cropperImage"
+              :src="selectedFileResult" 
+              class="absolute max-w-none origin-center pointer-events-none will-change-transform"
+              :style="{
+                transform: `translate(${imageState.x}px, ${imageState.y}px) scale(${imageState.scale})`,
+                width: `${imageState.width}px`,
+                height: `${imageState.height}px`,
+                left: '50%',
+                top: '50%',
+                marginLeft: `-${imageState.width / 2}px`,
+                marginTop: `-${imageState.height / 2}px`
+              }"
+              @load="onImageLoad"
+            />
+            
+            <!-- Overlay with circular cutout -->
+            <div class="absolute inset-0 pointer-events-none z-10">
+               <div class="absolute inset-0 bg-black/60"></div>
+               <!-- The clear circle/square area -->
+               <div 
+                 class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-white/80 rounded-full shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] box-content"
+                 :style="{ width: `${CROP_SIZE}px`, height: `${CROP_SIZE}px` }"
+               ></div>
+            </div>
+          </div>
 
-        <div class="flex justify-end gap-3 mt-4">
-          <button @click="closeUploadModal" class="px-4 py-2 text-text-secondary hover:bg-background rounded-lg transition-colors">Отмена</button>
-          <button v-if="selectedFile" @click="saveAvatar" class="px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg transition-colors shadow-md">Сохранить</button>
+          <!-- Controls -->
+          <div class="w-full mt-6 px-2 flex items-center gap-4">
+            <svg class="w-5 h-5 text-text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+            <input 
+              type="range" 
+              v-model.number="imageState.scale" 
+              :min="minScale" 
+              :max="maxScale" 
+              step="0.01"
+              class="flex-1 h-1.5 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-primary hover:accent-primary/80"
+            >
+            <svg class="w-5 h-5 text-text-secondary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </div>
+        </div>
+        
+        <div class="flex justify-end gap-3 mt-6" v-if="selectedFileResult">
+          <button @click="closeUploadModal" class="px-6 py-2 bg-transparent hover:bg-stone-100 text-text-secondary font-medium rounded-xl transition-all">Отмена</button>
+          <button @click="saveAvatar" class="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg active:translate-y-0">Сохранить</button>
         </div>
       </div>
     </div>
@@ -124,12 +197,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useWordsStore } from '@/stores/words'
 import { useRouter } from 'vue-router'
-import { Cropper } from 'vue-advanced-cropper'
-import 'vue-advanced-cropper/dist/style.css'
 
 const authStore = useAuthStore()
 const wordsStore = useWordsStore()
@@ -158,8 +229,91 @@ const showUploadModal = ref(false)
 const showPresetModal = ref(false)
 const selectedFile = ref(null)
 const selectedFileResult = ref(null)
-const cropper = ref(null)
+const cropperContainer = ref(null)
+const cropperImage = ref(null)
 const fileInput = ref(null)
+const isDragging = ref(false)
+
+// Custom Cropper State
+const CROP_SIZE = 280
+const imageState = ref({
+  x: 0,
+  y: 0,
+  scale: 1,
+  width: 0,
+  height: 0,
+  naturalWidth: 0,
+  naturalHeight: 0
+})
+const minScale = ref(0.1)
+const maxScale = ref(3)
+const dragStart = ref({ x: 0, y: 0, imageX: 0, imageY: 0 })
+const isImageDragging = ref(false)
+
+const onImageLoad = (e) => {
+  const img = e.target
+  imageState.value.naturalWidth = img.naturalWidth
+  imageState.value.naturalHeight = img.naturalHeight
+  
+  // Calculate initial dimensions to fit container
+  // We want the image to be at least large enough to cover the crop area
+  const containerW = 320 // approx width of container in modal
+  const containerH = 320 
+  
+  // Reset
+  imageState.value.x = 0
+  imageState.value.y = 0
+  
+  // Set display size (keep aspect ratio)
+  // We set base width to match natural width initially, but scale it down
+  imageState.value.width = img.naturalWidth
+  imageState.value.height = img.naturalHeight
+  
+  // Calculate min scale to cover CROP_SIZE
+  const scaleW = CROP_SIZE / img.naturalWidth
+  const scaleH = CROP_SIZE / img.naturalHeight
+  minScale.value = Math.max(scaleW, scaleH)
+  maxScale.value = minScale.value * 5
+  
+  // Set initial scale to fit nicely (slightly larger than min)
+  imageState.value.scale = minScale.value
+}
+
+const startDrag = (e) => {
+  isImageDragging.value = true
+  const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX
+  const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY
+  
+  dragStart.value = {
+    x: clientX,
+    y: clientY,
+    imageX: imageState.value.x,
+    imageY: imageState.value.y
+  }
+}
+
+const onDrag = (e) => {
+  if (!isImageDragging.value) return
+  
+  const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX
+  const clientY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY
+  
+  const deltaX = clientX - dragStart.value.x
+  const deltaY = clientY - dragStart.value.y
+  
+  imageState.value.x = dragStart.value.imageX + deltaX
+  imageState.value.y = dragStart.value.imageY + deltaY
+}
+
+const stopDrag = () => {
+  isImageDragging.value = false
+}
+
+const onWheel = (e) => {
+  const delta = e.deltaY > 0 ? -0.1 : 0.1
+  const newScale = Math.max(minScale.value, Math.min(maxScale.value, imageState.value.scale + delta))
+  imageState.value.scale = newScale
+}
 
 const toast = ref({ show: false, message: '', type: 'success' })
 const showToast = (message, type = 'success') => {
@@ -178,20 +332,6 @@ const presets = [
   '~winter~cat~.jpg'
 ]
 
-const vClickOutside = {
-  mounted(el, binding) {
-    el.clickOutsideEvent = function(event) {
-      if (!(el === event.target || el.contains(event.target))) {
-        binding.value(event)
-      }
-    }
-    document.body.addEventListener('click', el.clickOutsideEvent)
-  },
-  unmounted(el) {
-    document.body.removeEventListener('click', el.clickOutsideEvent)
-  }
-}
-
 const openUploadModal = () => {
   showAvatarMenu.value = false
   showUploadModal.value = true
@@ -206,8 +346,12 @@ const openPresetModal = () => {
 
 const closeUploadModal = () => {
   showUploadModal.value = false
+  if (selectedFileResult.value) {
+    URL.revokeObjectURL(selectedFileResult.value)
+  }
   selectedFile.value = null
   selectedFileResult.value = null
+  isDragging.value = false
 }
 
 const handleFileSelect = (e) => {
@@ -218,6 +362,7 @@ const handleFileSelect = (e) => {
 }
 
 const handleDrop = (e) => {
+  isDragging.value = false
   const file = e.dataTransfer.files[0]
   if (file) processFile(file)
 }
@@ -227,25 +372,74 @@ const processFile = (file) => {
     showToast('Пожалуйста, загрузите изображение', 'error')
     return
   }
-  selectedFile.value = file
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    selectedFileResult.value = e.target.result
+  
+  // Cleanup previous object URL if exists
+  if (selectedFileResult.value) {
+    URL.revokeObjectURL(selectedFileResult.value)
   }
-  reader.readAsDataURL(file)
+
+  selectedFile.value = file
+  // Use createObjectURL instead of FileReader to avoid large strings and potential stack overflows
+  selectedFileResult.value = URL.createObjectURL(file)
 }
 
 const saveAvatar = () => {
-  const { canvas } = cropper.value.getResult()
-  canvas.toBlob(async (blob) => {
-    const res = await authStore.uploadAvatar(blob)
-    if (res.success) {
-      showToast('Аватар успешно обновлен')
-      closeUploadModal()
-    } else {
-      showToast(res.error, 'error')
-    }
-  }, 'image/jpeg')
+  if (!selectedFile.value) return
+
+  const img = new Image()
+  img.src = selectedFileResult.value
+  
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    
+    // Set canvas to crop size (high res)
+    const OUTPUT_SIZE = 500
+    canvas.width = OUTPUT_SIZE
+    canvas.height = OUTPUT_SIZE
+    
+    // Calculate mapping
+    // We need to map the "visible crop area" relative to the image, to the canvas
+    // 1. Center of container is (containerW/2, containerH/2)
+    // 2. Image is at (x, y) relative to center + offset (since we centered it with CSS left:50% top:50% margin:-w/2)
+    // Let's simplify:
+    // The image center is at (ContainerCenter + x, ContainerCenter + y)
+    // The Crop Area center is at ContainerCenter.
+    // So Crop Area Center relative to Image Center is (-x, -y) (scaled pixels)
+    // In unscaled pixels: (-x / scale, -y / scale)
+    // Crop Area TopLeft relative to Image Center (unscaled): (-x/scale - CROP_SIZE/2/scale, -y/scale - CROP_SIZE/2/scale)
+    // Image Center is at (naturalWidth/2, naturalHeight/2)
+    
+    const scale = imageState.value.scale
+    const centerOffsetX = -imageState.value.x / scale
+    const centerOffsetY = -imageState.value.y / scale
+    
+    const cropSizeUnscaled = CROP_SIZE / scale
+    
+    const sourceX = (imageState.value.naturalWidth / 2) + centerOffsetX - (cropSizeUnscaled / 2)
+    const sourceY = (imageState.value.naturalHeight / 2) + centerOffsetY - (cropSizeUnscaled / 2)
+    
+    ctx.drawImage(
+      img, 
+      sourceX, sourceY, cropSizeUnscaled, cropSizeUnscaled, 
+      0, 0, OUTPUT_SIZE, OUTPUT_SIZE
+    )
+    
+    canvas.toBlob(async (blob) => {
+      const res = await authStore.uploadAvatar(blob)
+      if (res.success) {
+        showToast('Аватар успешно обновлен')
+        closeUploadModal()
+      } else {
+        const errorMap = {
+          'Only JPG and PNG are allowed': 'Разрешены только форматы JPG и PNG',
+          'File too large': 'Файл слишком большой',
+          'Invalid file type': 'Неверный тип файла'
+        }
+        showToast(errorMap[res.error] || res.error, 'error')
+      }
+    }, 'image/jpeg', 0.9)
+  }
 }
 
 const selectPreset = async (filename) => {
@@ -273,5 +467,11 @@ const deleteAvatar = async () => {
 onMounted(() => {
     authStore.fetchUser()
     wordsStore.fetchWords()
+})
+
+onUnmounted(() => {
+  if (selectedFileResult.value) {
+    URL.revokeObjectURL(selectedFileResult.value)
+  }
 })
 </script>

@@ -42,6 +42,11 @@ RUN chmod +x docker-entrypoint.sh
 
 # Создаем пользователя для запуска приложения
 RUN adduser -D -g '' appuser
+
+# Создаем директории для логов и загрузок и назначаем права
+RUN mkdir -p /app/logs /app/uploads/avatars && \
+    chown -R appuser:appuser /app
+
 USER appuser
 
 EXPOSE 8080

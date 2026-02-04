@@ -4,6 +4,7 @@
 
 # Запуск всех сервисов с использованием buildx для лучшей кешируемости
 run:
+	docker-compose down
 	docker-compose up --build --remove-orphans
 
 # Запуск в фоновом режиме

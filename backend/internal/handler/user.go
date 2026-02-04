@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"io"
 	"jp-ru-dict/backend/internal/model"
 	"jp-ru-dict/backend/internal/service"
 	"net/http"
@@ -53,9 +54,10 @@ func (h *UserHandler) UploadAvatar(c *gin.Context) {
 	}
 
 	// Create directory if not exists
-	uploadDir := "uploads/avatars"
+	cwd, _ := os.Getwd()
+	uploadDir := filepath.Join(cwd, "uploads", "avatars")
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create upload directory"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create upload directory: %v | Path: %s", err, uploadDir)})
 		return
 	}
 
@@ -63,16 +65,29 @@ func (h *UserHandler) UploadAvatar(c *gin.Context) {
 	filename := fmt.Sprintf("%d_%d%s", userModel.ID, time.Now().Unix(), ext)
 	filePath := filepath.Join(uploadDir, filename)
 
-	// Save file
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+	// Save file manually to avoid potential issues with gin.SaveUploadedFile on volume mounts
+	src, err := file.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to open uploaded file: %v", err)})
+		return
+	}
+	defer src.Close()
+
+	dst, err := os.Create(filePath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create file: %v | Path: %s", err, filePath)})
+		return
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, src); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to save file content: %v", err)})
 		return
 	}
 
 	// Update user profile
 	// URL should be /uploads/avatars/filename
-	avatarURL := "/" + filePath // e.g. /uploads/avatars/123.jpg
-	avatarURL = strings.ReplaceAll(avatarURL, "\\", "/")
+	avatarURL := fmt.Sprintf("/uploads/avatars/%s", filename)
 
 	if err := h.authService.UpdateAvatar(userModel.ID, avatarURL); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update profile"})

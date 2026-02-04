@@ -62,7 +62,11 @@ export function useToast() {
     const toast = inject(ToastSymbol)
 
     if (!toast) {
-        throw new Error('Toast not provided. Make sure to call provideToast() in root component.')
+        // Fallback: create a new toast instance if not provided (useful for async/outside setup)
+        // But better is to just return the methods that operate on globalToasts directly
+        // Since globalToasts is defined in module scope, we can access it.
+        // This avoids the error when useToast is called outside component setup or before provide
+        return createToast()
     }
 
     return toast

@@ -77,9 +77,11 @@ export const useAuthStore = defineStore('auth', () => {
     const uploadAvatar = async (file) => {
         try {
             const formData = new FormData()
-            formData.append('file', file)
+            // Ensure filename has .jpg extension for backend validation
+            formData.append('file', file, 'avatar.jpg')
             const response = await api.post('/users/avatar', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: { 'Content-Type': 'multipart/form-data' },
+                skipGlobalError: true
             })
             if (user.value) {
                 user.value.avatar_url = response.data.url

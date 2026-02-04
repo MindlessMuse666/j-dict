@@ -56,7 +56,7 @@ api.interceptors.response.use(
             toast.showError?.('Нет соединения с сервером. Проверьте подключение к интернету.')
         } else if (error.response?.status === 413) {
             toast.showError?.('Файл слишком большой. Максимальный размер: 10MB.')
-        } else if (error.response?.status >= 500) {
+        } else if (error.response?.status >= 500 && !error.config?.skipGlobalError) {
             toast.showError?.('Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.')
         }
 
