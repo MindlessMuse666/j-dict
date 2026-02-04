@@ -1,8 +1,11 @@
-# Фронтенд проекта j~dict!\^w\^ (p≧w≦q)
+<div align="center">
+    <img src="./public/logo.svg" width="120" height="120" alt="Logo" />
+    <h1>Фронтенд проекта <a href="https://github.com/MindlessMuse666/jp-ru-dict/tree/main/frontend">j~dict!^w^</a></h1>
+    <p><b><i>Клиентская часть на Vue 3 (p≧w≦q)</i></b></p>
+    <br>
 
-![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-
-Фронтенд часть приложения (Vue 3 + Vite).
+![Vue.js](https://img.shields.io/badge/vue-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=yellow) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+</div>
 
 ## 🚀 Запуск
 
@@ -36,7 +39,7 @@ npm run preview
 | **Управление состоянием** | Pinia |
 | **Навигация** | Vue Router |
 | **Стилизация** | TailwindCSS |
-| **HTTP клиент** | Axios |
+| **HTTP-клиент** | Axios |
 
 ## 🎨 Особенности UI
 
@@ -50,3 +53,15 @@ npm run preview
 docker build -t jp-ru-dict-frontend .
 docker run -p 5173:80 jp-ru-dict-frontend
 ```
+
+---
+
+<div align="center">
+    <a href="#jdictw">
+        <img src="./public/logo.svg" alt="Logo" width="100" height="100">
+    </a>
+    <br>
+    <sub><b>Веб-приложение // j~dict!^w^</b></sub>
+    <br>
+    <sup><i>Made with love by <a href="https://github.com/MindlessMuse666" target="_blank" title="MindlessMuse666">MindlessMuse666</a></i></sup>
+</div>

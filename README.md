@@ -1,64 +1,128 @@
-# j~dict!^w^
+<div align="center">
+    <img src="./frontend/public/logo.svg" width="120" height="120" alt="Logo" />
+    <h1>Документация проекта <a href="https://github.com/MindlessMuse666/jp-ru-dict/blob/main/README.md">j~dict!\^w\^</a></h1>
+    <p><b><i>Личный японский словарь (∩^o^)⊃━☆</i></b></p>
+    <br>
 
-![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
-![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
-![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
-![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
-![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white)
-![Makefile](https://img.shields.io/badge/Makefile-GNU-blue?style=for-the-badge)
+![Vue.js](https://img.shields.io/badge/vue-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D) ![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white) ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E) ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=yellow) ![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white) <br> ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Apache Kafka](https://img.shields.io/badge/Kafka-000?style=for-the-badge&logo=apachekafka) ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white) ![Makefile](https://img.shields.io/badge/Makefile-%23404d59.svg?style=for-the-badge&logo=make&logoColor=red)
+</div>
 
-Японско-русский словарь с возможностью поиска, добавления слов и управления личным кабинетом.
+## 📖 [j~dict!\^w\^](https://github.com/MindlessMuse666/jp-ru-dict/blob/main/README.md) это...
+
+...это небольшое веб-приложение для ведения личного японского словаря. В нём можно создавать, читать, обновлять и удалять слова, а также организовывать слова по темам и даже управлять личным кабинетом!
+
+Этот пет-проект резюмирует практические навыки, полученные в рамках производстенной практики от [Колледжа связи №54 им. П. М. Вострухина](https://www.ks54.ru "Колледж связи №54 им. П. М. Вострухина").
 
 ## 🏗 Архитектура
 
+### Диаграмма контейнеров
+
+Взаимодействие основных частей системы:
+
+1. **Пользователь** работает с интерфейсом (**Frontend**).
+2. **Frontend** отправляет запросы к **Backend** (REST API).
+3. **Backend** сохраняет/читает данные из **PostgreSQL** и отправляет задачи на импорт в **Kafka**.
+
 ```mermaid
-graph TD
+graph LR
     User((Пользователь))
-    
-    subgraph Frontend [Frontend (Vue.js)]
-        UI[Интерфейс]
-        AuthStore[Auth Store]
-        WordStore[Word Store]
+
+    subgraph FE["Frontend"]
+        UI["Пользовательский интерфейс<br/>Vue 3"]
+        AuthStore["Хранилище авторизации<br/>Pinia"]
+        WordStore["Хранилище слов<br/>Pinia"]
     end
-    
-    subgraph Backend [Backend (Go)]
-        API[REST API (Gin)]
-        AuthService[Auth Service]
-        WordService[Word Service]
-        ImportService[Import Service]
-        KafkaProducer[Kafka Producer]
+
+    subgraph BE["Backend (Go)"]
+        API["REST API<br/>Gin"]
+        AuthService["Сервис авторизации"]
+        WordService["Сервис словаря"]
+        ImportService["Сервис импорта"]
+        KafkaProducer["Продюсер Kafka"]
     end
-    
-    subgraph Infrastructure
+
+    subgraph INF["Инфраструктура"]
         DB[(PostgreSQL)]
-        Kafka{Apache Kafka}
-        Zookeeper[Zookeeper]
+        Kafka{{Apache Kafka}}
+        Zookeeper["Zookeeper"]
     end
-    
+
     User <--> UI
-    UI <--> API
-    
+    UI --> API
+
     API --> AuthService
     API --> WordService
     API --> ImportService
-    
+
     AuthService --> DB
     WordService --> DB
     ImportService --> KafkaProducer
     KafkaProducer --> Kafka
     Kafka -.-> Zookeeper
+
+    classDef frontend fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px
+    classDef backend fill:#E8F5E9,stroke:#43A047,stroke-width:2px
+    classDef infra fill:#FFFDE7,stroke:#F9A825,stroke-width:2px
+    classDef user fill:#FCE4EC,stroke:#C2185B,stroke-width:2px
+
+    class UI,AuthStore,WordStore frontend
+    class API,AuthService,WordService,ImportService,KafkaProducer backend
+    class DB,Kafka,Zookeeper infra
+    class User user
+```
+
+### Диаграмма компонентов
+
+Детальное устройство системы изнутри:
+
+* **Frontend:** Состоит из Vue-компонентов (отображение), Pinia (хранение данных в памяти) и Axios (общение с сервером).
+* **Backend:** Разделен на слои:
+  * *Handlers* (обработчики) - принимают HTTP-запросы.
+  * *Services* (сервисы) - содержат бизнес-логику (правила работы).
+  * *Repositories* (репозитории) - работают напрямую с базой данных.
+* **Database & Kafka:** Внешние системы для хранения данных и очереди задач.
+
+```mermaid
+classDiagram
+    direction LR
+
+    class Frontend {
+        Компоненты интерфейса
+        Управление состоянием
+        HTTP-запросы
+    }
+
+    class Backend {
+        REST API
+        Бизнес-логика
+        Доступ к данным
+    }
+
+    class Database {
+        Пользователи
+        Слова
+    }
+
+    class Kafka {
+        Очередь импорта слов
+    }
+
+    Frontend ..> Backend : HTTP / JSON
+    Backend ..> Database : SQL
+    Backend ..> Kafka : Асинхронные задачи
+
+    classDef frontend fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px
+    classDef backend fill:#E8F5E9,stroke:#43A047,stroke-width:2px
+    classDef infra fill:#FFFDE7,stroke:#F9A825,stroke-width:2px
 ```
 
 ## 🚀 Запуск проекта
 
-Для запуска проекта необходимы установленные **Docker** и **Docker Compose**.
+Для запуска проекта необходимы установленные **Docker** и **docker-compose**.
 
 ### Быстрый старт (Makefile)
 
-Самый простой способ запустить проект — использовать `make`. Команды выполняются из корня проекта.
+Самый простой способ запустить проект - использовать `make`. Команды выполняются из корня проекта.
 
 ```bash
 # Запуск всех сервисов (в фоновом режиме, с пересборкой)
@@ -71,7 +135,7 @@ make logs
 make down
 ```
 
-### Ручной запуск (Docker Compose)
+### Ручной запуск (docker-compose)
 
 Если у вас нет `make`, используйте команды docker-compose напрямую:
 
@@ -79,45 +143,47 @@ make down
 docker-compose up --build -d
 ```
 
-Приложение будет доступно по адресу: [http://localhost:5173](http://localhost:5173) (или порт 80 в зависимости от конфигурации Docker).
+Приложение будет доступно по адресу: [http://localhost:5173](http://localhost:5173 "j~dict!^w^").
 
-## 📚 API Документация
+## 📚 API-Документация
 
-API задокументировано с помощью Swagger. После запуска бэкенда интерактивная документация доступна по адресу:
+API задокументировано с помощью [Swagger](./openapi.yaml "Swagger API-Документация"). После запуска бэкенда интерактивная документация доступна по адресу:
 
-[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+[http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html "Swagger API-Документация")
 
-### Основные эндпоинты:
+### Основные эндпоинты
 
-- **Auth**:
-  - `POST /api/auth/register` - Регистрация
-  - `POST /api/auth/login` - Вход
-  - `GET /api/auth/me` - Получение текущего пользователя
-- **Words**:
-  - `GET /api/words` - Получение списка слов
-  - `POST /api/words` - Добавление слова
-  - `PATCH /api/words/{id}` - Обновление слова
-  - `DELETE /api/words/{id}` - Удаление слова
-- **Import**:
-  - `POST /api/words/import` - Загрузка слов из CSV через Kafka
+* [Auth](./backend/internal/handler/auth.go "AuthHandler"):
+  * `POST /api/auth/register` - Регистрация
+  * `POST /api/auth/login` - Вход
+  * `GET /api/auth/me` - Получение текущего пользователя
+* [Words](./backend/internal/handler/word.go "WordHandler"):
+  * `GET /api/words` - Получение списка слов
+  * `POST /api/words` - Добавление слова
+  * `PATCH /api/words/{id}` - Обновление слова
+  * `DELETE /api/words/{id}` - Удаление слова
+* [Import](./backend/internal/handler/import.go "ImportHandler"):
+  * `POST /api/words/import` - Загрузка слов из CSV через Kafka
 
 ## 🛠 Технологический стек
 
-- **Frontend**: Vue 3, Pinia, Vue Router, TailwindCSS, Vite
-- **Backend**: Go (Golang), Gin Gonic, JWT Auth
-- **Database**: PostgreSQL 18
-- **Message Broker**: Apache Kafka (для асинхронной обработки импорта)
-- **DevOps**: Docker, Docker Compose, Makefile
+| Область | Технология |
+| ---- | --- |
+| **Backend** | Go (Golang), Gin Gonic, JWT Auth |
+| **Frontend** | Vue 3, Pinia, Vue Router, TailwindCSS, Vite |
+| **База данных** | PostgreSQL 18 |
+| **Брокер сообщений** | Apache Kafka (для асинхронной обработки импорта) |
+| **DevOps** | Docker, docker-compose, Makefile |
+| **Документация** | Swagger (OpenAPI) |
 
 ## 📂 Структура проекта
 
-```
-.
+```text
 ├── backend/            # Исходный код бэкенда (Go)
 │   ├── cmd/            # Точка входа (main.go)
 │   ├── internal/       # Бизнес-логика, хендлеры, сервисы
-│   ├── db/migrations/  # SQL миграции
-│   └── docs/           # Swagger документация
+│   ├── db/migrations/  # SQL-миграции
+│   └── docs/           # Swagger-документация
 ├── frontend/           # Исходный код фронтенда (Vue.js)
 │   ├── src/            # Компоненты, сторы, представления
 │   └── dist/           # Статическая сборка (для GitHub Pages)
@@ -125,6 +191,20 @@ API задокументировано с помощью Swagger. После з�
 └── Makefile            # Команды для управления проектом
 ```
 
-## 🌐 GitHub Pages (Демонстрация)
+## 🌐 GitHub Pages (Демо)
 
-В папке `frontend/dist` находится сгенерированная статическая версия фронтенда, которую можно использовать для демонстрации внешнего вида (UI) на GitHub Pages. Обратите внимание, что без запущенного локально бэкенда функционал API (авторизация, загрузка слов) работать не будет.
+В папке [frontend/dist](./frontend/dist/ "Статическая версия фронтенда") находится сгенерированная статическая версия фронтенда, которая используется для демонстрации UI проекта на GitHub Pages.
+
+**ВАЖНО!** Без запущенного локально бэкенда функционал API (авторизация, загрузка слов) работать не будет.
+
+---
+
+<div align="center">
+    <a href="#jdictw">
+        <img src="./frontend/public/logo.svg" alt="Logo" width="100" height="100">
+    </a>
+    <br>
+    <sub><b>Веб-приложение // j~dict!^w^</b></sub>
+    <br>
+    <sup><i>Made with love by <a href="https://github.com/MindlessMuse666" target="_blank" title="MindlessMuse666">MindlessMuse666</a></i></sup>
+</div>

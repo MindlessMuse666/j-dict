@@ -1,12 +1,15 @@
-# Бэкенд проекта j~dict!\^w\^ (✿◠‿◠)
+<div align="center">
+    <img src="../frontend/public/logo.svg" width="120" height="120" alt="Logo" />
+    <h1>Бэкенд проекта <a href="https://github.com/MindlessMuse666/jp-ru-dict/tree/main/backend">j~dict!^w^</a></h1>
+    <p><b><i>Серверная часть на Go (Golang) (✿◠‿◠)</i></b></p>
+    <br>
 
-![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white) ![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-
-Бэкенд часть приложения (Go)).
+![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white) ![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white) ![Apache Kafka](https://img.shields.io/badge/Kafka-000?style=for-the-badge&logo=apachekafka) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) <br> ![Swagger](https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white) ![Makefile](https://img.shields.io/badge/Makefile-%23404d59.svg?style=for-the-badge&logo=make&logoColor=red)
+</div>
 
 ## 🚀 Запуск
 
-### Через Makefile (рекомендуется)
+### Через Makefile
 
 Из корня проекта:
 
@@ -64,3 +67,15 @@ go run cmd/server/main.go
 - `/api/auth` - Авторизация (JWT);
 - `/api/words` - CRUD-операции со словами;
 - `/api/health` - Проверка состояния.
+
+---
+
+<div align="center">
+    <a href="#-запуск">
+        <img src="../frontend/public/logo.svg" alt="Logo" width="100" height="100">
+    </a>
+    <br>
+    <sub><b>Веб-приложение // j~dict!^w^</b></sub>
+    <br>
+    <sup><i>Made with love by <a href="https://github.com/MindlessMuse666" target="_blank" title="MindlessMuse666">MindlessMuse666</a></i></sup>
+</div>
