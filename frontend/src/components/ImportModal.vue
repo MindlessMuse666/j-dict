@@ -1,6 +1,6 @@
 <template>
     <Transition name="modal">
-        <div v-if="isOpen" class="fixed inset-0 z-50 flex items-center justify-center">
+        <div v-if="isOpen" class="fixed inset-0 z-[100] flex items-center justify-center">
             <!-- Фон с затемнением -->
             <div class="fixed inset-0 bg-black bg-opacity-50" @click="close"></div>
 

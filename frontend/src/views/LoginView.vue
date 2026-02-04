@@ -14,7 +14,7 @@
                     </label>
                     <input id="email" v-model="form.email" type="email" required
                         class="w-full px-4 py-3 border border-stone-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors placeholder-stone-400"
-                        placeholder="user@example.com" />
+                        placeholder="Введите ваш email" />
                 </div>
 
                 <!-- Пароль -->
@@ -24,7 +24,7 @@
                     </label>
                     <input id="password" v-model="form.password" type="password" required
                         class="w-full px-4 py-3 border border-stone-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors placeholder-stone-400"
-                        placeholder="••••••••" />
+                        placeholder="Введите ваш пароль" />
                 </div>
 
                 <!-- Ошибка -->

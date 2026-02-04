@@ -24,7 +24,7 @@
                     </label>
                     <input id="email" v-model="form.email" type="email" required
                         class="w-full px-4 py-3 border border-stone-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors placeholder-stone-400"
-                        placeholder="user@example.com" />
+                        placeholder="Введите ваш email" />
                 </div>
 
                 <!-- Пароль -->
@@ -34,7 +34,7 @@
                     </label>
                     <input id="password" v-model="form.password" type="password" required minlength="6"
                         class="w-full px-4 py-3 border border-stone-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors placeholder-stone-400"
-                        placeholder="••••••••" />
+                        placeholder="Введите ваш пароль" />
                     <p class="mt-1 text-sm text-text-muted">Минимум 6 символов</p>
                 </div>
 
@@ -45,7 +45,7 @@
                     </label>
                     <input id="confirmPassword" v-model="form.confirmPassword" type="password" required
                         class="w-full px-4 py-3 border border-stone-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-colors placeholder-stone-400"
-                        placeholder="••••••••" />
+                        placeholder="" />
                     <p v-if="passwordMismatch" class="mt-1 text-sm text-red-600">
                         Пароли не совпадают
                     </p>

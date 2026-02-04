@@ -5,7 +5,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 class="text-3xl font-bold text-text-main font-jp">Мой словарь</h2>
-          <!-- Плавное изменение счетчика слов -->
+          <!-- Изменение счётчика слов -->
           <Transition name="fade-slide" mode="out-in">
             <p v-if="wordsStore.totalCount > 0 || wordsStore.words.length > 0" key="count" class="text-base mt-1 font-medium flex items-center gap-2">
               <span class="text-stone-500">Всего слов:</span>
@@ -47,7 +47,7 @@
           </button>
 
           <!-- Кнопка добавления -->
-          <button @click="showAddModal = true"
+          <button @click="openAddModal"
             class="w-32 justify-center px-4 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl transition duration-200 hover:shadow-lg shadow-md flex items-center transform-gpu hover:-translate-y-0.5">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -88,7 +88,7 @@
           :description="emptyMessage"
         >
           <template #action v-if="!isSearchActive">
-            <button @click="showAddModal = true"
+            <button @click="openAddModal"
               class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg shadow-md flex items-center mx-auto transform hover:-translate-y-0.5">
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -109,7 +109,7 @@
     <!-- Список слов -->
     <TransitionGroup name="word-list" tag="div" class="words-list space-y-4">
       <WordCard v-for="word in wordsStore.words" :key="word.id" :word="word" :is-compact-view="isCompactView"
-        @edit="handleEditWord(word)" @delete="handleWordDeleted(word.id)" />
+        @edit="openEditModal(word)" @delete="handleWordDeleted(word.id)" />
     </TransitionGroup>
 
     <!-- Индикатор загрузки при подгрузке -->
@@ -137,11 +137,13 @@
     </Transition>
 
     <!-- Модальные окна -->
-    <WordFormModal v-if="showAddModal" :word="selectedWord" @close="closeModal" @saved="handleWordSaved"
-      :is-open="showAddModal" />
-
-    <WordFormModal v-if="showEditModal" :word="selectedWord" @close="closeModal" @saved="handleWordSaved"
-      :is-open="showEditModal" />
+    <WordFormModal 
+      v-if="showWordModal" 
+      :word="selectedWord" 
+      @close="closeModal" 
+      @saved="handleWordSaved"
+      :is-open="showWordModal" 
+    />
 
     <ConfirmModal 
       :is-open="showDeleteModal" 
@@ -174,9 +176,8 @@ const { showSuccess, showError } = useToast()
 
 const searchBarRef = ref(null)
 const isCompactView = ref(true)
-const showAddModal = ref(false)
+const showWordModal = ref(false)
 const showImportModal = ref(false)
-const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 const selectedWord = ref(null)
 const wordToDeleteId = ref(null)
@@ -184,7 +185,7 @@ const currentSearchQuery = ref('')
 const isSearchActive = ref(false)
 const importedWords = ref([])
 
-// Компьютед свойство для отображения правильного сообщения
+// Свойство для отображения правильного сообщения
 const emptyMessage = computed(() => {
   if (wordsStore.loading) return 'Загрузка...'
   if (isSearchActive.value) {
@@ -210,8 +211,6 @@ const handleScroll = () => {
 }
 
 const handleImported = (importResult) => {
-  // Уведомление показывается в ImportModal, здесь не дублируем
-  // Обновляем список слов
   wordsStore.fetchWords(20, true)
 }
 
@@ -252,7 +251,6 @@ const handleClearSearch = () => {
     searchBarRef.value.clearSearch()
     searchBarRef.value.clearAdvancedFilters()
   }
-  // Fallback if ref is not available for some reason
   currentSearchQuery.value = ''
   isSearchActive.value = false
   if (!searchBarRef.value) {
@@ -260,10 +258,15 @@ const handleClearSearch = () => {
   }
 }
 
-const handleEditWord = async (word) => {
-  selectedWord.value = word
-  await nextTick()
-  showEditModal.value = true
+const openAddModal = () => {
+  selectedWord.value = null
+  showWordModal.value = true
+}
+
+const openEditModal = (word) => {
+  if (!word) return
+  selectedWord.value = JSON.parse(JSON.stringify(word))
+  showWordModal.value = true
 }
 
 const handleWordDeleted = (wordId) => {
@@ -296,7 +299,6 @@ const confirmDelete = async () => {
 const handleWordSaved = async (wordData) => {
   try {
     let result
-
     if (selectedWord.value) {
       result = await wordsStore.updateWord(selectedWord.value.id, wordData.data)
     } else {
@@ -319,8 +321,7 @@ const handleWordSaved = async (wordData) => {
 }
 
 const closeModal = () => {
-  showAddModal.value = false
-  showEditModal.value = false
+  showWordModal.value = false
   selectedWord.value = null
 }
 
@@ -328,14 +329,13 @@ const closeModal = () => {
 onMounted(() => {
   useHotkeys({
     onNewWord: () => {
-      if (!showAddModal.value && !showEditModal.value) {
-        showAddModal.value = true
+      if (!showWordModal.value) {
+        openAddModal()
       }
     },
     onCloseModals: () => {
-      if (showAddModal.value || showEditModal.value || showImportModal.value) {
-        showAddModal.value = false
-        showEditModal.value = false
+      if (showWordModal.value || showImportModal.value) {
+        showWordModal.value = false
         showImportModal.value = false
       }
     }
