@@ -129,6 +129,7 @@ export const useWordsStore = defineStore('words', () => {
 
             // Удаляем слово из списка
             words.value = words.value.filter(word => word.id !== id)
+            totalCount.value--
             return { success: true }
         } catch (err) {
             return {

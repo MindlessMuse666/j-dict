@@ -17,6 +17,7 @@
     "lodash-es": "^4.17.22",
     "pinia": "^2.1.0",
     "vue": "^3.4.0",
+    "vue-advanced-cropper": "^2.8.9",
     "vue-router": "^4.2.0"
   },
   "devDependencies": {

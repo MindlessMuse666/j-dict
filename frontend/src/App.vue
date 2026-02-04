@@ -11,4 +11,8 @@
 <script setup>
 import AppHeader from '@/components/AppHeader.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
+import { provideToast } from '@/composables/useToast'
+
+// Предоставляем тосты на уровне корневого компонента
+provideToast()
 </script>

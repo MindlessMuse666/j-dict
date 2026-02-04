@@ -75,6 +75,7 @@ func NewServer(database *sql.DB, cfg *config.Config) *Server {
 
 	// Инициализация обработчиков
 	authHandler := handler.NewAuthHandler(authService)
+	userHandler := handler.NewUserHandler(authService)
 	wordsHandler := handler.NewWordsHandler(wordsService)
 	importHandler := handler.NewImportHandler(wordsService)
 	healthHandler := handler.NewHealthHandler()
@@ -97,6 +98,9 @@ func NewServer(database *sql.DB, cfg *config.Config) *Server {
 		c.Next()
 	})
 
+	// Статика для загрузок
+	router.Static("/uploads", "./uploads")
+
 	// Публичные маршруты
 	router.POST("/api/auth/register", authHandler.Register)
 	router.POST("/api/auth/login", authHandler.Login)
@@ -105,9 +109,15 @@ func NewServer(database *sql.DB, cfg *config.Config) *Server {
 	authorized := router.Group("/api")
 	authorized.Use(middleware.AuthMiddleware(authService))
 	{
+		// Auth
 		authorized.GET("/auth/me", authHandler.Me)
 		authorized.POST("/auth/logout", authHandler.Logout)
 
+		// Users
+		authorized.POST("/users/avatar", userHandler.UploadAvatar)
+		authorized.PUT("/users/avatar", userHandler.UpdateAvatarURL)
+
+		// Words
 		authorized.GET("/words", wordsHandler.GetWords)
 		authorized.GET("/words/search", wordsHandler.SearchWords)
 		authorized.GET("/words/:id", wordsHandler.GetWord)

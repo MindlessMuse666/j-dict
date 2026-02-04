@@ -39,7 +39,7 @@
           <!-- Кнопка импорта -->
           <button @click="showImportModal = true"
             class="w-32 justify-center px-4 py-2 bg-secondary hover:bg-secondary/90 text-white font-medium rounded-xl transition duration-200 hover:shadow-lg shadow-md flex items-center transform-gpu hover:-translate-y-0.5">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
             </svg>
@@ -157,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
 import { useWordsStore } from '@/stores/words'
 import { useToast } from '@/composables/useToast'
 import { useHotkeys } from '@/composables/useHotkeys'
@@ -260,8 +260,9 @@ const handleClearSearch = () => {
   }
 }
 
-const handleEditWord = (word) => {
+const handleEditWord = async (word) => {
   selectedWord.value = word
+  await nextTick()
   showEditModal.value = true
 }
 

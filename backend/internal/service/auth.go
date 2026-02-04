@@ -17,6 +17,7 @@ type AuthService interface {
 	GenerateToken(user *model.User) (string, error)
 	ValidateToken(tokenString string) (*jwt.Token, error)
 	GetUserFromToken(token *jwt.Token) (*model.User, error)
+	UpdateAvatar(userID int, avatarURL string) error
 }
 
 type authService struct {
@@ -56,6 +57,7 @@ func (s *authService) Register(userReq *model.UserRegisterRequest) (*model.AuthR
 		Email:        userReq.Email,
 		PasswordHash: string(hashedPassword),
 		Name:         userReq.Name,
+		AvatarURL:    "/assets/default_avatars/~catishe~cat~.jpg",
 	}
 
 	if err := s.repo.CreateUser(user); err != nil {
@@ -133,10 +135,15 @@ func (s *authService) GetUserFromToken(token *jwt.Token) (*model.User, error) {
 		return nil, errors.New("неверные claims токена")
 	}
 
-	userID, ok := claims["sub"].(float64)
+	userIDFloat, ok := claims["sub"].(float64)
 	if !ok {
 		return nil, errors.New("неверный ID пользователя в токене")
 	}
 
-	return s.repo.GetUserByID(int(userID))
+	return s.repo.GetUserByID(int(userIDFloat))
+}
+
+// UpdateAvatar обновляет аватар пользователя
+func (s *authService) UpdateAvatar(userID int, avatarURL string) error {
+	return s.repo.UpdateUserAvatar(userID, avatarURL)
 }

@@ -1,7 +1,7 @@
 import { ref, provide, inject } from 'vue'
 
 // Создаем глобальный ключ для инъекции
-const ToastSymbol = Symbol('toast')
+const ToastSymbol = Symbol.for('toast')
 
 // Создаем глобальное хранилище тостов
 const globalToasts = ref([])
@@ -71,6 +71,10 @@ export function useToast() {
 // Функция для предоставления тостов в корневом компоненте
 export function provideToast(app) {
     const toast = createToast()
-    app.provide(ToastSymbol, toast)
+    if (app) {
+        app.provide(ToastSymbol, toast)
+    } else {
+        provide(ToastSymbol, toast)
+    }
     return toast
 }

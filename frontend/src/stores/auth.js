@@ -74,6 +74,34 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    const uploadAvatar = async (file) => {
+        try {
+            const formData = new FormData()
+            formData.append('file', file)
+            const response = await api.post('/users/avatar', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
+            if (user.value) {
+                user.value.avatar_url = response.data.url
+            }
+            return { success: true }
+        } catch (error) {
+            return { success: false, error: error.response?.data?.error || 'Ошибка загрузки аватара' }
+        }
+    }
+
+    const updateAvatarUrl = async (url) => {
+        try {
+            await api.put('/users/avatar', { avatar_url: url })
+            if (user.value) {
+                user.value.avatar_url = url
+            }
+            return { success: true }
+        } catch (error) {
+            return { success: false, error: error.response?.data?.error || 'Ошибка обновления аватара' }
+        }
+    }
+
     // При инициализации загружаем данные пользователя, если есть токен
     if (token.value) {
         fetchUser()
@@ -87,6 +115,8 @@ export const useAuthStore = defineStore('auth', () => {
         register,
         logout,
         fetchUser,
-        clearAuth
+        clearAuth,
+        uploadAvatar,
+        updateAvatarUrl
     }
 })
