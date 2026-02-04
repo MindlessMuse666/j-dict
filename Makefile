@@ -2,14 +2,15 @@
 
 .DEFAULT_GOAL := help
 
-# Запуск всех сервисов с использованием buildx для лучшей кешируемости
-run:
+# Запуск всех сервисов с --no-cache
+up:
 	docker-compose down
 	docker-compose up --build --remove-orphans
 
-# Запуск в фоновом режиме
-up:
-	docker-compose up --build -d
+# Запуск всех сервисов с --no-cache
+run:
+	docker-compose down
+	docker-compose up --build --remove-orphans --no-cache
 
 # Сборка образов с использованием buildx
 build:

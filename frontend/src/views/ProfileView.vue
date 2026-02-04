@@ -4,40 +4,6 @@
       <h1 class="text-3xl font-bold mb-8 text-primary">Личный кабинет</h1>
 
       <div class="bg-surface rounded-2xl shadow-lg p-8 flex flex-col md:flex-row gap-8 items-start">
-        <!-- Avatar Section -->
-        <div class="relative group flex-shrink-0 mx-auto md:mx-0">
-          <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-md bg-background relative z-0">
-            <img :src="avatarUrl" @error="handleImageError" alt="Avatar" class="w-full h-full object-cover" />
-          </div>
-          
-          <!-- Hover Overlay -->
-          <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
-               @click.stop="showAvatarMenu = !showAvatarMenu">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-          </div>
-
-          <!-- Avatar Menu Dropdown -->
-          <div v-if="showAvatarMenu" class="fixed inset-0 z-20" @click="showAvatarMenu = false"></div>
-          
-          <div v-if="showAvatarMenu" 
-               class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-surface rounded-xl shadow-xl border border-border z-30 overflow-hidden">
-            <button @click="openUploadModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-              Загрузить фото
-            </button>
-            <button @click="openPresetModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-              Выбрать готовую
-            </button>
-            <button @click="deleteAvatar" class="w-full text-left px-4 py-2 hover:bg-red-500/10 text-red-500 transition-colors flex items-center">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-              Удалить
-            </button>
-          </div>
-        </div>
-
         <!-- User Info -->
         <div class="flex-1 w-full">
           <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
@@ -69,6 +35,40 @@
                   <span class="text-xl font-bold text-primary ml-1">{{ wordsCount }}</span>
                 </div>
              </div>
+          </div>
+        </div>
+
+        <!-- Avatar Section -->
+        <div class="relative group flex-shrink-0 mx-auto md:mx-0">
+          <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-md bg-background relative z-0">
+            <img :src="avatarUrl" @error="handleImageError" alt="Avatar" class="w-full h-full object-cover" />
+          </div>
+          
+          <!-- Hover Overlay -->
+          <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
+               @click.stop="showAvatarMenu = !showAvatarMenu">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+          </div>
+
+          <!-- Avatar Menu Dropdown -->
+          <div v-if="showAvatarMenu" class="fixed inset-0 z-20" @click="showAvatarMenu = false"></div>
+          
+          <div v-if="showAvatarMenu" 
+               class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-surface rounded-xl shadow-xl border border-border z-30 overflow-hidden">
+            <button @click="openUploadModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+              Загрузить фото
+            </button>
+            <button @click="openPresetModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+              Выбрать готовую
+            </button>
+            <button @click="deleteAvatar" class="w-full text-left px-4 py-2 hover:bg-red-500/10 text-red-500 transition-colors flex items-center">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+              Удалить
+            </button>
           </div>
         </div>
       </div>
@@ -216,6 +216,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useWordsStore } from '@/stores/words'
 import { useRouter } from 'vue-router'
+import { ROLES, ROLE_LABELS } from '@/constants/roles'
 
 const authStore = useAuthStore()
 const wordsStore = useWordsStore()
@@ -224,8 +225,7 @@ const router = useRouter()
 const user = computed(() => authStore.user)
 const wordsCount = computed(() => wordsStore.totalCount)
 const userRole = computed(() => {
-  const role = user.value?.role || 'user'
-  return role === 'admin' ? 'Администратор' : 'Пользователь'
+  return ROLE_LABELS[user.value?.role] || user.value?.role || 'Пользователь'
 })
 
 const confirmLogout = () => {
@@ -244,13 +244,13 @@ const avatarUrl = computed(() => {
     // If url starts with http/https, use it. 
     // If it starts with /uploads, it's backend served.
     // If it starts with /assets, it's static asset.
-    // Add timestamp to bust cache
-    return `${user.value.avatar_url}?t=${Date.now()}`
+    return user.value.avatar_url
   }
   return '/assets/default_avatars/~catishe~cat~.jpg'
 })
 
 const handleImageError = (e) => {
+  console.error('Avatar load error:', e.target.src)
   e.target.src = '/assets/default_avatars/~catishe~cat~.jpg'
 }
 

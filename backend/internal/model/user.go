@@ -4,13 +4,21 @@ import (
 	"time"
 )
 
+// Role определяет роль пользователя
+type Role string
+
+const (
+	RoleUser  Role = "user"
+	RoleAdmin Role = "admin"
+)
+
 // User представляет пользователя системы
 type User struct {
 	ID           int       `json:"id" db:"id"`
 	Email        string    `json:"email" db:"email"`
 	PasswordHash string    `json:"-" db:"password_hash"`
 	Name         string    `json:"name" db:"name"`
-	Role         string    `json:"role" db:"role"`
+	Role         Role      `json:"role" db:"role"`
 	AvatarURL    string    `json:"avatar_url" db:"avatar_url"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`

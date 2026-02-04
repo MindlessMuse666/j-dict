@@ -57,6 +57,7 @@ func (s *authService) Register(userReq *model.UserRegisterRequest) (*model.AuthR
 		Email:        userReq.Email,
 		PasswordHash: string(hashedPassword),
 		Name:         userReq.Name,
+		Role:         model.RoleUser,
 		AvatarURL:    "/assets/default_avatars/~catishe~cat~.jpg",
 	}
 
