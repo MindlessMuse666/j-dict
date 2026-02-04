@@ -190,29 +190,8 @@ const handleEdit = () => {
     emit('edit', props.word)
 }
 
-const handleDelete = async () => {
-    if (!confirm('Вы уверены, что хотите удалить это слово?')) return
-
-    try {
-        // Анимация удаления
-        wordState.value = 'word-removing'
-
-        // Ждем завершения анимации перед удалением
-        setTimeout(async () => {
-            const result = await wordsStore.deleteWord(props.word.id)
-
-            if (result.success) {
-                showSuccess('Слово успешно удалено')
-                emit('delete', props.word.id)
-            } else {
-                showError(result.error)
-                wordState.value = ''
-            }
-        }, 250)
-    } catch (error) {
-        showError('Ошибка при удалении слова')
-        wordState.value = ''
-    }
+const handleDelete = () => {
+    emit('delete', props.word.id)
 }
 
 const formatDate = (dateString) => {

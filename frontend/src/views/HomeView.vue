@@ -143,6 +143,14 @@
     <WordFormModal v-if="showEditModal" :word="selectedWord" @close="closeModal" @saved="handleWordSaved"
       :is-open="showEditModal" />
 
+    <ConfirmModal 
+      :is-open="showDeleteModal" 
+      title="Удалить слово?"
+      message="Вы уверены, что хотите удалить это слово? Это действие нельзя будет отменить."
+      @close="closeDeleteModal" 
+      @confirm="confirmDelete" 
+    />
+
     <ImportModal v-if="showImportModal" @close="showImportModal = false" @imported="handleImported"
       :is-open="showImportModal" />
   </div>
@@ -155,6 +163,7 @@ import { useToast } from '@/composables/useToast'
 import { useHotkeys } from '@/composables/useHotkeys'
 import WordCard from '@/components/WordCard.vue'
 import WordFormModal from '@/components/WordFormModal.vue'
+import ConfirmModal from '@/components/ConfirmModal.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import WordSkeleton from '@/components/WordSkeleton.vue'
 import ImportModal from '@/components/ImportModal.vue'
@@ -168,7 +177,9 @@ const isCompactView = ref(true)
 const showAddModal = ref(false)
 const showImportModal = ref(false)
 const showEditModal = ref(false)
+const showDeleteModal = ref(false)
 const selectedWord = ref(null)
+const wordToDeleteId = ref(null)
 const currentSearchQuery = ref('')
 const isSearchActive = ref(false)
 const importedWords = ref([])
@@ -199,7 +210,7 @@ const handleScroll = () => {
 }
 
 const handleImported = (importResult) => {
-  showSuccess(`Успешно импортировано ${importResult.imported_count || 0} слов`)
+  // Уведомление показывается в ImportModal, здесь не дублируем
   // Обновляем список слов
   wordsStore.fetchWords(20, true)
 }
@@ -255,8 +266,30 @@ const handleEditWord = (word) => {
 }
 
 const handleWordDeleted = (wordId) => {
-  // Уведомление уже показывается в WordCard
-  // Здесь можно добавить дополнительную логику, если нужно
+  wordToDeleteId.value = wordId
+  showDeleteModal.value = true
+}
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
+  wordToDeleteId.value = null
+}
+
+const confirmDelete = async () => {
+  if (!wordToDeleteId.value) return
+  
+  try {
+    const result = await wordsStore.deleteWord(wordToDeleteId.value)
+    if (result.success) {
+      showSuccess('Слово успешно удалено')
+    } else {
+      showError(result.error || 'Ошибка при удалении слова')
+    }
+  } catch (error) {
+    showError('Ошибка при удалении слова')
+  } finally {
+    closeDeleteModal()
+  }
 }
 
 const handleWordSaved = async (wordData) => {

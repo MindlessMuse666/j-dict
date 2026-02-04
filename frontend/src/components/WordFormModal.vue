@@ -7,10 +7,13 @@
             <!-- Модальное окно - поверх фона -->
             <div class="relative z-50 bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden mx-4">
                 <!-- Заголовок -->
-                <div class="px-6 py-4 border-b border-stone-200 bg-background sticky top-0 z-10">
+                <div class="px-6 py-4 border-b border-stone-200 sticky top-0 z-10"
+                    :class="isEditing ? 'bg-amber-50' : 'bg-white'">
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-text-main font-jp">
-                            {{ isEditing ? 'Редактировать слово' : 'Добавить новое слово' }}
+                            <span v-if="isEditing">Редактирование: <span class="text-primary">{{ form.jp[0] || 'слова'
+                                    }}</span></span>
+                            <span v-else>Добавить новое слово</span>
                         </h3>
                         <button @click="close" class="text-stone-400 hover:text-stone-600 transition-colors p-1">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -365,16 +368,26 @@ watch(() => props.isOpen, (isOpen) => {
 }, { immediate: true })
 
 const loadWordData = (word) => {
-    form.jp = [...word.jp]
-    form.ru = [...word.ru]
-    form.on = word.on && word.on.length > 0 ? [...word.on] : ['']
-    form.kun = word.kun && word.kun.length > 0 ? [...word.kun] : ['']
-    form.ex_jp = word.ex_jp && word.ex_jp.length > 0 ? [...word.ex_jp] : ['']
-    form.ex_ru = word.ex_ru && word.ex_ru.length > 0 ? [...word.ex_ru] : ['']
-    form.tags = word.tags && word.tags.length > 0 ? [...word.tags] : []
+    if (!word) return
+
+    form.jp = Array.isArray(word.jp) && word.jp.length ? [...word.jp] : ['']
+    form.ru = Array.isArray(word.ru) && word.ru.length ? [...word.ru] : ['']
+    form.on = Array.isArray(word.on) && word.on.length ? [...word.on] : ['']
+    form.kun = Array.isArray(word.kun) && word.kun.length ? [...word.kun] : ['']
+    form.ex_jp = Array.isArray(word.ex_jp) && word.ex_jp.length ? [...word.ex_jp] : ['']
+    form.ex_ru = Array.isArray(word.ex_ru) && word.ex_ru.length ? [...word.ex_ru] : ['']
+    form.tags = Array.isArray(word.tags) && word.tags.length ? [...word.tags] : []
 
     // Обновляем поле ввода тегов
     tagsInput.value = form.tags.join(', ')
+
+    // Автоматически раскрываем дополнительные поля, если в них есть данные
+    if ((form.on.length > 1 || (form.on[0] && form.on[0].trim())) ||
+        (form.kun.length > 1 || (form.kun[0] && form.kun[0].trim())) ||
+        (form.ex_jp.length > 1 || (form.ex_jp[0] && form.ex_jp[0].trim())) ||
+        (form.tags.length > 0)) {
+        showAdvanced.value = true
+    }
 }
 
 const resetForm = () => {
