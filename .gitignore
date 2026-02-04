@@ -19,6 +19,7 @@ logs/
 # IDE
 .vscode/
 .idea/
+.trae/
 *.swp
 *.swo
 
