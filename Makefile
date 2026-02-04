@@ -10,7 +10,8 @@ up:
 # Запуск всех сервисов с --no-cache
 run:
 	docker-compose down
-	docker-compose up --build --remove-orphans --no-cache
+	docker-compose build --no-cache
+	docker-compose up --remove-orphans
 
 # Сборка образов с использованием buildx
 build:

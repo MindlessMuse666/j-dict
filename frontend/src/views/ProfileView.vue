@@ -3,10 +3,44 @@
     <div class="max-w-4xl mx-auto">
       <h1 class="text-3xl font-bold mb-8 text-primary">Личный кабинет</h1>
 
-      <div class="bg-surface rounded-2xl shadow-lg p-8 flex flex-col md:flex-row gap-8 items-start">
-        <!-- User Info -->
-        <div class="flex-1 w-full">
-          <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+      <div class="bg-surface rounded-2xl shadow-lg p-8 relative">
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+          <!-- Avatar Section -->
+          <div class="relative group flex-shrink-0 mx-auto md:mx-0 self-center">
+            <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-md bg-background relative z-0">
+              <img :src="avatarUrl" @error="handleImageError" alt="Avatar" class="w-full h-full object-cover" />
+            </div>
+            
+            <!-- Hover Overlay -->
+            <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
+                 @click.stop="showAvatarMenu = !showAvatarMenu">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </div>
+
+            <!-- Avatar Menu Dropdown -->
+            <div v-if="showAvatarMenu" class="fixed inset-0 z-20" @click="showAvatarMenu = false"></div>
+            
+            <div v-if="showAvatarMenu" 
+                 class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-surface rounded-xl shadow-xl border border-border z-30 overflow-hidden">
+              <button @click="openUploadModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                Загрузить фото
+              </button>
+              <button @click="openPresetModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+                Выбрать готовую
+              </button>
+              <button @click="deleteAvatar" class="w-full text-left px-4 py-2 hover:bg-red-500/10 text-red-500 transition-colors flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                Удалить
+              </button>
+            </div>
+          </div>
+
+          <!-- User Info -->
+          <div class="flex-1 w-full pr-12">
             <div class="space-y-1">
               <h2 class="text-3xl font-bold text-text-primary tracking-tight">{{ user?.name || 'Пользователь' }}</h2>
               <div class="flex items-center text-text-secondary">
@@ -19,57 +53,26 @@
               </div>
             </div>
             
-            <button @click="confirmLogout" class="w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:translate-y-0 flex items-center justify-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-              Выйти
-            </button>
-          </div>
-          
-          <div class="h-px bg-border/50 my-4"></div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-             <div class="bg-background px-4 py-3 rounded-xl border border-border">
-                <div class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
-                  <span class="text-text-secondary text-sm font-medium">Изучено слов</span>
-                  <span class="text-xl font-bold text-primary ml-1">{{ wordsCount }}</span>
-                </div>
-             </div>
+            <div class="h-px bg-border/50 my-4"></div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+               <div class="bg-background px-4 py-3 rounded-xl border border-border">
+                  <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                    <span class="text-text-secondary text-sm font-medium">Изучено слов</span>
+                    <span class="text-xl font-bold text-primary ml-1">{{ wordsCount }}</span>
+                  </div>
+               </div>
+            </div>
           </div>
         </div>
 
-        <!-- Avatar Section -->
-        <div class="relative group flex-shrink-0 mx-auto md:mx-0">
-          <div class="w-40 h-40 rounded-full overflow-hidden border-4 border-primary/20 shadow-md bg-background relative z-0">
-            <img :src="avatarUrl" @error="handleImageError" alt="Avatar" class="w-full h-full object-cover" />
-          </div>
-          
-          <!-- Hover Overlay -->
-          <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer z-10"
-               @click.stop="showAvatarMenu = !showAvatarMenu">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-            </svg>
-          </div>
-
-          <!-- Avatar Menu Dropdown -->
-          <div v-if="showAvatarMenu" class="fixed inset-0 z-20" @click="showAvatarMenu = false"></div>
-          
-          <div v-if="showAvatarMenu" 
-               class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-surface rounded-xl shadow-xl border border-border z-30 overflow-hidden">
-            <button @click="openUploadModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-              Загрузить фото
-            </button>
-            <button @click="openPresetModal" class="w-full text-left px-4 py-2 hover:bg-background/50 transition-colors flex items-center text-text-primary">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
-              Выбрать готовую
-            </button>
-            <button @click="deleteAvatar" class="w-full text-left px-4 py-2 hover:bg-red-500/10 text-red-500 transition-colors flex items-center">
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-              Удалить
-            </button>
-          </div>
+        <!-- Logout Button (Top Right) -->
+        <div class="absolute top-8 right-8">
+          <button @click="confirmLogout" class="px-5 py-2.5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:translate-y-0 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            Выйти
+          </button>
         </div>
       </div>
     </div>
