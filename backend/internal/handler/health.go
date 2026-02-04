@@ -15,7 +15,7 @@ func NewHealthHandler() *HealthHandler {
 
 // HealthCheck проверяет работоспособность сервиса
 // @Summary Проверка здоровья
-// @Description Проверяет, что сервис работает
+// @Description Проверяет, что сервис работает.
 // @Tags system
 // @Produce json
 // @Success 200 {object} map[string]string "Сервис работает"

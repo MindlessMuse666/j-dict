@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Config хранит всю конфигурацию приложения
 type Config struct {
 	DB       DBConfig
 	Server   ServerConfig
@@ -14,6 +15,7 @@ type Config struct {
 	LogLevel string
 }
 
+// DBConfig конфигурация базы данных
 type DBConfig struct {
 	Host     string
 	Port     int
@@ -23,19 +25,23 @@ type DBConfig struct {
 	SSLMode  string
 }
 
+// ServerConfig конфигурация HTTP сервера
 type ServerConfig struct {
 	Port string
 }
 
+// KafkaConfig конфигурация Kafka брокера
 type KafkaConfig struct {
 	Broker string
 }
 
+// JWTConfig конфигурация JWT токенов
 type JWTConfig struct {
 	Secret string
 	Expiry time.Duration
 }
 
+// Load загружает конфигурацию из переменных окружения
 func Load() Config {
 	return Config{
 		DB: DBConfig{
@@ -60,6 +66,7 @@ func Load() Config {
 	}
 }
 
+// getEnv получает строковое значение из env или возвращает дефолтное
 func getEnv(key, defaultValue string) string {
 	value := os.Getenv(key)
 	if value == "" {
@@ -68,6 +75,7 @@ func getEnv(key, defaultValue string) string {
 	return value
 }
 
+// getEnvAsInt получает int значение из env или возвращает дефолтное
 func getEnvAsInt(key string, defaultValue int) int {
 	value := os.Getenv(key)
 	if value == "" {
@@ -80,6 +88,7 @@ func getEnvAsInt(key string, defaultValue int) int {
 	return intValue
 }
 
+// getEnvAsDuration получает time.Duration из env или возвращает дефолтное
 func getEnvAsDuration(key string, defaultValue time.Duration) time.Duration {
 	value := os.Getenv(key)
 	if value == "" {

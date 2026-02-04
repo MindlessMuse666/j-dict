@@ -19,7 +19,7 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 
 // Register обрабатывает регистрацию нового пользователя
 // @Summary Регистрация пользователя
-// @Description Создает нового пользователя и возвращает JWT токен
+// @Description Создает нового пользователя и возвращает JWT токен. Требует email, пароль и имя.
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -31,22 +31,22 @@ func NewAuthHandler(authService service.AuthService) *AuthHandler {
 func (h *AuthHandler) Register(c *gin.Context) {
 	var req model.UserRegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "неверные данные: " + err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "неверные данные: " + err.Error()})
 		return
 	}
 
 	authResponse, err := h.authService.Register(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": authResponse})
+	c.JSON(http.StatusCreated, model.AuthResponseWrapper{Data: *authResponse})
 }
 
 // Login обрабатывает вход пользователя
 // @Summary Вход пользователя
-// @Description Аутентифицирует пользователя и возвращает JWT токен
+// @Description Аутентифицирует пользователя и возвращает JWT токен.
 // @Tags auth
 // @Accept json
 // @Produce json
@@ -58,22 +58,22 @@ func (h *AuthHandler) Register(c *gin.Context) {
 func (h *AuthHandler) Login(c *gin.Context) {
 	var req model.UserLoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "неверные данные: " + err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "неверные данные: " + err.Error()})
 		return
 	}
 
 	authResponse, err := h.authService.Login(&req)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": authResponse})
+	c.JSON(http.StatusOK, model.AuthResponseWrapper{Data: *authResponse})
 }
 
 // Me возвращает информацию о текущем пользователе
 // @Summary Информация о текущем пользователе
-// @Description Возвращает информацию о пользователе из JWT токена
+// @Description Возвращает информацию о пользователе из JWT токена. Требует Bearer токен.
 // @Tags auth
 // @Produce json
 // @Security BearerAuth
@@ -83,11 +83,11 @@ func (h *AuthHandler) Login(c *gin.Context) {
 func (h *AuthHandler) Me(c *gin.Context) {
 	user, exists := c.Get("user")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "пользователь не найден"})
+		c.JSON(http.StatusUnauthorized, model.ErrorResponse{Error: "пользователь не найден"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.JSON(http.StatusOK, model.UserResponseWrapper{Data: *user.(*model.User)})
 }
 
 // Logout обрабатывает выход пользователя

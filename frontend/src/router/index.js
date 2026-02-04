@@ -1,6 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+/**
+ * Определение маршрутов приложения.
+ * @type {import('vue-router').RouteRecordRaw[]}
+ */
 const routes = [
     {
         path: '/',
@@ -33,12 +37,19 @@ const routes = [
     }
 ]
 
+/**
+ * Экземпляр Vue Router.
+ */
 const router = createRouter({
     history: createWebHistory(),
     routes
 })
 
-// Глобальный guard для проверки аутентификации
+/**
+ * Глобальный навигационный хук для обработки аутентификации.
+ * Перенаправляет на Login, если требуется auth и пользователь не авторизован.
+ * Перенаправляет на Home, если пользователь авторизован и пытается получить доступ к страницам только для гостей.
+ */
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
     const isAuthenticated = authStore.isAuthenticated

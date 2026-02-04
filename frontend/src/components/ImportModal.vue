@@ -24,7 +24,8 @@
                     <!-- Инструкция -->
                     <div class="mb-6 p-4 bg-stone-50 border border-stone-200 rounded-lg">
                         <h4 class="font-medium text-text-main mb-2 font-jp">Формат CSV файла:</h4>
-                        <pre class="text-sm text-text-muted whitespace-pre-wrap font-mono bg-white p-2 rounded border border-stone-100">jp,ru,on,kun,ex_jp,ex_ru,tags
+                        <pre
+                            class="text-sm text-text-muted whitespace-pre-wrap font-mono bg-white p-2 rounded border border-stone-100">jp,ru,on,kun,ex_jp,ex_ru,tags
 机,стол,キ,つくえ,机の上に本があります,На столе лежит книга,n5,мебель
 本,книга,ホン,ほん,本を読みます,Читаю книгу,n5</pre>
                         <p class="text-sm text-text-muted mt-2">
@@ -70,7 +71,7 @@
                             <p class="text-sm text-text-muted">
                                 {{ selectedFile ?
                                     `${selectedFile.name} (${(selectedFile.size / 1024).toFixed(1)} KB)` :
-                                'Поддерживаются файлы CSV до 10MB'
+                                    'Поддерживаются файлы CSV до 10MB'
                                 }}
                             </p>
 
@@ -89,7 +90,8 @@
                                     </svg>
                                     <div>
                                         <p class="font-medium text-text-main">{{ selectedFile.name }}</p>
-                                        <p class="text-sm text-text-muted">{{ (selectedFile.size / 1024).toFixed(2) }} KB
+                                        <p class="text-sm text-text-muted">{{ (selectedFile.size / 1024).toFixed(2) }}
+                                            KB
                                         </p>
                                     </div>
                                 </div>
@@ -120,8 +122,8 @@
                                         Ошибок: {{ importStore.importResult.failed_count }}
                                     </span>
                                 </p>
-                                <div v-if="importStore.importResult.errors && importStore.importResult.errors.length > 0" 
-                                     class="mt-2 text-xs text-red-600 max-h-32 overflow-y-auto bg-red-50 p-2 rounded border border-red-100">
+                                <div v-if="importStore.importResult.errors && importStore.importResult.errors.length > 0"
+                                    class="mt-2 text-xs text-red-600 max-h-32 overflow-y-auto bg-red-50 p-2 rounded border border-red-100">
                                     <ul class="list-disc list-inside">
                                         <li v-for="(err, idx) in importStore.importResult.errors" :key="idx">
                                             {{ err }}

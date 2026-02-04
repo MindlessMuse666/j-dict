@@ -34,20 +34,20 @@ func (h *ImportHandler) ImportCSV(c *gin.Context) {
 
 	var req model.CSVImportRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "неверный формат запроса: " + err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "неверный формат запроса: " + err.Error()})
 		return
 	}
 
 	if req.Content == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "CSV контент не может быть пустым"})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "CSV контент не может быть пустым"})
 		return
 	}
 
 	result, err := h.wordsService.ImportCSV(userID, req.Content)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ошибка импорта: " + err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "ошибка импорта: " + err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	c.JSON(http.StatusOK, model.CSVImportResponseWrapper{Data: *result})
 }

@@ -1,9 +1,9 @@
 import { ref, provide, inject } from 'vue'
 
-// Создаем глобальный ключ для инъекции
+// Глобальный ключ для инъекции
 const ToastSymbol = Symbol.for('toast')
 
-// Создаем глобальное хранилище тостов
+// Глобальное хранилище тостов
 const globalToasts = ref([])
 
 export function createToast() {
@@ -62,10 +62,6 @@ export function useToast() {
     const toast = inject(ToastSymbol)
 
     if (!toast) {
-        // Fallback: create a new toast instance if not provided (useful for async/outside setup)
-        // But better is to just return the methods that operate on globalToasts directly
-        // Since globalToasts is defined in module scope, we can access it.
-        // This avoids the error when useToast is called outside component setup or before provide
         return createToast()
     }
 

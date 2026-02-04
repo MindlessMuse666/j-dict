@@ -162,7 +162,8 @@
                                         </div>
                                         <button type="button" @click="addArrayItem('on')"
                                             class="mt-1.5 text-xs text-primary hover:text-primary/80 flex items-center font-medium">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 4v16m8-8H4" />
                                             </svg>
@@ -195,7 +196,8 @@
                                         </div>
                                         <button type="button" @click="addArrayItem('kun')"
                                             class="mt-1.5 text-xs text-primary hover:text-primary/80 flex items-center font-medium">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 4v16m8-8H4" />
                                             </svg>
@@ -228,9 +230,11 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <button v-if="form.ex_jp.length < 3" type="button" @click="addArrayItem('ex_jp')"
+                                        <button v-if="form.ex_jp.length < 3" type="button"
+                                            @click="addArrayItem('ex_jp')"
                                             class="mt-1.5 text-xs text-primary hover:text-primary/80 flex items-center">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 4v16m8-8H4" />
                                             </svg>
@@ -261,9 +265,11 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <button v-if="form.ex_ru.length < 3" type="button" @click="addArrayItem('ex_ru')"
+                                        <button v-if="form.ex_ru.length < 3" type="button"
+                                            @click="addArrayItem('ex_ru')"
                                             class="mt-1.5 text-xs text-primary hover:text-primary/80 flex items-center">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 4v16m8-8H4" />
                                             </svg>
@@ -325,6 +331,12 @@
 import { ref, reactive, watch } from 'vue'
 import { useToast } from '@/composables/useToast'
 
+/**
+ * Свойства компонента WordFormModal.
+ * @typedef {Object} Props
+ * @property {Boolean} isOpen - Открыто ли модальное окно.
+ * @property {Object|null} word - Объект слова для редактирования (null для создания нового).
+ */
 const props = defineProps({
     isOpen: {
         type: Boolean,
@@ -336,6 +348,11 @@ const props = defineProps({
     }
 })
 
+/**
+ * События компонента WordFormModal.
+ * @emits close - Событие закрытия модального окна.
+ * @emits saved - Событие успешного сохранения слова.
+ */
 const emit = defineEmits(['close', 'saved'])
 
 const { showSuccess, showError } = useToast()
@@ -357,9 +374,9 @@ const form = reactive({
 
 const errors = reactive({})
 
-
-
-
+/**
+ * Инициализирует состояние формы на основе свойств.
+ */
 const initForm = () => {
     resetForm()
     if (props.word) {
@@ -370,6 +387,10 @@ const initForm = () => {
     }
 }
 
+/**
+ * Загружает данные существующего слова в форму.
+ * @param {Object} word - Объект слова для загрузки.
+ */
 const loadWordData = (word) => {
     if (!word) return
 
@@ -393,6 +414,9 @@ const loadWordData = (word) => {
     }
 }
 
+/**
+ * Сбрасывает форму к начальному состоянию.
+ */
 const resetForm = () => {
     form.jp = ['']
     form.ru = ['']
@@ -420,6 +444,10 @@ watch(() => props.word, (newWord) => {
     }
 })
 
+/**
+ * Валидирует данные формы.
+ * @returns {Boolean} - True, если данные валидны, иначе false.
+ */
 const validateForm = () => {
     let isValid = true
     Object.keys(errors).forEach(key => delete errors[key])
@@ -448,6 +476,10 @@ const validateForm = () => {
     return isValid
 }
 
+/**
+ * Добавляет новый элемент в поле-массив.
+ * @param {String} field - Имя поля (например, 'jp', 'ru').
+ */
 const addArrayItem = (field) => {
     // Проверка лимитов для массивов
     if (field === 'ex_jp' && form.ex_jp.length >= 3) return
@@ -461,6 +493,11 @@ const addArrayItem = (field) => {
     }
 }
 
+/**
+ * Удаляет элемент из поля-массива.
+ * @param {String} field - Имя поля.
+ * @param {Number} index - Индекс удаляемого элемента.
+ */
 const removeArrayItem = (field, index) => {
     form[field].splice(index, 1)
     // Если массив пуст, добавляем пустой элемент для полей чтений
@@ -469,7 +506,12 @@ const removeArrayItem = (field, index) => {
     }
 }
 
-const updateTagsFromInput = () => {
+/**
+ * Обновляет теги из поля ввода.
+ * Обрабатывает как ввод (парсинг), так и потерю фокуса (форматирование).
+ * @param {Event} [event] - DOM событие.
+ */
+const updateTagsFromInput = (event) => {
     const tags = tagsInput.value
         .split(',')
         .map(tag => tag.trim())
@@ -477,14 +519,25 @@ const updateTagsFromInput = () => {
         .slice(0, 5) // Ограничение на 5 тегов
 
     form.tags = tags
-    tagsInput.value = tags.join(', ')
+
+    // Форматируем отображаемое значение только при потере фокуса для удобства ввода
+    if (event && event.type === 'blur') {
+        tagsInput.value = tags.join(', ')
+    }
 }
 
+/**
+ * Удаляет конкретный тег.
+ * @param {Number} index - Индекс удаляемого тега.
+ */
 const removeTag = (index) => {
     form.tags.splice(index, 1)
     tagsInput.value = form.tags.join(', ')
 }
 
+/**
+ * Обрабатывает отправку формы.
+ */
 const handleSubmit = async () => {
     if (!validateForm()) return
 
@@ -512,6 +565,9 @@ const handleSubmit = async () => {
     }
 }
 
+/**
+ * Закрывает модальное окно.
+ */
 const close = () => {
     resetForm()
     emit('close')

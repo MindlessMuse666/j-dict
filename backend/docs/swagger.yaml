@@ -1,79 +1,117 @@
 basePath: /api
 definitions:
-  jp-ru-dict_backend_internal_model.AuthResponse:
+  handler.UpdateAvatarRequest:
+    properties:
+      avatar_url:
+        example: /assets/default_avatars/cat.jpg
+        type: string
+    required:
+    - avatar_url
+    type: object
+  model.AuthResponse:
     properties:
       token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         type: string
       user:
-        $ref: '#/definitions/jp-ru-dict_backend_internal_model.User'
+        $ref: '#/definitions/model.User'
     type: object
-  jp-ru-dict_backend_internal_model.AuthResponseWrapper:
+  model.AuthResponseWrapper:
     properties:
       data:
-        $ref: '#/definitions/jp-ru-dict_backend_internal_model.AuthResponse'
+        $ref: '#/definitions/model.AuthResponse'
     type: object
-  jp-ru-dict_backend_internal_model.CSVImportRequest:
+  model.CSVImportRequest:
     properties:
       content:
+        example: |-
+          jp,ru
+          猫,кот
         type: string
     required:
     - content
     type: object
-  jp-ru-dict_backend_internal_model.CSVImportResponse:
+  model.CSVImportResponse:
     properties:
       errors:
+        example:
+        - 'строка 1: неверный формат'
         items:
           type: string
         type: array
       failed_count:
+        example: 0
         type: integer
       imported_count:
+        example: 10
         type: integer
     type: object
-  jp-ru-dict_backend_internal_model.CSVImportResponseWrapper:
+  model.CSVImportResponseWrapper:
     properties:
       data:
-        $ref: '#/definitions/jp-ru-dict_backend_internal_model.CSVImportResponse'
+        $ref: '#/definitions/model.CSVImportResponse'
     type: object
-  jp-ru-dict_backend_internal_model.ErrorResponse:
+  model.ErrorResponse:
     properties:
       error:
+        example: неверные данные
         type: string
     type: object
-  jp-ru-dict_backend_internal_model.User:
+  model.Role:
+    enum:
+    - user
+    - admin
+    type: string
+    x-enum-varnames:
+    - RoleUser
+    - RoleAdmin
+  model.User:
     properties:
       avatar_url:
+        example: https://example.com/avatar.jpg
         type: string
       created_at:
+        example: "2024-01-01T00:00:00Z"
         type: string
       email:
+        example: user@example.com
         type: string
       id:
+        example: 1
         type: integer
       name:
+        example: John Doe
         type: string
       role:
-        type: string
+        allOf:
+        - $ref: '#/definitions/model.Role'
+        example: user
       updated_at:
+        example: "2024-01-01T00:00:00Z"
         type: string
     type: object
-  jp-ru-dict_backend_internal_model.UserLoginRequest:
+  model.UserLoginRequest:
     properties:
       email:
+        example: user@example.com
         type: string
       password:
+        example: secretpassword
         type: string
     required:
     - email
     - password
     type: object
-  jp-ru-dict_backend_internal_model.UserRegisterRequest:
+  model.UserRegisterRequest:
     properties:
       email:
+        example: newuser@example.com
         type: string
       name:
+        example: New User
         type: string
       password:
+        example: secretpassword
         minLength: 6
         type: string
     required:
@@ -81,89 +119,124 @@ definitions:
     - name
     - password
     type: object
-  jp-ru-dict_backend_internal_model.UserResponseWrapper:
+  model.UserResponseWrapper:
     properties:
       data:
-        $ref: '#/definitions/jp-ru-dict_backend_internal_model.User'
+        $ref: '#/definitions/model.User'
     type: object
-  jp-ru-dict_backend_internal_model.Word:
+  model.Word:
     properties:
       created_at:
+        example: "2024-01-01T00:00:00Z"
         type: string
       ex_jp:
+        example:
+        - 猫が好き
         items:
           type: string
         maxItems: 3
         type: array
       ex_ru:
+        example:
+        - Мне нравятся кошки
         items:
           type: string
         maxItems: 3
         type: array
       id:
+        example: 1
         type: integer
       jp:
+        example:
+        - 猫
         items:
           type: string
         minItems: 1
         type: array
       kun:
+        example:
+        - ねこ
         items:
           type: string
         type: array
       "on":
+        example:
+        - ビョウ
         items:
           type: string
         type: array
       ru:
+        example:
+        - кот
+        - кошка
         items:
           type: string
         minItems: 1
         type: array
       tags:
+        example:
+        - животные
+        - JLPT N5
         items:
           type: string
         maxItems: 5
         type: array
       updated_at:
+        example: "2024-01-01T00:00:00Z"
         type: string
       user_id:
+        example: 1
         type: integer
     required:
     - jp
     - ru
     type: object
-  jp-ru-dict_backend_internal_model.WordCreateRequest:
+  model.WordCreateRequest:
     properties:
       ex_jp:
+        example:
+        - 猫が好き
         items:
           type: string
         maxItems: 3
         type: array
       ex_ru:
+        example:
+        - Мне нравятся кошки
         items:
           type: string
         maxItems: 3
         type: array
       jp:
+        example:
+        - 猫
         items:
           type: string
         minItems: 1
         type: array
       kun:
+        example:
+        - ねこ
         items:
           type: string
         type: array
       "on":
+        example:
+        - ビョウ
         items:
           type: string
         type: array
       ru:
+        example:
+        - кот
+        - кошка
         items:
           type: string
         minItems: 1
         type: array
       tags:
+        example:
+        - животные
         items:
           type: string
         maxItems: 5
@@ -172,64 +245,82 @@ definitions:
     - jp
     - ru
     type: object
-  jp-ru-dict_backend_internal_model.WordResponseWrapper:
+  model.WordResponseWrapper:
     properties:
       data:
-        $ref: '#/definitions/jp-ru-dict_backend_internal_model.Word'
+        $ref: '#/definitions/model.Word'
     type: object
-  jp-ru-dict_backend_internal_model.WordUpdateRequest:
+  model.WordUpdateRequest:
     properties:
       ex_jp:
+        example:
+        - 猫が好き
         items:
           type: string
         maxItems: 3
         type: array
       ex_ru:
+        example:
+        - Мне нравятся кошки
         items:
           type: string
         maxItems: 3
         type: array
       jp:
+        example:
+        - 猫
         items:
           type: string
         minItems: 1
         type: array
       kun:
+        example:
+        - ねこ
         items:
           type: string
         type: array
       "on":
+        example:
+        - ビョウ
         items:
           type: string
         type: array
       ru:
+        example:
+        - кот
+        - кошка
         items:
           type: string
         minItems: 1
         type: array
       tags:
+        example:
+        - животные
         items:
           type: string
         maxItems: 5
         type: array
     type: object
-  jp-ru-dict_backend_internal_model.WordsListResponse:
+  model.WordsListResponse:
     properties:
       has_more:
+        example: true
         type: boolean
       next_cursor:
+        example: 10
         type: integer
       total_count:
+        example: 100
         type: integer
       words:
         items:
-          $ref: '#/definitions/jp-ru-dict_backend_internal_model.Word'
+          $ref: '#/definitions/model.Word'
         type: array
     type: object
-  jp-ru-dict_backend_internal_model.WordsListResponseWrapper:
+  model.WordsListResponseWrapper:
     properties:
       data:
-        $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordsListResponse'
+        $ref: '#/definitions/model.WordsListResponse'
     type: object
 host: localhost:8080
 info:
@@ -249,29 +340,29 @@ paths:
     post:
       consumes:
       - application/json
-      description: Аутентифицирует пользователя и возвращает JWT токен
+      description: Аутентифицирует пользователя и возвращает JWT токен.
       parameters:
       - description: Данные для входа
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/jp-ru-dict_backend_internal_model.UserLoginRequest'
+          $ref: '#/definitions/model.UserLoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Успешный вход
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.AuthResponseWrapper'
+            $ref: '#/definitions/model.AuthResponseWrapper'
         "400":
           description: Неверные данные
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "401":
           description: Неверные учетные данные
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       summary: Вход пользователя
       tags:
       - auth
@@ -294,18 +385,19 @@ paths:
       - auth
   /api/auth/me:
     get:
-      description: Возвращает информацию о пользователе из JWT токена
+      description: Возвращает информацию о пользователе из JWT токена. Требует Bearer
+        токен.
       produces:
       - application/json
       responses:
         "200":
           description: Информация о пользователе
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.UserResponseWrapper'
+            $ref: '#/definitions/model.UserResponseWrapper'
         "401":
           description: Неавторизован
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Информация о текущем пользователе
@@ -315,35 +407,36 @@ paths:
     post:
       consumes:
       - application/json
-      description: Создает нового пользователя и возвращает JWT токен
+      description: Создает нового пользователя и возвращает JWT токен. Требует email,
+        пароль и имя.
       parameters:
       - description: Данные для регистрации
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/jp-ru-dict_backend_internal_model.UserRegisterRequest'
+          $ref: '#/definitions/model.UserRegisterRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Успешная регистрация
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.AuthResponseWrapper'
+            $ref: '#/definitions/model.AuthResponseWrapper'
         "400":
           description: Неверные данные
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "409":
           description: Пользователь уже существует
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       summary: Регистрация пользователя
       tags:
       - auth
   /api/health:
     get:
-      description: Проверяет, что сервис работает
+      description: Проверяет, что сервис работает.
       produces:
       - application/json
       responses:
@@ -360,9 +453,9 @@ paths:
     post:
       consumes:
       - multipart/form-data
-      description: Загружает аватар пользователя и обновляет профиль
+      description: Загружает аватар пользователя (JPG/PNG) и обновляет профиль.
       parameters:
-      - description: Avatar file
+      - description: Файл аватара
         in: formData
         name: file
         required: true
@@ -371,19 +464,71 @@ paths:
       - application/json
       responses:
         "200":
-          description: Avatar URL
+          description: URL аватара
           schema:
             additionalProperties:
               type: string
             type: object
+        "400":
+          description: Ошибка загрузки или неверный формат
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Неавторизован
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Загрузка аватара
       tags:
       - users
+  /api/users/avatar/url:
+    put:
+      consumes:
+      - application/json
+      description: Устанавливает аватар пользователя по указанному URL (обычно для
+        предустановленных аватаров).
+      parameters:
+      - description: URL аватара
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.UpdateAvatarRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успех
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+        "400":
+          description: Неверные данные
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "401":
+          description: Неавторизован
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/model.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Обновление аватара по URL
+      tags:
+      - users
   /api/words:
     get:
-      description: Возвращает список слов пользователя с курсорной пагинацией
+      description: Возвращает список слов пользователя с курсорной пагинацией. Поддерживает
+        фильтрацию и сортировку.
       parameters:
       - default: 20
         description: Лимит слов (макс. 100)
@@ -393,7 +538,7 @@ paths:
         name: limit
         type: integer
       - default: 0
-        description: Курсор для пагинации
+        description: Курсор для пагинации (ID последнего загруженного слова)
         in: query
         minimum: 0
         name: cursor
@@ -404,11 +549,11 @@ paths:
         "200":
           description: Список слов
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordsListResponseWrapper'
+            $ref: '#/definitions/model.WordsListResponseWrapper'
         "500":
           description: Внутренняя ошибка сервера
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Получить список слов
@@ -417,29 +562,30 @@ paths:
     post:
       consumes:
       - application/json
-      description: Создает новое слово в словаре пользователя
+      description: Создает новое слово в словаре пользователя. Обязательны поля Jp
+        (японский) и Ru (русский).
       parameters:
       - description: Данные слова
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordCreateRequest'
+          $ref: '#/definitions/model.WordCreateRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Слово создано
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper'
+            $ref: '#/definitions/model.WordResponseWrapper'
         "400":
           description: Неверные данные
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Внутренняя ошибка сервера
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Создать слово
@@ -462,11 +608,11 @@ paths:
         "400":
           description: Неверный ID слова
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "404":
           description: Слово не найдено
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Удалить слово
@@ -486,15 +632,15 @@ paths:
         "200":
           description: Слово
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper'
+            $ref: '#/definitions/model.WordResponseWrapper'
         "400":
           description: Неверный ID слова
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "404":
           description: Слово не найдено
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Получить слово по ID
@@ -519,22 +665,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordUpdateRequest'
+          $ref: '#/definitions/model.WordUpdateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Слово обновлено
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper'
+            $ref: '#/definitions/model.WordResponseWrapper'
         "400":
           description: Неверные данные или пустой запрос
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "404":
           description: Слово не найдено
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Обновить слово
@@ -552,22 +698,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/jp-ru-dict_backend_internal_model.CSVImportRequest'
+          $ref: '#/definitions/model.CSVImportRequest'
       produces:
       - application/json
       responses:
         "200":
           description: Результат импорта
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.CSVImportResponseWrapper'
+            $ref: '#/definitions/model.CSVImportResponseWrapper'
         "400":
           description: Неверный формат CSV
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
         "500":
           description: Внутренняя ошибка сервера
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Импорт слов из CSV
@@ -618,11 +764,11 @@ paths:
         "200":
           description: Результаты поиска
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.WordsListResponseWrapper'
+            $ref: '#/definitions/model.WordsListResponseWrapper'
         "500":
           description: Внутренняя ошибка сервера
           schema:
-            $ref: '#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse'
+            $ref: '#/definitions/model.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Поиск слов

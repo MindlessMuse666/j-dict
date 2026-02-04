@@ -27,11 +27,13 @@
 
                     <!-- Кнопки -->
                     <div class="mt-6 flex justify-center space-x-3">
-                        <button type="button" class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+                        <button type="button"
+                            class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
                             @click="$emit('close')">
                             Отмена
                         </button>
-                        <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors shadow-sm"
+                        <button type="button"
+                            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors shadow-sm"
                             @click="$emit('confirm')">
                             Удалить
                         </button>

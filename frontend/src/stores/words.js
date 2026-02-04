@@ -2,7 +2,12 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { api } from '@/api/axios'
 
+/**
+ * Стор для управления словами.
+ * Обрабатывает получение, поиск, создание, обновление и удаление слов.
+ */
 export const useWordsStore = defineStore('words', () => {
+    // Состояние
     const words = ref([])
     const totalCount = ref(0)
     const loading = ref(false)
@@ -10,6 +15,11 @@ export const useWordsStore = defineStore('words', () => {
     const hasMore = ref(true)
     const nextCursor = ref(0)
 
+    /**
+     * Получает список слов с пагинацией.
+     * @param {number} [limit=20] - Количество слов для получения.
+     * @param {boolean} [reset=false] - Сбрасывать ли список и курсор.
+     */
     const fetchWords = async (limit = 20, reset = false) => {
         if (loading.value) return
 
@@ -41,12 +51,16 @@ export const useWordsStore = defineStore('words', () => {
         }
     }
 
+    /**
+     * Ищет слова по критериям.
+     * @param {Object} [params={}] - Параметры поиска (query, tags, on, kun и т.д.).
+     */
     const searchWords = async (params = {}) => {
         loading.value = true
         error.value = null
 
         try {
-            // Сбрасываем пагинацию при поиске
+            // Сбрасываем пагинацию для поиска
             words.value = []
             nextCursor.value = 0
             hasMore.value = true
@@ -86,6 +100,11 @@ export const useWordsStore = defineStore('words', () => {
         }
     }
 
+    /**
+     * Создает новое слово.
+     * @param {Object} wordData - Данные нового слова.
+     * @returns {Promise<Object>} Результат с успехом и данными/ошибкой.
+     */
     const createWord = async (wordData) => {
         try {
             const response = await api.post('/words', wordData)
@@ -103,6 +122,12 @@ export const useWordsStore = defineStore('words', () => {
         }
     }
 
+    /**
+     * Обновляет существующее слово.
+     * @param {number|string} id - ID слова для обновления.
+     * @param {Object} wordData - Обновленные данные.
+     * @returns {Promise<Object>} Результат с успехом и данными/ошибкой.
+     */
     const updateWord = async (id, wordData) => {
         try {
             const response = await api.patch(`/words/${id}`, wordData)
@@ -123,6 +148,11 @@ export const useWordsStore = defineStore('words', () => {
         }
     }
 
+    /**
+     * Удаляет слово.
+     * @param {number|string} id - ID слова для удаления.
+     * @returns {Promise<Object>} Результат с успехом.
+     */
     const deleteWord = async (id) => {
         try {
             await api.delete(`/words/${id}`)
@@ -139,6 +169,9 @@ export const useWordsStore = defineStore('words', () => {
         }
     }
 
+    /**
+     * Очищает список слов и сбрасывает состояние.
+     */
     const clearWords = () => {
         words.value = []
         nextCursor.value = 0

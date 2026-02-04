@@ -20,7 +20,7 @@ func NewWordsHandler(wordsService service.WordsService) *WordsHandler {
 
 // CreateWord создает новое слово
 // @Summary Создать слово
-// @Description Создает новое слово в словаре пользователя
+// @Description Создает новое слово в словаре пользователя. Обязательны поля Jp (японский) и Ru (русский).
 // @Tags words
 // @Accept json
 // @Produce json
@@ -35,27 +35,27 @@ func (h *WordsHandler) CreateWord(c *gin.Context) {
 	var req model.WordCreateRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "неверные данные: " + err.Error()})
+		c.JSON(http.StatusBadRequest, model.ErrorResponse{Error: "неверные данные: " + err.Error()})
 		return
 	}
 
 	word, err := h.wordsService.CreateWord(userID, &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": word})
+	c.JSON(http.StatusCreated, model.WordResponseWrapper{Data: *word})
 }
 
 // GetWords получает список слов с пагинацией
 // @Summary Получить список слов
-// @Description Возвращает список слов пользователя с курсорной пагинацией
+// @Description Возвращает список слов пользователя с курсорной пагинацией. Поддерживает фильтрацию и сортировку.
 // @Tags words
 // @Produce json
 // @Security BearerAuth
 // @Param limit query int false "Лимит слов (макс. 100)" default(20) minimum(1) maximum(100)
-// @Param cursor query int false "Курсор для пагинации" default(0) minimum(0)
+// @Param cursor query int false "Курсор для пагинации (ID последнего загруженного слова)" default(0) minimum(0)
 // @Success 200 {object} model.WordsListResponseWrapper "Список слов"
 // @Failure 500 {object} model.ErrorResponse "Внутренняя ошибка сервера"
 // @Router /api/words [get]
@@ -64,24 +64,22 @@ func (h *WordsHandler) GetWords(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "20"))
 	cursor, _ := strconv.Atoi(c.DefaultQuery("cursor", "0"))
 
-	// Ограничиваем максимальный лимит
 	if limit > 100 {
 		limit = 100
 	}
 
 	words, err := h.wordsService.GetWords(userID, limit, cursor)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	totalCount, err := h.wordsService.CountWords(userID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, model.ErrorResponse{Error: err.Error()})
 		return
 	}
 
-	// Определяем есть ли еще слова
 	hasMore := len(words) == limit
 	nextCursor := 0
 	if hasMore && len(words) > 0 {
@@ -95,7 +93,7 @@ func (h *WordsHandler) GetWords(c *gin.Context) {
 		TotalCount: totalCount,
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": response})
+	c.JSON(http.StatusOK, model.WordsListResponseWrapper{Data: response})
 }
 
 // GetWord получает слово по ID

@@ -14,15 +14,24 @@ import (
 
 // WordsService определяет интерфейс сервиса работы со словами
 type WordsService interface {
+	// CreateWord создает новое слово
 	CreateWord(userID int, req *model.WordCreateRequest) (*model.Word, error)
+	// GetWords получает список слов с пагинацией
 	GetWords(userID int, limit, cursor int) ([]*model.Word, error)
+	// GetWord получает слово по ID
 	GetWord(userID, wordID int) (*model.Word, error)
+	// UpdateWord обновляет слово
 	UpdateWord(userID, wordID int, req *model.WordUpdateRequest) (*model.Word, error)
+	// DeleteWord удаляет слово
 	DeleteWord(userID, wordID int) error
+	// SearchWords ищет слова по критериям
 	SearchWords(userID int, query string, tags, on, kun []string, limit, cursor int) ([]*model.Word, error)
+	// CountWords считает общее количество слов пользователя
 	CountWords(userID int) (int, error)
+	// CountSearchWords считает количество слов, удовлетворяющих критериям поиска
 	CountSearchWords(userID int, query string, tags, on, kun []string) (int, error)
-	ImportCSV(userID int, csvContent string) (*model.CSVImportResponse, error) // Новый метод
+	// ImportCSV импортирует слова из CSV контента
+	ImportCSV(userID int, csvContent string) (*model.CSVImportResponse, error)
 }
 
 type wordsService struct {
@@ -70,12 +79,10 @@ func (s *wordsService) GetWord(userID, wordID int) (*model.Word, error) {
 
 // UpdateWord обновляет существующее слово
 func (s *wordsService) UpdateWord(userID, wordID int, req *model.WordUpdateRequest) (*model.Word, error) {
-	// Валидируем, что хотя бы одно поле было передано
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
 
-	// Получаем текущее слово
 	word, err := s.repo.GetWordByIDAndUserID(wordID, userID)
 	if err != nil {
 		return nil, err
@@ -84,8 +91,6 @@ func (s *wordsService) UpdateWord(userID, wordID int, req *model.WordUpdateReque
 		return nil, errors.New("слово не найдено")
 	}
 
-	// Обновляем только переданные поля
-	// Для массивов nil означает "не передано", пустой массив [] означает "очистить поле"
 	if req.Jp != nil {
 		word.Jp = req.Jp
 	}

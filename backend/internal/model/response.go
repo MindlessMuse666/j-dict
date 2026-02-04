@@ -25,5 +25,5 @@ type CSVImportResponseWrapper struct {
 }
 
 type ErrorResponse struct {
-	Error string `json:"error"`
+	Error string `json:"error" example:"неверные данные"`
 }

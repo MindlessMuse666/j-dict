@@ -1,8 +1,7 @@
 <template>
     <div :class="[
         'bg-surface rounded-xl border-none shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1',
-        isCompactView ? 'p-4' : 'p-6',
-        wordState
+        isCompactView ? 'p-4' : 'p-6'
     ]" :data-word-id="word.id">
         <!-- Компактный вид -->
         <div v-if="isCompactView" class="flex items-center justify-between">
@@ -160,11 +159,14 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
-import { useToast } from '@/composables/useToast'
-import { useWordsStore } from '@/stores/words'
 import { format } from 'date-fns'
 
+/**
+ * Свойства компонента WordCard.
+ * @typedef {Object} Props
+ * @property {Object} word - Объект слова для отображения.
+ * @property {Boolean} [isCompactView=true] - Отображать ли карточку в компактном режиме.
+ */
 const props = defineProps({
     word: {
         type: Object,
@@ -176,24 +178,34 @@ const props = defineProps({
     }
 })
 
+/**
+ * События компонента WordCard.
+ * @emits edit - Вызывается при нажатии кнопки редактирования. Payload: объект слова.
+ * @emits delete - Вызывается при нажатии кнопки удаления. Payload: ID слова.
+ */
 const emit = defineEmits(['edit', 'delete'])
 
-const { showSuccess, showError } = useToast()
-const wordsStore = useWordsStore()
-const wordState = ref('')
-
-onMounted(() => {
-    wordState.value = 'word-card-enter'
-})
-
+/**
+ * Обрабатывает клик по кнопке редактирования.
+ * Генерирует событие 'edit' с текущим словом.
+ */
 const handleEdit = () => {
     emit('edit', props.word)
 }
 
+/**
+ * Обрабатывает клик по кнопке удаления.
+ * Генерирует событие 'delete' с ID текущего слова.
+ */
 const handleDelete = () => {
     emit('delete', props.word.id)
 }
 
+/**
+ * Форматирует строку даты в читаемый формат.
+ * @param {string} dateString - Строка даты для форматирования.
+ * @returns {string} Отформатированная дата (dd.MM.yyyy HH:mm) или исходная строка при ошибке.
+ */
 const formatDate = (dateString) => {
     if (!dateString) return ''
     try {
@@ -202,14 +214,4 @@ const formatDate = (dateString) => {
         return dateString
     }
 }
-
-// Анимация обновления при изменении пропсов
-watch(() => props.word, (newWord, oldWord) => {
-    if (newWord.updated_at !== oldWord?.updated_at) {
-        wordState.value = 'word-updated'
-        setTimeout(() => {
-            wordState.value = ''
-        }, 1000)
-    }
-}, { deep: true })
 </script>

@@ -4,25 +4,25 @@ import "strings"
 
 // CSVImportRequest представляет запрос на импорт слов из CSV
 type CSVImportRequest struct {
-	Content string `json:"content" binding:"required"`
+	Content string `json:"content" binding:"required" example:"jp,ru\n猫,кот"`
 }
 
 // CSVImportResponse представляет ответ на импорт CSV
 type CSVImportResponse struct {
-	ImportedCount int      `json:"imported_count"`
-	FailedCount   int      `json:"failed_count"`
-	Errors        []string `json:"errors,omitempty"`
+	ImportedCount int      `json:"imported_count" example:"10"`
+	FailedCount   int      `json:"failed_count" example:"0"`
+	Errors        []string `json:"errors,omitempty" example:"строка 1: неверный формат"`
 }
 
 // CSVRow представляет строку CSV файла
 type CSVRow struct {
-	Jp   string `csv:"jp"`
-	Ru   string `csv:"ru"`
-	On   string `csv:"on,omitempty"`
-	Kun  string `csv:"kun,omitempty"`
-	ExJp string `csv:"ex_jp,omitempty"`
-	ExRu string `csv:"ex_ru,omitempty"`
-	Tags string `csv:"tags,omitempty"`
+	Jp   string `csv:"jp" example:"猫"`
+	Ru   string `csv:"ru" example:"кот"`
+	On   string `csv:"on,omitempty" example:"ビョウ"`
+	Kun  string `csv:"kun,omitempty" example:"ねこ"`
+	ExJp string `csv:"ex_jp,omitempty" example:"猫が好き"`
+	ExRu string `csv:"ex_ru,omitempty" example:"Мне нравятся кошки"`
+	Tags string `csv:"tags,omitempty" example:"животные"`
 }
 
 // ParseCSVRow парсит CSV строку в структуру WordCreateRequest

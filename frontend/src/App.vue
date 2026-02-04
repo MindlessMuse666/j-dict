@@ -9,6 +9,10 @@
 </template>
 
 <script setup>
+/**
+ * Корневой компонент App.
+ * Отвечает за структуру макета и глобальные провайдеры.
+ */
 import AppHeader from '@/components/AppHeader.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
 import { provideToast } from '@/composables/useToast'

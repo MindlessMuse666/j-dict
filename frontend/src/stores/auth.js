@@ -2,24 +2,43 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { api } from '@/api/axios'
 
+/**
+ * Стор для управления аутентификацией и состоянием пользователя.
+ */
 export const useAuthStore = defineStore('auth', () => {
+    // Состояние
     const user = ref(null)
     const token = ref(localStorage.getItem('token'))
 
+    // Вычисляемые свойства
     const isAuthenticated = computed(() => !!token.value)
 
+    /**
+     * Устанавливает данные аутентификации (пользователь и токен).
+     * @param {Object} userData - Объект пользователя.
+     * @param {string} authToken - JWT токен.
+     */
     const setAuth = (userData, authToken) => {
         user.value = userData
         token.value = authToken
         localStorage.setItem('token', authToken)
     }
 
+    /**
+     * Очищает данные аутентификации.
+     */
     const clearAuth = () => {
         user.value = null
         token.value = null
         localStorage.removeItem('token')
     }
 
+    /**
+     * Выполняет вход пользователя.
+     * @param {string} email - Email пользователя.
+     * @param {string} password - Пароль пользователя.
+     * @returns {Promise<Object>} Результат с успехом.
+     */
     const login = async (email, password) => {
         try {
             const response = await api.post('/auth/login', { email, password })
@@ -35,6 +54,13 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    /**
+     * Регистрирует нового пользователя.
+     * @param {string} email - Email пользователя.
+     * @param {string} password - Пароль пользователя.
+     * @param {string} name - Имя пользователя.
+     * @returns {Promise<Object>} Результат с успехом.
+     */
     const register = async (email, password, name) => {
         try {
             const response = await api.post('/auth/register', { email, password, name })
@@ -50,6 +76,9 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    /**
+     * Выполняет выход пользователя.
+     */
     const logout = async () => {
         try {
             await api.post('/auth/logout')
@@ -60,6 +89,9 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    /**
+     * Получает данные текущего пользователя.
+     */
     const fetchUser = async () => {
         if (!token.value) return
 
@@ -74,10 +106,15 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    /**
+     * Загружает новый аватар для пользователя.
+     * @param {File} file - Файл изображения.
+     * @returns {Promise<Object>} Результат с успехом.
+     */
     const uploadAvatar = async (file) => {
         try {
             const formData = new FormData()
-            // Ensure filename has .jpg extension for backend validation
+            // Гарантируем, что имя файла имеет расширение .jpg для валидации на бэкенде
             formData.append('file', file, 'avatar.jpg')
             const response = await api.post('/users/avatar', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
@@ -92,6 +129,11 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    /**
+     * Обновляет URL аватара напрямую.
+     * @param {string} url - Новый URL аватара.
+     * @returns {Promise<Object>} Результат с успехом.
+     */
     const updateAvatarUrl = async (url) => {
         try {
             await api.put('/users/avatar', { avatar_url: url })
@@ -104,7 +146,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    // При инициализации загружаем данные пользователя, если есть токен
+    // Инициализируем данные пользователя, если есть токен
     if (token.value) {
         fetchUser()
     }

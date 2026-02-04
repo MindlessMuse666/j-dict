@@ -7,7 +7,8 @@
           <h2 class="text-3xl font-bold text-text-main font-jp">Мой словарь</h2>
           <!-- Изменение счётчика слов -->
           <Transition name="fade-slide" mode="out-in">
-            <p v-if="wordsStore.totalCount > 0 || wordsStore.words.length > 0" key="count" class="text-base mt-1 font-medium flex items-center gap-2">
+            <p v-if="wordsStore.totalCount > 0 || wordsStore.words.length > 0" key="count"
+              class="text-base mt-1 font-medium flex items-center gap-2">
               <span class="text-stone-500">Всего слов:</span>
               <span class="text-primary font-bold">{{ wordsStore.totalCount }}</span>
             </p>
@@ -31,7 +32,8 @@
               isCompactView ? 'bg-white text-primary shadow-sm' : 'text-stone-400 hover:text-stone-600'
             ]" title="Компактный вид">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 10h16M4 14h16M4 18h16" />
               </svg>
             </button>
           </div>
@@ -83,10 +85,7 @@
     <!-- Сообщение о пустом списке -->
     <Transition name="fade">
       <div v-if="!wordsStore.loading && (!wordsStore.words || wordsStore.words.length === 0)">
-        <EmptyState
-          :title="isSearchActive ? 'Ничего не найдено' : 'Словарь пуст'"
-          :description="emptyMessage"
-        >
+        <EmptyState :title="isSearchActive ? 'Ничего не найдено' : 'Словарь пуст'" :description="emptyMessage">
           <template #action v-if="!isSearchActive">
             <button @click="openAddModal"
               class="px-6 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-lg transition-all duration-200 hover:shadow-lg shadow-md flex items-center mx-auto transform hover:-translate-y-0.5">
@@ -137,21 +136,12 @@
     </Transition>
 
     <!-- Модальные окна -->
-    <WordFormModal 
-      v-if="showWordModal" 
-      :word="selectedWord" 
-      @close="closeModal" 
-      @saved="handleWordSaved"
-      :is-open="showWordModal" 
-    />
+    <WordFormModal v-if="showWordModal" :word="selectedWord" @close="closeModal" @saved="handleWordSaved"
+      :is-open="showWordModal" />
 
-    <ConfirmModal 
-      :is-open="showDeleteModal" 
-      title="Удалить слово?"
-      message="Вы уверены, что хотите удалить это слово? Это действие нельзя будет отменить."
-      @close="closeDeleteModal" 
-      @confirm="confirmDelete" 
-    />
+    <ConfirmModal :is-open="showDeleteModal" title="Удалить слово?"
+      message="Вы уверены, что хотите удалить это слово? Это действие нельзя будет отменить." @close="closeDeleteModal"
+      @confirm="confirmDelete" />
 
     <ImportModal v-if="showImportModal" @close="showImportModal = false" @imported="handleImported"
       :is-open="showImportModal" />
@@ -159,7 +149,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useWordsStore } from '@/stores/words'
 import { useToast } from '@/composables/useToast'
 import { useHotkeys } from '@/composables/useHotkeys'
@@ -171,9 +161,15 @@ import WordSkeleton from '@/components/WordSkeleton.vue'
 import ImportModal from '@/components/ImportModal.vue'
 import EmptyState from '@/components/EmptyState.vue'
 
+/**
+ * Основной компонент представления словаря.
+ * Отображает список слов с поиском, пагинацией и функциями управления.
+ */
+
 const wordsStore = useWordsStore()
 const { showSuccess, showError } = useToast()
 
+// Refs
 const searchBarRef = ref(null)
 const isCompactView = ref(true)
 const showWordModal = ref(false)
@@ -183,9 +179,11 @@ const selectedWord = ref(null)
 const wordToDeleteId = ref(null)
 const currentSearchQuery = ref('')
 const isSearchActive = ref(false)
-const importedWords = ref([])
 
-// Свойство для отображения правильного сообщения
+/**
+ * Вычисляемое свойство для определения сообщения пустого состояния.
+ * @returns {string} Сообщение для отображения, когда слова не найдены.
+ */
 const emptyMessage = computed(() => {
   if (wordsStore.loading) return 'Загрузка...'
   if (isSearchActive.value) {
@@ -196,7 +194,10 @@ const emptyMessage = computed(() => {
   return 'Ваш словарь пока пуст. Добавьте первые слова, чтобы начать изучение.'
 })
 
-// Бесконечная пагинация при скролле
+/**
+ * Обрабатывает событие прокрутки для бесконечной загрузки.
+ * Запускает загрузку дополнительных слов, когда пользователь прокручивает страницу вниз.
+ */
 const handleScroll = () => {
   if (isSearchActive.value || wordsStore.loading || !wordsStore.hasMore) {
     return
@@ -210,14 +211,24 @@ const handleScroll = () => {
   }
 }
 
-const handleImported = (importResult) => {
+/**
+ * Обновляет список слов после успешного импорта.
+ */
+const handleImported = () => {
   wordsStore.fetchWords(20, true)
 }
 
+/**
+ * Загружает следующую страницу слов.
+ */
 const loadMoreWords = () => {
   wordsStore.fetchWords()
 }
 
+/**
+ * Обрабатывает событие поиска.
+ * @param {string} query - Строка поискового запроса.
+ */
 const handleSearch = async (query) => {
   currentSearchQuery.value = query
   isSearchActive.value = query.trim().length > 0
@@ -230,6 +241,10 @@ const handleSearch = async (query) => {
   }
 }
 
+/**
+ * Обрабатывает событие расширенного поиска с несколькими параметрами.
+ * @param {Object} params - Параметры поиска.
+ */
 const handleAdvancedSearch = async (params) => {
   const hasParams = Object.values(params).some(value =>
     (Array.isArray(value) && value.length > 0) ||
@@ -246,6 +261,9 @@ const handleAdvancedSearch = async (params) => {
   }
 }
 
+/**
+ * Очищает текущий поиск и сбрасывает фильтры.
+ */
 const handleClearSearch = () => {
   if (searchBarRef.value) {
     searchBarRef.value.clearSearch()
@@ -258,30 +276,48 @@ const handleClearSearch = () => {
   }
 }
 
+/**
+ * Открывает модальное окно для добавления нового слова.
+ */
 const openAddModal = () => {
   selectedWord.value = null
   showWordModal.value = true
 }
 
+/**
+ * Открывает модальное окно для редактирования существующего слова.
+ * @param {Object} word - Слово для редактирования.
+ */
 const openEditModal = (word) => {
   if (!word) return
   selectedWord.value = JSON.parse(JSON.stringify(word))
   showWordModal.value = true
 }
 
+/**
+ * Открывает модальное окно подтверждения удаления слова.
+ * @param {string|number} wordId - ID слова для удаления.
+ */
 const handleWordDeleted = (wordId) => {
   wordToDeleteId.value = wordId
   showDeleteModal.value = true
 }
 
+/**
+ * Закрывает модальное окно подтверждения удаления.
+ */
 const closeDeleteModal = () => {
   showDeleteModal.value = false
   wordToDeleteId.value = null
 }
 
+/**
+ * Подтверждает удаление слова.
+ * Вызывает метод стора для удаления слова и показывает уведомление.
+ */
 const confirmDelete = async () => {
   if (!wordToDeleteId.value) return
-  
+
   try {
     const result = await wordsStore.deleteWord(wordToDeleteId.value)
     if (result.success) {
@@ -296,21 +332,20 @@ const confirmDelete = async () => {
   }
 }
 
+/**
+ * Обрабатывает событие сохранения из модального окна формы слова.
+ * Создает или обновляет слово в зависимости от того, было ли выбрано слово.
+ * @param {Object} wordData - Данные сохраненного слова.
+ */
 const handleWordSaved = async (wordData) => {
   try {
-    let result
-    if (selectedWord.value) {
-      result = await wordsStore.updateWord(selectedWord.value.id, wordData.data)
-    } else {
-      result = await wordsStore.createWord(wordData.data)
-    }
+    const isUpdate = !!selectedWord.value
+    const result = isUpdate
+      ? await wordsStore.updateWord(selectedWord.value.id, wordData.data)
+      : await wordsStore.createWord(wordData.data)
 
     if (result.success) {
-      showSuccess(
-        selectedWord.value
-          ? 'Слово успешно обновлено'
-          : 'Слово успешно добавлено'
-      )
+      showSuccess(isUpdate ? 'Слово успешно обновлено' : 'Слово успешно добавлено')
       closeModal()
     } else {
       showError(result.error)
@@ -320,13 +355,17 @@ const handleWordSaved = async (wordData) => {
   }
 }
 
+/**
+ * Закрывает модальное окно формы слова.
+ */
 const closeModal = () => {
   showWordModal.value = false
   selectedWord.value = null
 }
 
-// Инициализация
+// Lifecycle hooks
 onMounted(() => {
+  // Setup hotkeys
   useHotkeys({
     onNewWord: () => {
       if (!showWordModal.value) {
@@ -379,7 +418,6 @@ onUnmounted(() => {
   transition: transform 0.3s ease;
 }
 
-/* Плавные переходы */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
@@ -405,7 +443,7 @@ onUnmounted(() => {
   transform: translateY(10px);
 }
 
-/* Улучшение для мобильных устройств */
+/* Улучшение для мобилок */
 @media (max-width: 640px) {
   .mobile-stack {
     flex-direction: column;

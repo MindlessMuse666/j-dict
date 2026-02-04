@@ -26,7 +26,7 @@ const docTemplate = `{
     "paths": {
         "/api/auth/login": {
             "post": {
-                "description": "Аутентифицирует пользователя и возвращает JWT токен",
+                "description": "Аутентифицирует пользователя и возвращает JWT токен.",
                 "consumes": [
                     "application/json"
                 ],
@@ -44,7 +44,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserLoginRequest"
+                            "$ref": "#/definitions/model.UserLoginRequest"
                         }
                     }
                 ],
@@ -52,19 +52,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешный вход",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.AuthResponseWrapper"
+                            "$ref": "#/definitions/model.AuthResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Неверные учетные данные",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -105,7 +105,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Возвращает информацию о пользователе из JWT токена",
+                "description": "Возвращает информацию о пользователе из JWT токена. Требует Bearer токен.",
                 "produces": [
                     "application/json"
                 ],
@@ -117,13 +117,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Информация о пользователе",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserResponseWrapper"
+                            "$ref": "#/definitions/model.UserResponseWrapper"
                         }
                     },
                     "401": {
                         "description": "Неавторизован",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -131,7 +131,7 @@ const docTemplate = `{
         },
         "/api/auth/register": {
             "post": {
-                "description": "Создает нового пользователя и возвращает JWT токен",
+                "description": "Создает нового пользователя и возвращает JWT токен. Требует email, пароль и имя.",
                 "consumes": [
                     "application/json"
                 ],
@@ -149,7 +149,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.UserRegisterRequest"
+                            "$ref": "#/definitions/model.UserRegisterRequest"
                         }
                     }
                 ],
@@ -157,19 +157,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Успешная регистрация",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.AuthResponseWrapper"
+                            "$ref": "#/definitions/model.AuthResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "409": {
                         "description": "Пользователь уже существует",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -177,7 +177,7 @@ const docTemplate = `{
         },
         "/api/health": {
             "get": {
-                "description": "Проверяет, что сервис работает",
+                "description": "Проверяет, что сервис работает.",
                 "produces": [
                     "application/json"
                 ],
@@ -205,7 +205,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Загружает аватар пользователя и обновляет профиль",
+                "description": "Загружает аватар пользователя (JPG/PNG) и обновляет профиль.",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -219,7 +219,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "file",
-                        "description": "Avatar file",
+                        "description": "Файл аватара",
                         "name": "file",
                         "in": "formData",
                         "required": true
@@ -227,12 +227,90 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Avatar URL",
+                        "description": "URL аватара",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
                                 "type": "string"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка загрузки или неверный формат",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/avatar/url": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Устанавливает аватар пользователя по указанному URL (обычно для предустановленных аватаров).",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Обновление аватара по URL",
+                "parameters": [
+                    {
+                        "description": "URL аватара",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateAvatarRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успех",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Неверные данные",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизован",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -245,7 +323,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Возвращает список слов пользователя с курсорной пагинацией",
+                "description": "Возвращает список слов пользователя с курсорной пагинацией. Поддерживает фильтрацию и сортировку.",
                 "produces": [
                     "application/json"
                 ],
@@ -267,7 +345,7 @@ const docTemplate = `{
                         "minimum": 0,
                         "type": "integer",
                         "default": 0,
-                        "description": "Курсор для пагинации",
+                        "description": "Курсор для пагинации (ID последнего загруженного слова)",
                         "name": "cursor",
                         "in": "query"
                     }
@@ -276,13 +354,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Список слов",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponseWrapper"
+                            "$ref": "#/definitions/model.WordsListResponseWrapper"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -293,7 +371,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Создает новое слово в словаре пользователя",
+                "description": "Создает новое слово в словаре пользователя. Обязательны поля Jp (японский) и Ru (русский).",
                 "consumes": [
                     "application/json"
                 ],
@@ -311,7 +389,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordCreateRequest"
+                            "$ref": "#/definitions/model.WordCreateRequest"
                         }
                     }
                 ],
@@ -319,19 +397,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Слово создано",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper"
+                            "$ref": "#/definitions/model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -362,7 +440,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportRequest"
+                            "$ref": "#/definitions/model.CSVImportRequest"
                         }
                     }
                 ],
@@ -370,19 +448,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Результат импорта",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportResponseWrapper"
+                            "$ref": "#/definitions/model.CSVImportResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверный формат CSV",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -459,13 +537,13 @@ const docTemplate = `{
                     "200": {
                         "description": "Результаты поиска",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponseWrapper"
+                            "$ref": "#/definitions/model.WordsListResponseWrapper"
                         }
                     },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -499,19 +577,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Слово",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper"
+                            "$ref": "#/definitions/model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверный ID слова",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -546,13 +624,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Неверный ID слова",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -588,7 +666,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordUpdateRequest"
+                            "$ref": "#/definitions/model.WordUpdateRequest"
                         }
                     }
                 ],
@@ -596,19 +674,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Слово обновлено",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordResponseWrapper"
+                            "$ref": "#/definitions/model.WordResponseWrapper"
                         }
                     },
                     "400": {
                         "description": "Неверные данные или пустой запрос",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Слово не найдено",
                         "schema": {
-                            "$ref": "#/definitions/jp-ru-dict_backend_internal_model.ErrorResponse"
+                            "$ref": "#/definitions/model.ErrorResponse"
                         }
                     }
                 }
@@ -616,96 +694,138 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "jp-ru-dict_backend_internal_model.AuthResponse": {
+        "handler.UpdateAvatarRequest": {
+            "type": "object",
+            "required": [
+                "avatar_url"
+            ],
+            "properties": {
+                "avatar_url": {
+                    "type": "string",
+                    "example": "/assets/default_avatars/cat.jpg"
+                }
+            }
+        },
+        "model.AuthResponse": {
             "type": "object",
             "properties": {
                 "token": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 },
                 "user": {
-                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.User"
+                    "$ref": "#/definitions/model.User"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.AuthResponseWrapper": {
+        "model.AuthResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.AuthResponse"
+                    "$ref": "#/definitions/model.AuthResponse"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.CSVImportRequest": {
+        "model.CSVImportRequest": {
             "type": "object",
             "required": [
                 "content"
             ],
             "properties": {
                 "content": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "jp,ru\n猫,кот"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.CSVImportResponse": {
+        "model.CSVImportResponse": {
             "type": "object",
             "properties": {
                 "errors": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "строка 1: неверный формат"
+                    ]
                 },
                 "failed_count": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 0
                 },
                 "imported_count": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.CSVImportResponseWrapper": {
+        "model.CSVImportResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.CSVImportResponse"
+                    "$ref": "#/definitions/model.CSVImportResponse"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.ErrorResponse": {
+        "model.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "неверные данные"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.User": {
+        "model.Role": {
+            "type": "string",
+            "enum": [
+                "user",
+                "admin"
+            ],
+            "x-enum-varnames": [
+                "RoleUser",
+                "RoleAdmin"
+            ]
+        },
+        "model.User": {
             "type": "object",
             "properties": {
                 "avatar_url": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "https://example.com/avatar.jpg"
                 },
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "John Doe"
                 },
                 "role": {
-                    "type": "string"
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.Role"
+                        }
+                    ],
+                    "example": "user"
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.UserLoginRequest": {
+        "model.UserLoginRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -713,14 +833,16 @@ const docTemplate = `{
             ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "user@example.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "secretpassword"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.UserRegisterRequest": {
+        "model.UserRegisterRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -729,26 +851,29 @@ const docTemplate = `{
             ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "newuser@example.com"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "New User"
                 },
                 "password": {
                     "type": "string",
-                    "minLength": 6
+                    "minLength": 6,
+                    "example": "secretpassword"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.UserResponseWrapper": {
+        "model.UserResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.User"
+                    "$ref": "#/definitions/model.User"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.Word": {
+        "model.Word": {
             "type": "object",
             "required": [
                 "jp",
@@ -756,67 +881,94 @@ const docTemplate = `{
             ],
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
                 },
                 "ex_jp": {
                     "type": "array",
                     "maxItems": 3,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "猫が好き"
+                    ]
                 },
                 "ex_ru": {
                     "type": "array",
                     "maxItems": 3,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "Мне нравятся кошки"
+                    ]
                 },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 },
                 "jp": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "猫"
+                    ]
                 },
                 "kun": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "ねこ"
+                    ]
                 },
                 "on": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "ビョウ"
+                    ]
                 },
                 "ru": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "кот",
+                        "кошка"
+                    ]
                 },
                 "tags": {
                     "type": "array",
                     "maxItems": 5,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "животные",
+                        "JLPT N5"
+                    ]
                 },
                 "updated_at": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2024-01-01T00:00:00Z"
                 },
                 "user_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 1
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordCreateRequest": {
+        "model.WordCreateRequest": {
             "type": "object",
             "required": [
                 "jp",
@@ -828,59 +980,81 @@ const docTemplate = `{
                     "maxItems": 3,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "猫が好き"
+                    ]
                 },
                 "ex_ru": {
                     "type": "array",
                     "maxItems": 3,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "Мне нравятся кошки"
+                    ]
                 },
                 "jp": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "猫"
+                    ]
                 },
                 "kun": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "ねこ"
+                    ]
                 },
                 "on": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "ビョウ"
+                    ]
                 },
                 "ru": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "кот",
+                        "кошка"
+                    ]
                 },
                 "tags": {
                     "type": "array",
                     "maxItems": 5,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "животные"
+                    ]
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordResponseWrapper": {
+        "model.WordResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.Word"
+                    "$ref": "#/definitions/model.Word"
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordUpdateRequest": {
+        "model.WordUpdateRequest": {
             "type": "object",
             "properties": {
                 "ex_jp": {
@@ -888,75 +1062,100 @@ const docTemplate = `{
                     "maxItems": 3,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "猫が好き"
+                    ]
                 },
                 "ex_ru": {
                     "type": "array",
                     "maxItems": 3,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "Мне нравятся кошки"
+                    ]
                 },
                 "jp": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "猫"
+                    ]
                 },
                 "kun": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "ねこ"
+                    ]
                 },
                 "on": {
                     "type": "array",
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "ビョウ"
+                    ]
                 },
                 "ru": {
                     "type": "array",
                     "minItems": 1,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "кот",
+                        "кошка"
+                    ]
                 },
                 "tags": {
                     "type": "array",
                     "maxItems": 5,
                     "items": {
                         "type": "string"
-                    }
+                    },
+                    "example": [
+                        "животные"
+                    ]
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordsListResponse": {
+        "model.WordsListResponse": {
             "type": "object",
             "properties": {
                 "has_more": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "next_cursor": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10
                 },
                 "total_count": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 100
                 },
                 "words": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/jp-ru-dict_backend_internal_model.Word"
+                        "$ref": "#/definitions/model.Word"
                     }
                 }
             }
         },
-        "jp-ru-dict_backend_internal_model.WordsListResponseWrapper": {
+        "model.WordsListResponseWrapper": {
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/jp-ru-dict_backend_internal_model.WordsListResponse"
+                    "$ref": "#/definitions/model.WordsListResponse"
                 }
             }
         }

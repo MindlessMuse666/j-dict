@@ -12,11 +12,17 @@ import (
 
 // AuthService определяет интерфейс сервиса аутентификации
 type AuthService interface {
+	// Register регистрирует нового пользователя
 	Register(userReq *model.UserRegisterRequest) (*model.AuthResponse, error)
+	// Login выполняет вход пользователя
 	Login(userReq *model.UserLoginRequest) (*model.AuthResponse, error)
+	// GenerateToken генерирует JWT токен для пользователя
 	GenerateToken(user *model.User) (string, error)
+	// ValidateToken проверяет валидность JWT токена
 	ValidateToken(tokenString string) (*jwt.Token, error)
+	// GetUserFromToken извлекает информацию о пользователе из токена
 	GetUserFromToken(token *jwt.Token) (*model.User, error)
+	// UpdateAvatar обновляет URL аватара пользователя
 	UpdateAvatar(userID int, avatarURL string) error
 }
 
@@ -37,7 +43,6 @@ func NewAuthService(repo repository.AuthRepository, jwtSecret string, jwtExpiry 
 
 // Register регистрирует нового пользователя
 func (s *authService) Register(userReq *model.UserRegisterRequest) (*model.AuthResponse, error) {
-	// Проверяем, существует ли пользователь с таким email
 	existingUser, err := s.repo.GetUserByEmail(userReq.Email)
 	if err != nil {
 		return nil, err
@@ -46,13 +51,11 @@ func (s *authService) Register(userReq *model.UserRegisterRequest) (*model.AuthR
 		return nil, errors.New("пользователь с таким email уже существует")
 	}
 
-	// Хэшируем пароль
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userReq.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
 	}
 
-	// Создаем пользователя
 	user := &model.User{
 		Email:        userReq.Email,
 		PasswordHash: string(hashedPassword),
@@ -65,7 +68,6 @@ func (s *authService) Register(userReq *model.UserRegisterRequest) (*model.AuthR
 		return nil, err
 	}
 
-	// Генерируем JWT токен
 	token, err := s.GenerateToken(user)
 	if err != nil {
 		return nil, err
@@ -79,7 +81,6 @@ func (s *authService) Register(userReq *model.UserRegisterRequest) (*model.AuthR
 
 // Login выполняет вход пользователя
 func (s *authService) Login(userReq *model.UserLoginRequest) (*model.AuthResponse, error) {
-	// Получаем пользователя по email
 	user, err := s.repo.GetUserByEmail(userReq.Email)
 	if err != nil {
 		return nil, err
@@ -88,12 +89,10 @@ func (s *authService) Login(userReq *model.UserLoginRequest) (*model.AuthRespons
 		return nil, errors.New("неверный email или пароль")
 	}
 
-	// Проверяем пароль
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(userReq.Password)); err != nil {
 		return nil, errors.New("неверный email или пароль")
 	}
 
-	// Генерируем JWT токен
 	token, err := s.GenerateToken(user)
 	if err != nil {
 		return nil, err
