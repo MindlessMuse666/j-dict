@@ -333,7 +333,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: JP-RU Dictionary API
+  title: j~dict!^w^ API
   version: "1.0"
 paths:
   /api/auth/login:

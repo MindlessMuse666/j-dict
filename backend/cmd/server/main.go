@@ -1,4 +1,4 @@
-// @title JP-RU Dictionary API
+// @title j~dict!^w^ API
 // @version 1.0
 // @description API для личного русско-японского словаря
 // @termsOfService http://swagger.io/terms/

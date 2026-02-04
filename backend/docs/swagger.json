@@ -5,7 +5,7 @@
     "swagger": "2.0",
     "info": {
         "description": "API для личного русско-японского словаря",
-        "title": "JP-RU Dictionary API",
+        "title": "j~dict!^w^ API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",

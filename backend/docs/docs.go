@@ -1176,7 +1176,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/api",
 	Schemes:          []string{"http"},
-	Title:            "JP-RU Dictionary API",
+	Title:            "j~dict!^w^ API",
 	Description:      "API для личного русско-японского словаря",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

@@ -10,7 +10,7 @@ backend/vendor/
 backend/uploads/
 
 # Frontend
-dist/
+# dist/
 node_modules/
 
 # Logs

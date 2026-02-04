@@ -8,7 +8,7 @@
                     <img src="/logo.svg" alt="Logo" class="w-10 h-10 object-contain drop-shadow-sm" />
                     <div>
                         <h1 class="text-xl font-bold text-primary tracking-tight font-jp">
-                            ~j~ru~dict!^^
+                            j~dict!^w^
                         </h1>
                         <RouterLink v-if="authStore.user" :to="{ name: 'Profile' }"
                             class="text-xs text-text-muted font-jp hover:text-primary transition-colors cursor-pointer block">
