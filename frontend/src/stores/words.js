@@ -4,6 +4,7 @@ import { api } from '@/api/axios'
 
 export const useWordsStore = defineStore('words', () => {
     const words = ref([])
+    const totalCount = ref(0)
     const loading = ref(false)
     const error = ref(null)
     const hasMore = ref(true)
@@ -29,6 +30,9 @@ export const useWordsStore = defineStore('words', () => {
             words.value = [...words.value, ...data.words]
             nextCursor.value = data.next_cursor
             hasMore.value = data.has_more
+            if (data.total_count !== undefined) {
+                totalCount.value = data.total_count
+            }
         } catch (err) {
             error.value = err.response?.data?.error || 'Ошибка при загрузке слов'
             console.error('Ошибка при загрузке слов:', err)
@@ -71,6 +75,9 @@ export const useWordsStore = defineStore('words', () => {
             words.value = data.words || []
             nextCursor.value = data.next_cursor || 0
             hasMore.value = data.has_more || false
+            if (data.total_count !== undefined) {
+                totalCount.value = data.total_count
+            }
         } catch (err) {
             error.value = err.response?.data?.error || 'Ошибка при поиске слов'
             console.error('Ошибка при поиске слов:', err)
@@ -86,6 +93,7 @@ export const useWordsStore = defineStore('words', () => {
 
             // Добавляем новое слово в начало списка
             words.value = [newWord, ...words.value]
+            totalCount.value++
             return { success: true, word: newWord }
         } catch (err) {
             return {
@@ -139,6 +147,7 @@ export const useWordsStore = defineStore('words', () => {
 
     return {
         words,
+        totalCount,
         loading,
         error,
         hasMore,

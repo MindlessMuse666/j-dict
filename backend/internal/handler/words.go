@@ -75,6 +75,12 @@ func (h *WordsHandler) GetWords(c *gin.Context) {
 		return
 	}
 
+	totalCount, err := h.wordsService.CountWords(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	// Определяем есть ли еще слова
 	hasMore := len(words) == limit
 	nextCursor := 0
@@ -86,6 +92,7 @@ func (h *WordsHandler) GetWords(c *gin.Context) {
 		Words:      words,
 		NextCursor: nextCursor,
 		HasMore:    hasMore,
+		TotalCount: totalCount,
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": response})
@@ -231,6 +238,12 @@ func (h *WordsHandler) SearchWords(c *gin.Context) {
 		return
 	}
 
+	totalCount, err := h.wordsService.CountSearchWords(userID, query, tags, on, kun)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	// Определяем есть ли еще слова
 	hasMore := len(words) == limit
 	nextCursor := 0
@@ -242,6 +255,7 @@ func (h *WordsHandler) SearchWords(c *gin.Context) {
 		Words:      words,
 		NextCursor: nextCursor,
 		HasMore:    hasMore,
+		TotalCount: totalCount,
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": response})

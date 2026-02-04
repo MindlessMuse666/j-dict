@@ -51,6 +51,7 @@ type WordsListResponse struct {
 	Words      []*Word `json:"words"`
 	NextCursor int     `json:"next_cursor,omitempty"`
 	HasMore    bool    `json:"has_more"`
+	TotalCount int     `json:"total_count"`
 }
 
 // СЕРВИСНЫЕ МЕТОДЫ

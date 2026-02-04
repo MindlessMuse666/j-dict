@@ -7,9 +7,9 @@
           <h2 class="text-3xl font-bold text-text-main font-jp">Мой словарь</h2>
           <!-- Плавное изменение счетчика слов -->
           <Transition name="fade-slide" mode="out-in">
-            <p v-if="wordsStore.words.length" key="count" class="text-base mt-1 font-medium flex items-center gap-2">
+            <p v-if="wordsStore.totalCount > 0 || wordsStore.words.length > 0" key="count" class="text-base mt-1 font-medium flex items-center gap-2">
               <span class="text-stone-500">Всего слов:</span>
-              <span class="text-primary font-bold">{{ wordsStore.words.length }}</span>
+              <span class="text-primary font-bold">{{ wordsStore.totalCount }}</span>
             </p>
             <div v-else key="empty" class="h-5"></div>
           </Transition>

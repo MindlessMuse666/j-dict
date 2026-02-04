@@ -18,6 +18,8 @@ type WordsRepository interface {
 	UpdateWord(word *model.Word) error
 	DeleteWord(wordID, userID int) error
 	SearchWords(userID int, query string, tags, on, kun []string, limit, cursor int) ([]*model.Word, error)
+	CountWords(userID int) (int, error)
+	CountSearchWords(userID int, query string, tags, on, kun []string) (int, error)
 	CreateHistory(history *model.WordHistory) error
 }
 
@@ -229,7 +231,59 @@ func (r *wordsRepository) SearchWords(userID int, query string, tags, on, kun []
 	return words, nil
 }
 
-// CreateHistory сохраняет запись в истории изменений
+// CountWords возвращает общее количество слов пользователя
+func (r *wordsRepository) CountWords(userID int) (int, error) {
+	var count int
+	query := `SELECT COUNT(*) FROM words WHERE user_id = $1`
+	err := r.db.QueryRow(query, userID).Scan(&count)
+	return count, err
+}
+
+// CountSearchWords возвращает количество слов, соответствующих критериям поиска
+func (r *wordsRepository) CountSearchWords(userID int, query string, tags, on, kun []string) (int, error) {
+	baseQuery := `SELECT COUNT(*) FROM words WHERE user_id = $1`
+	args := []any{userID}
+	argCounter := 2
+	var conditions []string
+
+	if query != "" {
+		conditions = append(conditions,
+			fmt.Sprintf(`(EXISTS (SELECT 1 FROM unnest(jp) AS elem WHERE elem ILIKE '%%' || $%d || '%%') OR 
+                          EXISTS (SELECT 1 FROM unnest(ru) AS elem WHERE elem ILIKE '%%' || $%d || '%%'))`,
+				argCounter, argCounter))
+		args = append(args, query)
+		argCounter++
+	}
+
+	if len(tags) > 0 {
+		conditions = append(conditions, fmt.Sprintf(`tags && $%d`, argCounter))
+		args = append(args, pq.Array(tags))
+		argCounter++
+	}
+
+	if len(on) > 0 {
+		conditions = append(conditions, fmt.Sprintf(`"on" && $%d`, argCounter))
+		args = append(args, pq.Array(on))
+		argCounter++
+	}
+
+	if len(kun) > 0 {
+		conditions = append(conditions, fmt.Sprintf(`"kun" && $%d`, argCounter))
+		args = append(args, pq.Array(kun))
+		argCounter++
+	}
+
+	fullQuery := baseQuery
+	if len(conditions) > 0 {
+		fullQuery += " AND " + strings.Join(conditions, " AND ")
+	}
+
+	var count int
+	err := r.db.QueryRow(fullQuery, args...).Scan(&count)
+	return count, err
+}
+
+// CreateHistory создает запись в истории изменений
 func (r *wordsRepository) CreateHistory(history *model.WordHistory) error {
 	query := `INSERT INTO word_history (word_id, user_id, action, snapshot)
 			  VALUES ($1, $2, $3, $4)`

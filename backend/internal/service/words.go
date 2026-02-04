@@ -20,6 +20,8 @@ type WordsService interface {
 	UpdateWord(userID, wordID int, req *model.WordUpdateRequest) (*model.Word, error)
 	DeleteWord(userID, wordID int) error
 	SearchWords(userID int, query string, tags, on, kun []string, limit, cursor int) ([]*model.Word, error)
+	CountWords(userID int) (int, error)
+	CountSearchWords(userID int, query string, tags, on, kun []string) (int, error)
 	ImportCSV(userID int, csvContent string) (*model.CSVImportResponse, error) // Новый метод
 }
 
@@ -169,7 +171,23 @@ func (s *wordsService) SearchWords(userID int, query string, tags, on, kun []str
 	return s.repo.SearchWords(userID, query, tags, normalizedOn, kun, limit, cursor)
 }
 
-// ImportCSV импортирует слова из CSV строки
+// CountWords возвращает общее количество слов пользователя
+func (s *wordsService) CountWords(userID int) (int, error) {
+	return s.repo.CountWords(userID)
+}
+
+// CountSearchWords возвращает количество слов, соответствующих критериям поиска
+func (s *wordsService) CountSearchWords(userID int, query string, tags, on, kun []string) (int, error) {
+	// Нормализуем онъёми
+	var normalizedOn []string
+	for _, reading := range on {
+		variants := utils.NormalizeOnReading(reading)
+		normalizedOn = append(normalizedOn, variants...)
+	}
+	return s.repo.CountSearchWords(userID, query, tags, normalizedOn, kun)
+}
+
+// ImportCSV импортирует слова из CSV
 func (s *wordsService) ImportCSV(userID int, csvContent string) (*model.CSVImportResponse, error) {
 	response := &model.CSVImportResponse{
 		Errors: []string{},
