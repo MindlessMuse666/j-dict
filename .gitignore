@@ -1,22 +1,3 @@
-# Environment variables
-.env
-.env.local
-
-# Backend
-backend/.env
-backend/main
-backend/server
-backend/vendor/
-backend/uploads/
-
-# Frontend
-dist/
-node_modules/
-
-# Logs
-logs/
-*.log
-
 # IDE
 .vscode/
 .idea/
@@ -24,9 +5,12 @@ logs/
 *.swp
 *.swo
 
+# Debug
+*.log
+
 # OS
 .DS_Store
 Thumbs.db
 
-# Docker
-docker-compose.override.yml
+# Linter
+.markdownlint.yaml
