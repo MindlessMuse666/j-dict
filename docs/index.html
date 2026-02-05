@@ -1,20 +1,193 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="./favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>j~dict!^w^</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/main-JtOKvQA-.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/main-BoU2LSMm.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой словарь (Demo)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        danger: '#EF4444',
+                        'text-main': '#1F2937',
+                    },
+                    fontFamily: {
+                        jp: ['Noto Sans JP', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+        .fade-enter-from, .fade-leave-to {
+            opacity: 0;
+        }
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
+<body class="bg-gray-50 text-gray-800 min-h-screen font-sans">
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center cursor-pointer" onclick="router.push('/')">
+                        <img src="./assets/logo.svg" alt="Logo" class="h-8 w-8 mr-2">
+                        <span class="text-xl font-bold text-primary font-jp">JP-RU Dict</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="nav-auth" class="hidden flex items-center space-x-4">
+                            <span id="user-name" class="text-sm font-medium text-gray-700"></span>
+                            <div class="relative group">
+                                <button class="flex items-center focus:outline-none">
+                                    <img id="user-avatar" src="" alt="Avatar" class="h-8 w-8 rounded-full object-cover border border-gray-200">
+                                </button>
+                                <!-- Dropdown -->
+                                <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block hover:block">
+                                    <a href="#" onclick="router.push('/profile')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Профиль</a>
+                                    <a href="#" onclick="auth.logout()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Выйти</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="nav-guest" class="hidden flex items-center space-x-4">
+                            <button onclick="router.push('/login')" class="text-gray-600 hover:text-gray-900 font-medium">Войти</button>
+                            <button onclick="router.push('/register')" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Регистрация</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-<body>
-    <div id="app"></div>
+        <!-- Main Content -->
+        <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+            
+            <!-- Login View -->
+            <div id="view-login" class="hidden max-w-md mx-auto mt-10">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-center mb-6">Вход</h2>
+                    <form onsubmit="event.preventDefault(); auth.login(this.email.value, this.password.value)">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                            <input type="email" name="email" value="cat@example.com" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Пароль</label>
+                            <input type="password" name="password" value="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <button type="submit" class="w-full bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Войти</button>
+                    </form>
+                    <p class="mt-4 text-center text-sm text-gray-600">
+                        Нет аккаунта? <a href="#" onclick="router.push('/register')" class="text-primary hover:underline">Зарегистрироваться</a>
+                    </p>
+                    <div class="mt-4 p-3 bg-blue-50 text-blue-700 text-sm rounded">
+                        <p>Demo account:</p>
+                        <p>Email: cat@example.com</p>
+                        <p>Password: any</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register View -->
+            <div id="view-register" class="hidden max-w-md mx-auto mt-10">
+                <div class="bg-white p-8 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold text-center mb-6">Регистрация</h2>
+                    <form onsubmit="event.preventDefault(); auth.register(this.name.value, this.email.value, this.password.value)">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Имя</label>
+                            <input type="text" name="name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                            <input type="email" name="email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Пароль</label>
+                            <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                        <button type="submit" class="w-full bg-primary text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition">Создать аккаунт</button>
+                    </form>
+                    <p class="mt-4 text-center text-sm text-gray-600">
+                        Уже есть аккаунт? <a href="#" onclick="router.push('/login')" class="text-primary hover:underline">Войти</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Home View -->
+            <div id="view-home" class="hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                    <h2 class="text-3xl font-bold text-gray-800 font-jp">Мой словарь</h2>
+                    <div class="flex gap-3">
+                        <button onclick="alert('Импорт в демо-режиме недоступен')" class="px-4 py-2 bg-secondary text-white rounded-xl hover:bg-green-600 transition shadow flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
+                            Импорт
+                        </button>
+                        <button onclick="words.addWordPrompt()" class="px-4 py-2 bg-primary text-white rounded-xl hover:bg-blue-600 transition shadow flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Добавить
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="mb-8 relative">
+                    <input type="text" id="search-input" placeholder="Поиск (японский, чтение, перевод)..." 
+                           class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                           oninput="words.filter(this.value)">
+                    <svg class="w-6 h-6 text-gray-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+
+                <!-- Words Grid -->
+                <div id="words-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards will be injected here -->
+                </div>
+                
+                <!-- Empty State -->
+                <div id="empty-state" class="hidden text-center py-12">
+                    <p class="text-gray-500 text-lg">Слова не найдены</p>
+                </div>
+            </div>
+
+            <!-- Profile View -->
+            <div id="view-profile" class="hidden max-w-2xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-32"></div>
+                    <div class="px-8 pb-8">
+                        <div class="relative flex justify-between items-end -mt-12 mb-6">
+                            <img id="profile-avatar" src="" alt="Profile" class="w-24 h-24 rounded-full border-4 border-white shadow-md object-cover bg-white">
+                            <button onclick="alert('Редактирование профиля в демо-режиме недоступно')" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium">
+                                Редактировать
+                            </button>
+                        </div>
+                        <h2 id="profile-name" class="text-2xl font-bold text-gray-800 mb-1"></h2>
+                        <p id="profile-email" class="text-gray-500 mb-6"></p>
+                        
+                        <div class="grid grid-cols-2 gap-4 border-t pt-6">
+                            <div class="text-center">
+                                <span id="profile-word-count" class="block text-2xl font-bold text-primary">0</span>
+                                <span class="text-sm text-gray-500">Слов в словаре</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-2xl font-bold text-secondary">Пользователь</span>
+                                <span class="text-sm text-gray-500">Роль</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="app.js"></script>
 </body>
-
 </html>
