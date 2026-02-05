@@ -1,4 +1,4 @@
-.PHONY: run build down logs migrate clean reset-db help frontend-install frontend-dev frontend-build logs-frontend
+.PHONY: up down logs clean reset-db help
 
 .DEFAULT_GOAL := help
 
@@ -7,23 +7,9 @@ up:
 	docker-compose down
 	docker-compose up --build --remove-orphans
 
-# Запуск всех сервисов с --no-cache
-run:
-	docker-compose down
-	docker-compose build --no-cache
-	docker-compose up --remove-orphans
-
-# Сборка образов с использованием buildx
-build:
-	docker-compose build --parallel
-
 # Остановка всех сервисов
 down:
 	docker-compose down
-
-# Остановка и удаление томов
-down-volumes:
-	docker-compose down -v --remove-orphans
 
 # Просмотр логов
 logs:
@@ -41,10 +27,6 @@ logs-kafka:
 
 logs-frontend:
 	docker-compose logs -f frontend --tail=100
-
-# Выполнение миграций
-migrate:
-	docker-compose run --rm backend ./main --migrate
 
 # Пересоздание базы данных
 reset-db:
@@ -65,41 +47,20 @@ clean:
 status:
 	docker-compose ps
 
-# Подключение к PostgreSQL через psql
-psql:
-	docker-compose exec postgres psql -U app_user -d jp_ru_dict
-
 # Открыть pgAdmin
 pgadmin:
 	open http://localhost:5050 || xdg-open http://localhost:5050 || echo "Откройте http://localhost:5050 в браузере"
-
-# Frontend команды
-frontend-install:
-	cd frontend && npm install
-
-frontend-dev:
-	cd frontend && npm run dev
-
-frontend-build:
-	cd frontend && npm run build
 
 # Справка
 help:
 	@echo "Доступные команды:"
 	@echo "  make run           - Запуск всех сервисов"
 	@echo "  make up            - Запуск в фоновом режиме"
-	@echo "  make build         - Сборка образов"
 	@echo "  make down          - Остановка сервисов"
-	@echo "  make down-volumes  - Остановка и удаление томов"
 	@echo "  make logs          - Просмотр логов"
 	@echo "  make logs-<service>- Просмотр логов конкретного сервиса"
-	@echo "  make migrate       - Выполнить миграции"
 	@echo "  make reset-db      - Полное пересоздание базы данных"
 	@echo "  make clean         - Полная очистка"
 	@echo "  make status        - Статус сервисов"
-	@echo "  make psql          - Подключение к PostgreSQL"
 	@echo "  make pgadmin       - Открыть pgAdmin"
-	@echo "  make frontend-install - Установка зависимостей фронтенда"
-	@echo "  make frontend-dev  - Запуск фронтенда в режиме разработки"
-	@echo "  make frontend-build- Сборка фронтенда"
 	@echo "  make help          - Показать эту справку"

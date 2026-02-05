@@ -37,8 +37,9 @@ COPY --from=builder /app/db/migrations ./db/migrations
 # Копируем скрипт запуска
 COPY docker-entrypoint.sh .
 
-# Делаем скрипт исполняемым
-RUN chmod +x docker-entrypoint.sh
+# Исправляем окончания строк (CRLF -> LF) и делаем скрипт исполняемым
+RUN sed -i 's/\r$//' docker-entrypoint.sh && \
+    chmod +x docker-entrypoint.sh
 
 # Создаем пользователя для запуска приложения
 RUN adduser -D -g '' appuser
