@@ -1,13 +1,12 @@
-(function() {
+﻿(function () {
     console.log('[Mock Server] Инициализация мок-сервера...');
-
-    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     const mockUser = {
         id: '1',
         email: 'demo@example.com',
         name: 'Demo User',
         role: 'user',
+        avatar_url: '/jp-ru-dict/assets/default_avatars/~catishe~cat~.jpg'
     };
 
     let mockWords = [
@@ -19,7 +18,7 @@
             on: 'ビョウ',
             ex_jp: '猫が好きです',
             ex_ru: 'Я люблю кошек',
-            tags: ['animal', 'noun', 'n5'],
+            tags: ['животное', 'существительное', 'n5'],
             kanji: '猫',
             reading: 'ねこ',
             romaji: 'neko',
@@ -35,7 +34,7 @@
             on: 'ケン',
             ex_jp: '犬が走っています',
             ex_ru: 'Собака бежит',
-            tags: ['animal', 'noun', 'n5'],
+            tags: ['животное', 'существительное', 'n5'],
 
             kanji: '犬',
             reading: 'いぬ',
@@ -52,7 +51,7 @@
             on: 'ショク',
             ex_jp: 'ご飯を食べる',
             ex_ru: 'Есть еду',
-            tags: ['verb', 'n5'],
+            tags: ['глагол', 'n5'],
 
             kanji: '食べる',
             reading: 'たべる',
@@ -69,7 +68,7 @@
             on: 'ニホンゴ',
             ex_jp: '日本語を勉強します',
             ex_ru: 'Я учу японский язык',
-            tags: ['noun', 'language', 'n5'],
+            tags: ['существительное', 'language', 'n5'],
 
             kanji: '日本語',
             reading: 'にほんご',
@@ -86,7 +85,7 @@
             on: 'ベンキョウ',
             ex_jp: '毎日勉強します',
             ex_ru: 'Я учусь каждый день',
-            tags: ['noun', 'suru-verb', 'n5'],
+            tags: ['существительное', 'suru-глагол', 'n5'],
 
             kanji: '勉強',
             reading: 'べんきょう',
@@ -104,17 +103,17 @@
         const originalOpen = xhr.open;
         const originalSend = xhr.send;
 
-        xhr.open = function(method, url, ...args) {
+        xhr.open = function (method, url, ...args) {
             this._method = method;
             this._url = url;
             return originalOpen.apply(this, [method, url, ...args]);
         };
 
-        xhr.send = function(body) {
+        xhr.send = function (body) {
             const method = this._method.toUpperCase();
             const url = this._url;
 
-            console.log(`[Mock Server] Intercepted: ${method} ${url}`);
+            console.log(`[Mock Server] Перехватывает: ${method} ${url}`);
 
             if (url.includes('/auth/login') && method === 'POST') {
                 setTimeout(() => {
@@ -156,7 +155,7 @@
                     let parsedBody = {};
                     try {
                         parsedBody = JSON.parse(body);
-                    } catch (e) {}
+                    } catch (e) { }
 
                     if (parsedBody.avatar_url) {
                         mockUser.avatar_url = parsedBody.avatar_url;
@@ -183,7 +182,7 @@
             }
 
             if ((url.includes('/users/avatar') || url.includes('/auth/avatar')) && method === 'POST') {
-                 setTimeout(() => {
+                setTimeout(() => {
                     const response = {
                         data: {
                             user: mockUser,
@@ -219,27 +218,27 @@
                 }, 400);
                 return;
             }
-            
+
             if (url.includes('/words/search') && method === 'GET') {
-                 setTimeout(() => {
+                setTimeout(() => {
                     const urlObj = new URL('http://dummy' + url);
                     const tags = urlObj.searchParams.get('tags');
                     const q = urlObj.searchParams.get('q') || '';
-                    
+
                     let filtered = mockWords;
                     if (tags) {
                         const tagList = tags.split(',');
                         filtered = filtered.filter(w => w.tags.some(t => tagList.includes(t)));
                     }
-                    
+
                     if (q) {
-                         const qLower = q.toLowerCase();
-                         filtered = filtered.filter(w => 
-                             w.jp.includes(q) || 
-                             w.kun.includes(q) || 
-                             w.ru.toLowerCase().includes(qLower) ||
-                             (w.meanings && w.meanings.some(m => m.toLowerCase().includes(qLower)))
-                         );
+                        const qLower = q.toLowerCase();
+                        filtered = filtered.filter(w =>
+                            w.jp.includes(q) ||
+                            w.kun.includes(q) ||
+                            w.ru.toLowerCase().includes(qLower) ||
+                            (w.meanings && w.meanings.some(m => m.toLowerCase().includes(qLower)))
+                        );
                     }
 
                     const response = {
@@ -267,5 +266,5 @@
     }
 
     window.XMLHttpRequest = MockXHR;
-    console.log('[Mock Server] Initialized.');
+    console.log('[Mock Server] Инициализация прошла успешно.');
 })();

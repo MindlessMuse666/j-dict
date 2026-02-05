@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./docs/assets/logo.svg" width="200" height="200" alt="logo.svg" />
+    <img src="./docs/logo.svg" width="200" height="200" alt="logo.svg" />
     <h1>Документация проекта <a href="https://github.com/MindlessMuse666/jp-ru-dict/blob/main/README.md">j~dict!^w^</a></h1>
     <p><b><i>Личный японский словарь (∩^o^)⊃━☆</i></b></p>
     <br>
@@ -201,7 +201,7 @@ API задокументировано с помощью [Swagger](./openapi.yam
 
 <div align="center">
     <a href="#jdictw">
-        <img src="./docs/assets/logo.svg" alt="Logo" width="200" height="200">
+        <img src="./docs/logo.svg" alt="Logo" width="200" height="200">
     </a>
     <br>
     <sub><b>Веб-приложение // j~dict!^w^</b></sub>
