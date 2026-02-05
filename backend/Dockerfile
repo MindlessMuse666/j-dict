@@ -28,7 +28,7 @@ WORKDIR /app
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/main" > /etc/apk/repositories && \
     echo "http://dl-cdn.alpinelinux.org/alpine/v3.20/community" >> /etc/apk/repositories && \
     apk update --no-cache && \
-    apk add --no-cache ca-certificates postgresql-client curl
+    apk add --no-cache ca-certificates postgresql-client curl su-exec
 
 # Копируем бинарный файл из этапа сборки
 COPY --from=builder /app/main .
@@ -44,11 +44,8 @@ RUN sed -i 's/\r$//' docker-entrypoint.sh && \
 # Создаем пользователя для запуска приложения
 RUN adduser -D -g '' appuser
 
-# Создаем директории для логов и загрузок и назначаем права
-RUN mkdir -p /app/logs /app/uploads/avatars && \
-    chown -R appuser:appuser /app
-
-USER appuser
+# Создаем директории для логов и загрузок
+RUN mkdir -p /app/logs /app/uploads/avatars
 
 EXPOSE 8080
 

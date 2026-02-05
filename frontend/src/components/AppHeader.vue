@@ -41,7 +41,7 @@
                             </div>
                         </div>
                     </template>
-                    <template v-else>
+                    <template v-else-if="!isAuthPage">
                         <RouterLink :to="{ name: 'Login' }"
                             class="px-4 py-2 text-sm font-medium text-text-muted hover:text-primary hover:bg-stone-100 rounded-lg transition-all duration-200">
                             Вход
@@ -71,6 +71,7 @@ const authStore = useAuthStore()
 const route = useRoute()
 
 const isProfilePage = computed(() => route.name === 'Profile')
+const isAuthPage = computed(() => ['Login', 'Register'].includes(route.name))
 
 const avatarUrl = computed(() => {
     if (authStore.user?.avatar_url) {

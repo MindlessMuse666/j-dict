@@ -4,6 +4,11 @@ set -e
 
 echo "Запуск приложения..."
 
+# Настройка прав доступа (так как тома могут быть примонтированы как root)
+echo "Настройка прав доступа..."
+mkdir -p /app/uploads/avatars /app/logs
+chown -R appuser:appuser /app/uploads /app/logs
+
 # Ожидаем доступности PostgreSQL
 echo "Ожидание PostgreSQL..."
 while ! nc -z postgres 5432; do
@@ -20,8 +25,8 @@ echo "Kafka доступен"
 
 # Выполняем миграции
 echo "Выполнение миграций..."
-./main --migrate
+su-exec appuser ./main --migrate
 
 # Запускаем сервер
 echo "Запуск сервера..."
-exec ./main
+exec su-exec appuser ./main
