@@ -69,7 +69,6 @@
             ex_jp: '日本語を勉強します',
             ex_ru: 'Я учу японский язык',
             tags: ['существительное', 'language', 'n5'],
-
             kanji: '日本語',
             reading: 'にほんご',
             romaji: 'nihongo',
@@ -86,7 +85,6 @@
             ex_jp: '毎日勉強します',
             ex_ru: 'Я учусь каждый день',
             tags: ['существительное', 'suru-глагол', 'n5'],
-
             kanji: '勉強',
             reading: 'べんきょう',
             romaji: 'benkyou',
