@@ -64,6 +64,19 @@ func (s *wordsService) CreateWord(userID int, req *model.WordCreateRequest) (*mo
 		return nil, err
 	}
 
+	// Сохраняем историю
+	go func() {
+		history := &model.WordHistory{
+			WordID:   word.ID,
+			UserID:   userID,
+			Action:   model.ActionCreate,
+			Snapshot: *word,
+		}
+		_ = s.repo.CreateHistory(history)
+	}()
+
+	_ = s.producer.SendEvent(kafka.EventWordCreated, userID, word)
+
 	return word, nil
 }
 
