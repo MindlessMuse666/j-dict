@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./frontend/public/logo.svg" width="225" height="225" alt="logo.svg" />
+    <img src="./frontend/public/logo.svg" width="200" height="200" alt="logo.svg" />
     <h1>Документация проекта <a href="https://github.com/MindlessMuse666/jp-ru-dict/blob/main/README.md">j~dict!^w^</a></h1>
     <p><b><i>Личный японский словарь (∩^o^)⊃━☆</i></b></p>
     <br>
@@ -21,7 +21,7 @@
 
 1. **Пользователь** работает с интерфейсом (**Фронтенда**);
 2. **Фронтенд** отправляет запросы к **Бэкенду** (REST API);
-3. **Бэкенд** сохраняет/читает данные из **PostgreSQL** и отправляет задачи на импорт в **Kafka**.
+3. **Бэкенд** сохраняет/читает данные из **PostgreSQL** и отправляет события изменений в **Kafka**.
 
 ```mermaid
 graph LR
@@ -56,7 +56,8 @@ graph LR
 
     AuthService --> DB
     WordService --> DB
-    ImportService --> KafkaProducer
+    ImportService --> WordService
+    WordService --> KafkaProducer
     KafkaProducer --> Kafka
     Kafka -.-> Zookeeper
 
@@ -80,7 +81,7 @@ graph LR
   * *Handlers* (обработчики) - принимают HTTP-запросы;
   * *Services* (сервисы) - содержат бизнес-логику (правила работы);
   * *Repositories* (репозитории) - работают напрямую с базой данных.
-* **База данных и Kafka:** Внешние системы для хранения данных и очереди задач.
+* **База данных и Kafka:** Внешние системы для хранения данных и очереди событий.
 
 ```mermaid
 classDiagram
@@ -104,12 +105,12 @@ classDiagram
     }
 
     class Kafka {
-        Очередь импорта слов
+        События изменений слов
     }
 
     Фронтенд ..> Бэкенд : HTTP / JSON
     Бэкенд ..> PostgreSQL : SQL
-    Бэкенд ..> Kafka : Асинхронные задачи
+    Бэкенд ..> Kafka : Публикация событий
 
     classDef frontend fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px
     classDef backend fill:#E8F5E9,stroke:#43A047,stroke-width:2px

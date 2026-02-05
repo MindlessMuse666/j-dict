@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./public/logo.svg" width="120" height="120" alt="Logo" />
+    <img src="./public/logo.svg" width="200" height="200" alt="Logo" />
     <h1>Фронтенд проекта <a href="https://github.com/MindlessMuse666/jp-ru-dict/tree/main/frontend">j~dict!^w^</a></h1>
     <p><b><i>Клиентская часть на Vue 3 (p≧w≦q)</i></b></p>
     <br>
@@ -58,7 +58,7 @@ docker run -p 5173:80 jp-ru-dict-frontend
 
 <div align="center">
     <a href="#jdictw">
-        <img src="./public/logo.svg" alt="Logo" width="100" height="100">
+        <img src="./public/logo.svg" alt="Logo" width="200" height="200">
     </a>
     <br>
     <sub><b>Веб-приложение // j~dict!^w^</b></sub>

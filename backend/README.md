@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="../frontend/public/logo.svg" width="120" height="120" alt="Logo" />
+    <img src="../frontend/public/logo.svg" width="200" height="200" alt="Logo" />
     <h1>Бэкенд проекта <a href="https://github.com/MindlessMuse666/jp-ru-dict/tree/main/backend">j~dict!^w^</a></h1>
     <p><b><i>Серверная часть на Go (Golang) (✿◠‿◠)</i></b></p>
     <br>
@@ -72,7 +72,7 @@ go run cmd/server/main.go
 
 <div align="center">
     <a href="#-запуск">
-        <img src="../frontend/public/logo.svg" alt="Logo" width="100" height="100">
+        <img src="../frontend/public/logo.svg" alt="Logo" width="200" height="200">
     </a>
     <br>
     <sub><b>Веб-приложение // j~dict!^w^</b></sub>
